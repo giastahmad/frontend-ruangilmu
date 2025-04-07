@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://fonts.googleapis.com/css?family=Overpass' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Nunito' rel='stylesheet'>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="style/login.css">
+    <title>Register</title>
+</head>
+
+<body>
+    <div class="flex lg:flex-row w-full h-max">
+        <div
+            class="flex flex-col h-max my-20 lg:mx-25 mx-5 lg:w-1/2 w-full lg:space-y-6 space-y-2 justify-center lg:items-start items-center tracking-widest">
+            <div class="flex">
+                <h1 class="font-[Overpass] font-extrabold text-[#444b59] lg:text-3xl text-xl">WELCOME!</h1>
+            </div>
+            <div class="flex pb-5">
+                <h2 class="font-[Nunito] lg:text-xl text-md text-[#444b59]">Already have an account? <a href=""
+                        class="text-[#026078] font-bold hover:underline">Sign In</a></h2>
+            </div>
+            <div class="flex flex-col space-y-3 lg:space-y-6 w-5/6">
+                <div class="form">
+                    <form action="" class="space-y-3 lg:space-y-6" id="registerForm">
+                        <div class="space-y-1 lg:space-y-2">
+                            <h3 class="font-[Nunito] text-[#444b59] lg:text-2xl text-lg">Full Name</h3>
+                            <input id="fullName" type="text" placeholder="Your full name"
+                                class="border-2 border-[#026078] rounded-md font-[Nunito] text-[#444b59] lg:text-xl text-md placeholder:text-[#026078] placeholder:opacity-50 w-full lg:py-3 py-1 lg:px-4 px-2">
+                        </div>
+                        <div class="space-y-1 lg:space-y-2">
+                            <h3 class="font-[Nunito] text-[#444b59] lg:text-2xl text-lg">Email</h3>
+                            <input id="email" type="email" placeholder="you@example.com"
+                                class="border-2 border-[#026078] rounded-md font-[Nunito] text-[#444b59] lg:text-xl text-md placeholder:text-[#026078] placeholder:opacity-50 w-full lg:py-3 py-1 lg:px-4 px-2">
+                        </div>
+                        <div class="space-y-1 lg:space-y-2 relative">
+                            <h3 class="font-[Nunito] text-[#444b59] lg:text-2xl text-lg">Password</h3>
+                            <input id="password" type="password" placeholder="6 characters or more"
+                                class="border-2 border-[#026078] rounded-md font-[Nunito] text-[#444b59] lg:text-xl text-md placeholder:text-[#026078] placeholder:opacity-50 w-full lg:py-3 py-1 lg:px-4 px-2 pr-10">
+                            <img src="aset/eye_icon.svg" id="togglePassword" alt="Toggle Password"
+                                class="absolute right-3 top-[55%] translate-y-[-50%] w-6 h-6 cursor-pointer opacity-100">
+                            <p id="passwordError" class="text-sm text-red-600 font-[Nunito] invisible">Password must be at
+                                least 6 characters.</p>
+                        </div>
+                        <div class="space-y-1 lg:space-y-2 relative">
+                            <h3 class="font-[Nunito] text-[#444b59] lg:text-2xl text-lg">Password Confirm</h3>
+                            <input id="confirmPassword" type="password" placeholder="6 characters or more"
+                                class="border-2 border-[#026078] rounded-md font-[Nunito] text-[#444b59] lg:text-xl text-md placeholder:text-[#026078] placeholder:opacity-50 w-full lg:py-3 py-1 lg:px-4 px-2 pr-10">
+                            <img src="aset/eye_icon.svg" id="toggleConfirm" alt="Toggle Confirm Password"
+                                class="absolute right-3 top-[55%] translate-y-[-50%] w-6 h-6 cursor-pointer opacity-100">
+                            <p id="confirmError" class="text-sm text-red-600 font-[Nunito] invisible">Passwords do not
+                                match.</p>
+                        </div>
+                        <div class="flex lg:flex-row">
+                            <input type="checkbox" id="remember"
+                                class="font-[Nunito] lg:text-lg text-sm text-[#444b59] checked:bg-[#026078] mr-2">
+                            <p class="font-[Nunito] lg:text-lg text-sm text-[#444b59]">Remember me</p>
+                        </div>
+                        <div class="">
+                            <button type="submit" id="registerBtn"
+                                class="bg-[#026078] font-[Nunito] rounded-md lg:text-xl text-md text-white font-extrabold inset-shadow-sm inset-shadow-white cursor-pointer hover:bg-[#004b5f] active:bg-[#004455] py-3 px-4 w-full"
+                                disabled>Register</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="grid grid-cols-3 items-center content-center gap-x-2 w-full">
+                    <div class="lg:visible invisible pl-5">
+                        <hr class="border-1 border-[#026078]">
+                    </div>
+                    <div class="flex justify-center">
+                        <h4 class="font-[Nunito] text-[#444b59] lg:text-lg text-sm whitespace-nowrap">or continue with
+                        </h4>
+                    </div>
+                    <div class="lg:visible invisible pr-5">
+                        <hr class="border-1 border-[#026078]">
+                    </div>
+                </div>
+                <div class="flex flex-row items-center justify-center space-x-6 w-full">
+                    <button type="button"
+                        class="border-1 border-[#026078] rounded-sm cursor-pointer hover:bg-gray-500/20 lg:py-2 py-1 lg:px-6 px-3 h-full"><img
+                            src="aset/google_logo.svg" alt="" class=""></button>
+                    <button type="button"
+                        class="border-1 border-[#026078] rounded-sm cursor-pointer hover:bg-gray-500/20 lg:py-2 py-1 lg:px-6 px-3 h-full"><img
+                            src="aset/facebook_logo.svg" alt=""></button>
+                </div>
+            </div>
+        </div>
+        <div class="invisible lg:visible flex justify-end items-end bottom-0 right-0 fixed w-1/2">
+            <div>
+                <img src="aset/Side Image.svg" alt="" class="w-full">
+            </div>
+        </div>
+    </div>
+
+    <!-- External Script -->
+    <script>
+        const fullName = document.getElementById("fullName");
+        const email = document.getElementById("email");
+        const password = document.getElementById("password");
+        const confirmPassword = document.getElementById("confirmPassword");
+        const registerBtn = document.getElementById("registerBtn");
+
+        const passwordError = document.getElementById("passwordError");
+        const confirmError = document.getElementById("confirmError");
+        const togglePassword = document.getElementById("togglePassword");
+        const toggleConfirm = document.getElementById("toggleConfirm");
+
+        function validateForm() {
+            let isValid = true;
+
+            if (password.value.length < 6) {
+                passwordError.classList.remove("invisible");
+                isValid = false;
+            } else {
+                passwordError.classList.add("invisible");
+            }
+
+            if (confirmPassword.value !== password.value || confirmPassword.value === "") {
+                confirmError.classList.remove("invisible");
+                isValid = false;
+            } else {
+                confirmError.classList.add("invisible");
+            }
+
+            if (
+                fullName.value.trim() === "" ||
+                email.value.trim() === "" ||
+                password.value === "" ||
+                confirmPassword.value === ""
+            ) {
+                isValid = false;
+            }
+
+            registerBtn.disabled = !isValid;
+        }
+
+        fullName.addEventListener("input", validateForm);
+        email.addEventListener("input", validateForm);
+        password.addEventListener("input", () => {
+            validateForm();
+        });
+        confirmPassword.addEventListener("input", () => {
+            validateForm();
+        });
+
+        togglePassword.addEventListener("click", () => {
+            if (password.type === "password") {
+                password.type = "text";
+                togglePassword.style.opacity = "0.4";
+            } else {
+                password.type = "password";
+                togglePassword.style.opacity = "1";
+            }
+        });
+
+        toggleConfirm.addEventListener("click", () => {
+            if (confirmPassword.type === "password") {
+                confirmPassword.type = "text";
+                toggleConfirm.style.opacity = "0.4";
+            } else {
+                confirmPassword.type = "password";
+                toggleConfirm.style.opacity = "1";
+            }
+        });
+
+    </script>
+</body>
+
+</html>
