@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href='https://fonts.googleapis.com/css?family=Overpass' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Nunito' rel='stylesheet'>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Dashboard RuangIlmu</title>
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .header-font {
+            font-family: 'Overpass', sans-serif;
+        }
+
+        .progress-ring {
+            transform: rotate(-90deg);
+        }
+
+        .progress-ring-circle {
+            stroke-dasharray: 283;
+            stroke-dashoffset: calc(283 - (283 * 0.82));
+            transition: stroke-dashoffset 0.5s ease;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-white shadow-sm py-4 px-6 flex justify-between items-center">
+        <div class="flex items-center space-x-2">
+            <img src="aset/logo ruangilmu.svg" alt="RuangIlmu Logo" class="h-8">
+            <span class="text-xl font-bold text-gray-800">RuangIlmu</span>
+        </div>
+        <div class="hidden md:flex space-x-6">
+            <a href="#" class="text-gray-800 font-medium">Home</a>
+            <a href="#" class="text-gray-600 hover:text-gray-800">Careers</a>
+            <a href="#" class="text-gray-600 hover:text-gray-800">Blog</a>
+            <a href="#" class="text-gray-600 hover:text-gray-800">About Us</a>
+        </div>
+        <div class="flex items-center space-x-4">
+            <img src="img/image-4.png" alt="Profile" class="h-8 w-8 rounded-full">
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8">
+        <!-- Welcome Section -->
+        <section class="mb-8">
+            <h1 class="header-font text-2xl md:text-3xl font-bold text-gray-800">Selamat datang, John Doe!</h1>
+            <p class="text-gray-600 mt-2">Semoga aktivitas belajarmu menyenangkan.</p>
+        </section>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Left Column -->
+            <div class="lg:col-span-2 space-y-8">
+                <!-- Learning Activities -->
+                <section class="bg-white rounded-lg shadow-sm p-6">
+                    <h2 class="header-font text-xl font-bold text-gray-800 mb-4">Aktivitas Belajar</h2>
+
+                    <div class="space-y-4">
+                        <!-- Course 1 -->
+                        <div
+                            class="border border-gray-200 rounded-lg p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                            <div>
+                                <p class="text-sm text-gray-500">Sedang dipelajari</p>
+                                <h3 class="font-medium text-gray-800">Mathematics Fundamentals</h3>
+                            </div>
+                            <button
+                                class="mt-2 sm:mt-0 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
+                                LANJUTKAN
+                            </button>
+                        </div>
+
+                        <!-- Course 2 -->
+                        <div
+                            class="border border-gray-200 rounded-lg p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                            <div>
+                                <p class="text-sm text-gray-500">Sedang dipelajari</p>
+                                <h3 class="font-medium text-gray-800">Mathematics Expert</h3>
+                            </div>
+                            <button
+                                class="mt-2 sm:mt-0 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
+                                LANJUTKAN
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Subscription Status -->
+                <section class="bg-white rounded-lg shadow-sm p-6">
+                    <h2 class="header-font text-xl font-bold text-gray-800 mb-4">Status Langganan</h2>
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                        <p class="text-gray-600 mb-4 sm:mb-0">
+                            Kamu belum berlangganan RuangIlmu. Pilih paket langganan dan mulai pembelajaran kamu!
+                        </p>
+                        <button
+                            class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md font-medium transition-colors whitespace-nowrap">
+                            PILIH PAKET LANGGANAN
+                        </button>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Right Column - Progress -->
+            <div class="lg:col-span-1">
+                <section class="bg-white rounded-lg shadow-sm p-6 h-full">
+                    <h2 class="header-font text-xl font-bold text-gray-800 mb-6">Progress Belajar</h2>
+
+                    <div class="flex flex-col items-center">
+                        <!-- Circular Progress -->
+                        <div class="relative w-40 h-40 mb-4">
+                            <svg class="w-full h-full progress-ring" viewBox="0 0 100 100">
+                                <!-- Background circle -->
+                                <circle class="text-gray-200" stroke-width="8" stroke="currentColor" fill="transparent"
+                                    r="45" cx="50" cy="50" />
+                                <!-- Progress circle -->
+                                <circle class="text-blue-600 progress-ring-circle" stroke-width="8"
+                                    stroke-linecap="round" stroke="currentColor" fill="transparent" r="45" cx="50"
+                                    cy="50" />
+                            </svg>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <span class="text-3xl font-bold text-gray-800">82%</span>
+                            </div>
+                        </div>
+
+                        <p class="text-gray-600 text-center mb-6">
+                            Kamu telah menyelesaikan 82% dari materi pembelajaran.
+                        </p>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-white border-t mt-12 py-6 px-6">
+        <div class="container mx-auto text-center text-gray-600">
+            <p>© 2023 RuangIlmu. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+
+</html>
