@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href='https://fonts.googleapis.com/css?family=Overpass' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Nunito' rel='stylesheet'>
+    <link rel="icon" href="aset/logo ruangilmu.svg" type="image/svg+xml" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="style/login.css">
+    <title>Profile RuangIlmu</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #D2E6E4;
+        }
+        .course-card {
+            transition: all 0.3s ease;
+        }
+        .course-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        .enroll-btn {
+            background-color: #0B7077;
+            transition: all 0.3s ease;
+        }
+        .enroll-btn:hover {
+            background-color: #014b60;
+        }
+    </style>
+</head>
+
+<!-- Navigation -->
+<nav class="container mx-auto px-6 py-10 flex justify-between items-center">
+    <a href="home.html" class="flex items-center space-x-2">
+        <img src="aset/logo ruangilmu.svg" alt="RuangIlmu Logo" class="h-10">
+        <span class="text-2xl font-extrabold text-[#026078]">RuangIlmu</span>
+    </a>
+
+    <div class="hidden md:flex items-center space-x-8">
+        <a href="home.html" class="text-gray-800 font-medium hover:text-blue-600">Home</a>
+        <a href="course.html" class="text-gray-600 hover:text-blue-600">Courses</a>
+        <a href="#" class="text-gray-600 hover:text-blue-600">Blog</a>
+        <a href="#" class="text-gray-600 hover:text-blue-600">About Us</a>
+    </div>
+
+    <div class="flex items-center space-x-4">
+        <a href="login.html" class="bg-white text-[#0B7077] px-7 py-3 rounded-md hover:bg-gray-100 transition"">LOG IN</a>
+        <a href=" register.html"
+            class="bg-[#0B7077] text-white px-7 py-3 rounded-md hover:bg-[#014b60] transition">SIGN
+            UP</a>
+    </div>
+</nav>
+
+<body class="bg-[#D2E6E4] font-['Poppins']">
+
+  <!-- Profile Container -->
+  <section class="container mx-auto px-6 py-10 max-w-3xl bg-white rounded-lg shadow-md">
+    <h2 class="text-2xl font-semibold text-[#0B7077] mb-6">Edit Profile</h2>
+    
+    <!-- Profile Picture Upload -->
+    <div class="flex items-center gap-6 mb-6">
+      <img src="https://via.placeholder.com/100" alt="Profile" class="w-24 h-24 rounded-full object-cover border-2 border-gray-300" id="profilePicPreview">
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Upload New Photo</label>
+        <input type="file" accept="image/*" class="mt-1 block w-full text-sm text-gray-600" onchange="previewImage(event)">
+      </div>
+    </div>
+
+    <!-- Profile Form -->
+    <form class="space-y-5">
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Full Name</label>
+        <input type="text" placeholder="John Doe" class="w-full mt-1 px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#0B7077]">
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Email</label>
+        <input type="email" placeholder="johndoe@email.com" class="w-full mt-1 px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#0B7077]">
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Password</label>
+        <input type="password" placeholder="********" class="w-full mt-1 px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#0B7077]">
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Bio</label>
+        <textarea placeholder="Tell us a bit about you..." class="w-full mt-1 px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#0B7077]"></textarea>
+      </div>
+
+      <button type="submit" class="bg-[#0B7077] text-white px-6 py-2 rounded hover:bg-[#014b60]">
+        Save Changes
+      </button>
+    </form>
+  </section>
+
+  <!-- Preview Image Script -->
+  <script>
+    function previewImage(event) {
+      const reader = new FileReader();
+      reader.onload = function () {
+        const output = document.getElementById('profilePicPreview');
+        output.src = reader.result;
+      };
+      reader.readAsDataURL(event.target.files[0]);
+    }
+  </script>
+
+</body>
+</html>
