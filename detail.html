@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href='https://fonts.googleapis.com/css?family=Overpass' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Nunito' rel='stylesheet'>
+    <link rel="icon" href="aset/logo ruangilmu.svg" type="image/svg+xml" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="style/login.css">
+    <title>Dashboard RuangIlmu</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #D2E6E4;
+        }
+        .course-card {
+            transition: all 0.3s ease;
+        }
+        .course-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        .enroll-btn {
+            background-color: #0B7077;
+            transition: all 0.3s ease;
+        }
+        .enroll-btn:hover {
+            background-color: #014b60;
+        }
+    </style>
+</head>
+
+<!-- Navigation -->
+<nav class="container mx-auto px-6 py-10 flex justify-between items-center">
+    <a href="home.html" class="flex items-center space-x-2">
+        <img src="aset/logo ruangilmu.svg" alt="RuangIlmu Logo" class="h-10">
+        <span class="text-2xl font-extrabold text-[#026078]">RuangIlmu</span>
+    </a>
+
+    <div class="hidden md:flex items-center space-x-8">
+        <a href="home.html" class="text-gray-800 font-medium hover:text-blue-600">Home</a>
+        <a href="course.html" class="text-gray-600 hover:text-blue-600">Courses</a>
+        <a href="#" class="text-gray-600 hover:text-blue-600">Blog</a>
+        <a href="#" class="text-gray-600 hover:text-blue-600">About Us</a>
+    </div>
+
+    <div class="flex items-center space-x-4">
+        <a href="login.html" class="bg-white text-[#0B7077] px-7 py-3 rounded-md hover:bg-gray-100 transition"">LOG IN</a>
+        <a href=" register.html"
+            class="bg-[#0B7077] text-white px-7 py-3 rounded-md hover:bg-[#014b60] transition">SIGN
+            UP</a>
+    </div>
+</nav>
+
+<body class="bg-[#D2E6E4] font-['Poppins']">
+
+  <!-- Course Detail Section -->
+  <section class="container mx-auto px-6 py-10 grid md:grid-cols-3 gap-8">
+    <!-- Left content -->
+    <div class="md:col-span-2 space-y-6">
+      <img src="img/image-4.png" alt="Course Banner" class="rounded-lg w-full shadow-md">
+
+      <!-- Tabs -->
+      <div class="flex space-x-3 text-sm font-medium">
+        <button class="px-4 py-2 bg-[#0B7077] text-white rounded">Overview</button>
+        <button class="px-4 py-2 bg-white border rounded">Curriculum</button>
+        <button class="px-4 py-2 bg-white border rounded">Instructor</button>
+        <button class="px-4 py-2 bg-white border rounded">Reviews</button>
+      </div>
+
+      <!-- Course Description -->
+      <div>
+        <h2 class="text-xl font-semibold mb-2">Course Description</h2>
+        <p class="text-gray-700 leading-relaxed">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...
+        </p>
+      </div>
+
+      <!-- What Will You Learn -->
+      <div>
+        <h2 class="text-xl font-semibold mb-2">What Will I Learn From This Course?</h2>
+        <p class="text-gray-700 leading-relaxed">
+          Himenaeos. Vestibulum sollicitudin varius mauris non dignissim. Sed quis iaculis est. Nulla quam neque, interdum vitae fermentum...
+        </p>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="bg-white p-6 rounded-lg shadow-md">
+      <img src="img/image-4.png" alt="Course Thumbnail" class="rounded mb-4">
+      <div class="flex items-baseline gap-2 text-xl font-bold text-[#0B7077]">
+        <span>$60</span>
+        <span class="text-gray-400 line-through text-base">$120</span>
+      </div>
+      <p class="text-xs text-gray-600 mb-4">29-Day Money-Back Guarantee</p>
+      <a href="#" class="block text-center bg-[#0B7077] text-white py-2 rounded hover:bg-[#014b60] mb-6">BUY NOW</a>
+
+      <!-- Course Info -->
+      <ul class="text-sm text-gray-800 space-y-2">
+        <li><strong>Time:</strong> 4:00 PM - 6:00 PM</li>
+        <li><strong>Enrolled:</strong> 100 students</li>
+        <li><strong>Lectures:</strong> 80</li>
+        <li><strong>Skill Level:</strong> Basic</li>
+        <li><strong>Class Days:</strong> Monday - Friday</li>
+        <li><strong>Language:</strong> English</li>
+      </ul>
+    </div>
+  </section>
+
+</body>
+</html>
