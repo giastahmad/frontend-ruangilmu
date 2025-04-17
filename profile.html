@@ -2,112 +2,361 @@
 <html>
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href='https://fonts.googleapis.com/css?family=Overpass' rel='stylesheet'>
-    <link href='https://fonts.googleapis.com/css?family=Nunito' rel='stylesheet'>
-    <link rel="icon" href="aset/logo ruangilmu.svg" type="image/svg+xml" />
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link rel="stylesheet" href="style/login.css">
-    <title>Profile RuangIlmu</title>
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #D2E6E4;
-        }
-        .course-card {
-            transition: all 0.3s ease;
-        }
-        .course-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        }
-        .enroll-btn {
-            background-color: #0B7077;
-            transition: all 0.3s ease;
-        }
-        .enroll-btn:hover {
-            background-color: #014b60;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href='https://fonts.googleapis.com/css?family=Overpass' rel='stylesheet'>
+  <link href='https://fonts.googleapis.com/css?family=Nunito' rel='stylesheet'>
+  <link rel="icon" href="aset/logo ruangilmu.svg" type="image/svg+xml" />
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="stylesheet" href="style/login.css">
+  <title>Profile RuangIlmu</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f8fafc;
+    }
+
+    .profile-card {
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .edit-btn {
+      border: 1px solid #0B7077;
+      transition: all 0.3s ease;
+    }
+
+    .edit-btn:hover {
+      background-color: #0B7077;
+      color: white;
+    }
+
+    .tab-active {
+      border-bottom: 3px solid #0B7077;
+      color: #0B7077;
+      font-weight: 600;
+    }
+
+    .course-card {
+      transition: all 0.3s ease;
+    }
+
+    .course-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    }
+  </style>
 </head>
 
-<!-- Navigation -->
-<nav class="container mx-auto px-6 py-10 flex justify-between items-center">
-    <a href="home.html" class="flex items-center space-x-2">
-        <img src="aset/logo ruangilmu.svg" alt="RuangIlmu Logo" class="h-10">
-        <span class="text-2xl font-extrabold text-[#026078]">RuangIlmu</span>
-    </a>
-
-    <div class="hidden md:flex items-center space-x-8">
-        <a href="home.html" class="text-gray-800 font-medium hover:text-blue-600">Home</a>
-        <a href="course.html" class="text-gray-600 hover:text-blue-600">Courses</a>
-        <a href="#" class="text-gray-600 hover:text-blue-600">Blog</a>
-        <a href="#" class="text-gray-600 hover:text-blue-600">About Us</a>
-    </div>
-
-    <div class="flex items-center space-x-4">
-        <a href="login.html" class="bg-white text-[#0B7077] px-7 py-3 rounded-md hover:bg-gray-100 transition"">LOG IN</a>
-        <a href=" register.html"
-            class="bg-[#0B7077] text-white px-7 py-3 rounded-md hover:bg-[#014b60] transition">SIGN
-            UP</a>
-    </div>
-</nav>
-
-<body class="bg-[#D2E6E4] font-['Poppins']">
-
-  <!-- Profile Container -->
-  <section class="container mx-auto px-6 py-10 max-w-3xl bg-white rounded-lg shadow-md">
-    <h2 class="text-2xl font-semibold text-[#0B7077] mb-6">Edit Profile</h2>
-    
-    <!-- Profile Picture Upload -->
-    <div class="flex items-center gap-6 mb-6">
-      <img src="https://via.placeholder.com/100" alt="Profile" class="w-24 h-24 rounded-full object-cover border-2 border-gray-300" id="profilePicPreview">
-      <div>
-        <label class="block text-sm font-medium text-gray-700">Upload New Photo</label>
-        <input type="file" accept="image/*" class="mt-1 block w-full text-sm text-gray-600" onchange="previewImage(event)">
+<body class="bg-gray-50">
+  <!-- Navigation -->
+  <nav class="bg-white shadow-sm">
+    <div class="container mx-auto px-6 py-4">
+      <div class="flex justify-between items-center">
+        <a href="home.html" class="flex items-center space-x-2">
+          <img src="aset/logo ruangilmu.svg" alt="RuangIlmu Logo" class="h-10">
+          <span class="text-2xl font-extrabold text-[#026078]">RuangIlmu</span>
+        </a>
+        <div class="hidden md:flex items-center space-x-8">
+          <a href="home.html" class="text-gray-600 hover:text-[#0B7077]">Home</a>
+          <a href="course.html" class="text-gray-600 hover:text-[#0B7077]">Courses</a>
+          <a href="#" class="text-gray-600 hover:text-[#0B7077]">Blog</a>
+          <a href="#" class="text-gray-600 hover:text-[#0B7077]">About Us</a>
+        </div>
+        <div class="flex items-center space-x-4">
+          <div class="relative group">
+            <button class="flex items-center space-x-2 focus:outline-none">
+              <img src="img/profile-pic.jpg" alt="Profile" class="w-10 h-10 rounded-full border-2 border-[#0B7077]">
+              <span class="hidden md:inline text-gray-700">John Doe</span>
+            </button>
+            <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 hidden group-hover:block">
+              <a href="profile.html" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">My Profile</a>
+              <a href="settings.html" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Settings</a>
+              <a href="login.html" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Logout</a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
+  </nav>
 
-    <!-- Profile Form -->
-    <form class="space-y-5">
-      <div>
-        <label class="block text-sm font-medium text-gray-700">Full Name</label>
-        <input type="text" placeholder="John Doe" class="w-full mt-1 px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#0B7077]">
+  <!-- Profile Content -->
+  <div class="container mx-auto px-6 py-12">
+    <div class="flex flex-col lg:flex-row gap-8">
+      <!-- Profile Sidebar -->
+      <div class="lg:w-1/4">
+        <div class="bg-white rounded-lg profile-card p-6 sticky top-6">
+          <div class="flex flex-col items-center">
+            <div class="relative mb-4">
+              <img src="img/profile-pic.jpg" alt="Profile"
+                class="w-32 h-32 rounded-full border-4 border-[#0B7077] object-cover">
+              <button class="absolute bottom-0 right-0 bg-white p-2 rounded-full shadow-md">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#0B7077]" viewBox="0 0 20 20"
+                  fill="currentColor">
+                  <path
+                    d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                </svg>
+              </button>
+            </div>
+            <h2 class="text-xl font-bold text-gray-800">John Doe</h2>
+            <p class="text-gray-600 mb-4">Student at RuangIlmu</p>
+            <a href="edit.html">
+            <button class="edit-btn text-[#0B7077] px-6 py-2 rounded-md font-medium">
+              Edit Profile
+            </button>
+            </a>
+          </div>
+
+          <div class="mt-8">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="font-semibold text-gray-700">Profile Completion</h3>
+              <span class="text-sm text-[#0B7077]">80%</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2">
+              <div class="bg-[#0B7077] h-2 rounded-full" style="width: 80%"></div>
+            </div>
+          </div>
+
+          <div class="mt-8 space-y-4">
+            <div class="flex items-center space-x-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#0B7077]" viewBox="0 0 20 20"
+                fill="currentColor">
+                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+              </svg>
+              <span class="text-gray-600">john.doe@example.com</span>
+            </div>
+            <div class="flex items-center space-x-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#0B7077]" viewBox="0 0 20 20"
+                fill="currentColor">
+                <path fill-rule="evenodd"
+                  d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                  clip-rule="evenodd" />
+              </svg>
+              <span class="text-gray-600">Jakarta, Indonesia</span>
+            </div>
+            <div class="flex items-center space-x-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#0B7077]" viewBox="0 0 20 20"
+                fill="currentColor">
+                <path fill-rule="evenodd"
+                  d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                  clip-rule="evenodd" />
+              </svg>
+              <span class="text-gray-600">Joined July 2022</span>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div>
-        <label class="block text-sm font-medium text-gray-700">Email</label>
-        <input type="email" placeholder="johndoe@email.com" class="w-full mt-1 px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#0B7077]">
+      <!-- Main Profile Content -->
+      <div class="lg:w-3/4">
+        <!-- Profile Tabs -->
+        <div class="bg-white rounded-lg profile-card overflow-hidden mb-6">
+          <div class="border-b border-gray-200">
+            <nav class="flex -mb-px">
+              <button class="py-4 px-6 tab-active">
+                My Courses
+              </button>
+              <button class="py-4 px-6 text-gray-500 hover:text-[#0B7077]">
+                Certificates
+              </button>
+              <button class="py-4 px-6 text-gray-500 hover:text-[#0B7077]">
+                Achievements
+              </button>
+              <button class="py-4 px-6 text-gray-500 hover:text-[#0B7077]">
+                Settings
+              </button>
+            </nav>
+          </div>
+        </div>
+
+        <!-- Active Courses -->
+        <div class="bg-white rounded-lg profile-card p-6 mb-6">
+          <h2 class="text-xl font-bold text-gray-800 mb-6">Active Courses (3)</h2>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Course 1 -->
+            <div class="course-card bg-white border border-gray-200 rounded-lg overflow-hidden">
+              <img src="img/course1.jpg" alt="Course" class="w-full h-40 object-cover">
+              <div class="p-4">
+                <h3 class="font-bold text-gray-800 mb-2">Product Management Basic</h3>
+                <div class="flex items-center text-sm text-gray-500 mb-3">
+                  <span>25% completed</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2 mb-4">
+                  <div class="bg-[#0B7077] h-2 rounded-full" style="width: 25%"></div>
+                </div>
+                <button class="w-full bg-[#0B7077] text-white py-2 rounded-md hover:bg-[#014b60] transition">
+                  Continue Learning
+                </button>
+              </div>
+            </div>
+
+            <!-- Course 2 -->
+            <div class="course-card bg-white border border-gray-200 rounded-lg overflow-hidden">
+              <img src="img/course2.jpg" alt="Course" class="w-full h-40 object-cover">
+              <div class="p-4">
+                <h3 class="font-bold text-gray-800 mb-2">Data Science Professional</h3>
+                <div class="flex items-center text-sm text-gray-500 mb-3">
+                  <span>65% completed</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2 mb-4">
+                  <div class="bg-[#0B7077] h-2 rounded-full" style="width: 65%"></div>
+                </div>
+                <button class="w-full bg-[#0B7077] text-white py-2 rounded-md hover:bg-[#014b60] transition">
+                  Continue Learning
+                </button>
+              </div>
+            </div>
+
+            <!-- Course 3 -->
+            <div class="course-card bg-white border border-gray-200 rounded-lg overflow-hidden">
+              <img src="img/course3.jpg" alt="Course" class="w-full h-40 object-cover">
+              <div class="p-4">
+                <h3 class="font-bold text-gray-800 mb-2">Python for Everybody</h3>
+                <div class="flex items-center text-sm text-gray-500 mb-3">
+                  <span>10% completed</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2 mb-4">
+                  <div class="bg-[#0B7077] h-2 rounded-full" style="width: 10%"></div>
+                </div>
+                <button class="w-full bg-[#0B7077] text-white py-2 rounded-md hover:bg-[#014b60] transition">
+                  Continue Learning
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Completed Courses -->
+        <div class="bg-white rounded-lg profile-card p-6">
+          <h2 class="text-xl font-bold text-gray-800 mb-6">Completed Courses (2)</h2>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Completed Course 1 -->
+            <div class="course-card bg-white border border-gray-200 rounded-lg overflow-hidden">
+              <div class="relative">
+                <img src="img/course4.jpg" alt="Course" class="w-full h-40 object-cover">
+                <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                  <span class="text-white font-bold text-lg">COMPLETED</span>
+                </div>
+              </div>
+              <div class="p-4">
+                <h3 class="font-bold text-gray-800 mb-2">The Science of Well-Being</h3>
+                <div class="flex items-center text-sm text-gray-500 mb-3">
+                  <span>Completed on 15 Aug 2022</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <button class="text-[#0B7077] hover:underline">
+                    View Certificate
+                  </button>
+                  <button class="text-gray-600 hover:text-[#0B7077]">
+                    Rate Course
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Completed Course 2 -->
+            <div class="course-card bg-white border border-gray-200 rounded-lg overflow-hidden">
+              <div class="relative">
+                <img src="img/course5.jpg" alt="Course" class="w-full h-40 object-cover">
+                <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                  <span class="text-white font-bold text-lg">COMPLETED</span>
+                </div>
+              </div>
+              <div class="p-4">
+                <h3 class="font-bold text-gray-800 mb-2">Digital Marketing Fundamentals</h3>
+                <div class="flex items-center text-sm text-gray-500 mb-3">
+                  <span>Completed on 5 Jul 2022</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <button class="text-[#0B7077] hover:underline">
+                    View Certificate
+                  </button>
+                  <button class="text-gray-600 hover:text-[#0B7077]">
+                    Rate Course
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+    </div>
+  </div>
 
-      <div>
-        <label class="block text-sm font-medium text-gray-700">Password</label>
-        <input type="password" placeholder="********" class="w-full mt-1 px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#0B7077]">
+  <!-- Footer -->
+  <footer class="bg-[#D2E6E4] py-12 mt-12">
+    <div class="container mx-auto px-6">
+      <div class="flex flex-col md:flex-row justify-between">
+        <div class="mb-8 md:mb-0">
+          <div class="flex items-center space-x-2 mb-4">
+            <a href="home.html" class="flex items-center space-x-2">
+              <img src="aset/logo ruangilmu.svg" alt="RuangIlmu Logo" class="h-8">
+              <span class="text-xl font-extrabold text-[#026078]">RuangIlmu</span>
+            </a>
+          </div>
+          <p class="text-[#026078] max-w-xs">Empowering your learning journey with quality online education.</p>
+        </div>
+  
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-8">
+          <div>
+            <h3 class="text-lg font-semibold text-[#026078] mb-4">Company</h3>
+            <ul class="space-y-2">
+              <li><a href="#" class="text-[#026078] hover:underline">About Us</a></li>
+              <li><a href="#" class="text-[#026078] hover:underline">Careers</a></li>
+              <li><a href="#" class="text-[#026078] hover:underline">Blog</a></li>
+            </ul>
+          </div>
+  
+          <div>
+            <h3 class="text-lg font-semibold text-[#026078] mb-4">Support</h3>
+            <ul class="space-y-2">
+              <li><a href="#" class="text-[#026078] hover:underline">Help Center</a></li>
+              <li><a href="#" class="text-[#026078] hover:underline">Contact Us</a></li>
+              <li><a href="#" class="text-[#026078] hover:underline">FAQ</a></li>
+            </ul>
+          </div>
+  
+          <div>
+            <h3 class="text-lg font-semibold text-[#026078] mb-4">Legal</h3>
+            <ul class="space-y-2">
+              <li><a href="#" class="text-[#026078] hover:underline">Privacy Policy</a></li>
+              <li><a href="#" class="text-[#026078] hover:underline">Terms of Service</a></li>
+              <li><a href="#" class="text-[#026078] hover:underline">Cookie Policy</a></li>
+            </ul>
+          </div>
+        </div>
       </div>
-
-      <div>
-        <label class="block text-sm font-medium text-gray-700">Bio</label>
-        <textarea placeholder="Tell us a bit about you..." class="w-full mt-1 px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#0B7077]"></textarea>
+  
+      <div class="border-t border-[#026078]/20 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+        <p class="text-[#026078] mb-4 md:mb-0">© 2023 RuangIlmu. All rights reserved.</p>
+        <div class="flex space-x-6">
+          <a href="#" class="text-[#026078] hover:text-[#014b60]">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path fill-rule="evenodd"
+                d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"
+                clip-rule="evenodd"></path>
+            </svg>
+          </a>
+          <a href="#" class="text-[#026078] hover:text-[#014b60]">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path fill-rule="evenodd"
+                d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 3.807.058h.468c2.456 0 2.784-.011 3.807-.058.975-.045 1.504-.207 1.857-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-3.807v-.468c0-2.456-.011-2.784-.058-3.807-.045-.975-.207-1.504-.344-1.857a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z"
+                clip-rule="evenodd"></path>
+            </svg>
+          </a>
+          <a href="#" class="text-[#026078] hover:text-[#014b60]">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84">
+              </path>
+            </svg>
+          </a>
+        </div>
       </div>
-
-      <button type="submit" class="bg-[#0B7077] text-white px-6 py-2 rounded hover:bg-[#014b60]">
-        Save Changes
-      </button>
-    </form>
-  </section>
-
-  <!-- Preview Image Script -->
-  <script>
-    function previewImage(event) {
-      const reader = new FileReader();
-      reader.onload = function () {
-        const output = document.getElementById('profilePicPreview');
-        output.src = reader.result;
-      };
-      reader.readAsDataURL(event.target.files[0]);
-    }
-  </script>
-
+    </div>
+  </footer>
 </body>
+
 </html>
