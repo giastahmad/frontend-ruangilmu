@@ -47,30 +47,39 @@
   </style>
 </head>
 
-<body class="bg-gray-50">
-  <!-- Navigation -->
-  <div class="bg-[#D2E6E4] shadow-sm"> <!-- Tambahkan div wrapper untuk background -->
-    <nav class="container mx-auto px-6 py-10 flex justify-between items-center">
-      <a href="home.html" class="flex items-center space-x-2">
-        <img src="aset/logo ruangilmu.svg" alt="RuangIlmu Logo" class="h-10">
-        <span class="text-2xl font-extrabold text-[#026078]">RuangIlmu</span>
-      </a>
-  
+<!-- Navigation -->
+<div class="bg-[#D2E6E4] shadow-sm"> <!-- Tambahkan div wrapper untuk background -->
+  <nav class="container mx-auto px-6 py-10 flex justify-between items-center">
+    <a href="home.html" class="flex items-center space-x-2">
+      <img src="aset/logo ruangilmu.svg" alt="RuangIlmu Logo" class="h-10">
+      <span class="text-2xl font-extrabold text-[#026078]">RuangIlmu</span>
+    </a>
+
       <div class="hidden md:flex items-center space-x-8">
-        <a href="home.html" class="text-gray-800 font-medium hover:text-blue-600">Home</a>
-        <a href="course.html" class="text-gray-600 hover:text-blue-600">Courses</a>
-        <a href="#" class="text-gray-600 hover:text-blue-600">Blog</a>
-        <a href="#" class="text-gray-600 hover:text-blue-600">About Us</a>
+        <a href="home.html" class="text-gray-600 hover:text-[#0B7077]">Home</a>
+        <a href="course.html" class="text-gray-600 hover:text-[#0B7077]">Courses</a>
+        <a href="#" class="text-gray-600 hover:text-[#0B7077]">Blog</a>
+        <a href="#" class="text-gray-600 hover:text-[#0B7077]">About Us</a>
       </div>
-  
+      
       <div class="flex items-center space-x-4">
-        <a href="login.html" class="bg-white text-[#0B7077] px-7 py-3 rounded-md hover:bg-gray-100 transition">LOG
-          IN</a>
-        <a href="register.html" class="bg-[#0B7077] text-white px-7 py-3 rounded-md hover:bg-[#014b60] transition">SIGN
-          UP</a>
+        <div class="relative group">
+          <button class="flex items-center space-x-2 focus:outline-none">
+            <img src="img/profile-pic.jpg" alt="Profile" class="w-12 h-12 rounded-md border-2 border-[#0B7077]">
+            <span class="hidden md:inline text-gray-700">John Doe</span>
+          </button>
+          <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 hidden group-hover:block">
+            <a href="profile.html" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">My Profile</a>
+            <a href="settings.html" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Settings</a>
+            <a href="login.html" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Logout</a>
+          </div>
+        </div>
       </div>
-    </nav>
+    </div>
   </div>
+</nav>
+
+<body class="bg-gray-50">
 
   <!-- Profile Content -->
   <div class="container mx-auto px-6 py-12">
@@ -81,7 +90,7 @@
           <div class="flex flex-col items-center">
             <div class="relative mb-4">
               <img src="img/profile-pic.jpg" alt="Profile"
-                class="w-32 h-32 rounded-full border-4 border-[#0B7077] object-cover">
+                class="w-32 h-32 rounded-md border-4 border-[#0B7077] object-cover">
               <button class="absolute bottom-0 right-0 bg-white p-2 rounded-full shadow-md">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#0B7077]" viewBox="0 0 20 20"
                   fill="currentColor">
@@ -154,9 +163,6 @@
               </button>
               <button class="py-4 px-6 text-gray-500 hover:text-[#0B7077]">
                 Achievements
-              </button>
-              <button class="py-4 px-6 text-gray-500 hover:text-[#0B7077]">
-                Settings
               </button>
             </nav>
           </div>
