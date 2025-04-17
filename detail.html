@@ -22,12 +22,12 @@
       font-weight: 600;
     }
 
-    .buy-now-btn {
+    .enroll-now-btn {
       background-color: #0B7077;
       transition: all 0.3s ease;
     }
 
-    .buy-now-btn:hover {
+    .enroll-now-btn:hover {
       background-color: #014b60;
     }
 
@@ -47,26 +47,28 @@
 </head>
 
 <!-- Navigation -->
-<nav class="container mx-auto px-6 py-10 flex justify-between items-center">
-  <a href="home.html" class="flex items-center space-x-2">
-    <img src="aset/logo ruangilmu.svg" alt="RuangIlmu Logo" class="h-10">
-    <span class="text-2xl font-extrabold text-[#026078]">RuangIlmu</span>
-  </a>
+<div class="bg-[#D2E6E4] shadow-sm"> <!-- Tambahkan div wrapper untuk background -->
+  <nav class="container mx-auto px-6 py-10 flex justify-between items-center">
+    <a href="home.html" class="flex items-center space-x-2">
+      <img src="aset/logo ruangilmu.svg" alt="RuangIlmu Logo" class="h-10">
+      <span class="text-2xl font-extrabold text-[#026078]">RuangIlmu</span>
+    </a>
 
-  <div class="hidden md:flex items-center space-x-8">
-    <a href="home.html" class="text-gray-800 font-medium hover:text-blue-600">Home</a>
-    <a href="course.html" class="text-gray-600 hover:text-blue-600">Courses</a>
-    <a href="#" class="text-gray-600 hover:text-blue-600">Blog</a>
-    <a href="#" class="text-gray-600 hover:text-blue-600">About Us</a>
-  </div>
+    <div class="hidden md:flex items-center space-x-8">
+      <a href="home.html" class="text-gray-800 font-medium hover:text-blue-600">Home</a>
+      <a href="course.html" class="text-gray-600 hover:text-blue-600">Courses</a>
+      <a href="#" class="text-gray-600 hover:text-blue-600">Blog</a>
+      <a href="#" class="text-gray-600 hover:text-blue-600">About Us</a>
+    </div>
 
-  <div class="flex items-center space-x-4">
-    <a href="login.html" class="bg-white text-[#0B7077] px-7 py-3 rounded-md hover:bg-gray-100 transition"">LOG IN</a>
-        <a href=" register.html"
-      class="bg-[#0B7077] text-white px-7 py-3 rounded-md hover:bg-[#014b60] transition">SIGN
-      UP</a>
-  </div>
-</nav>
+    <div class="flex items-center space-x-4">
+      <a href="login.html" class="bg-white text-[#0B7077] px-7 py-3 rounded-md hover:bg-gray-100 transition">LOG
+        IN</a>
+      <a href="register.html" class="bg-[#0B7077] text-white px-7 py-3 rounded-md hover:bg-[#014b60] transition">SIGN
+        UP</a>
+    </div>
+  </nav>
+</div>
 
 <body class="bg-gray-50">
 
@@ -155,8 +157,8 @@
             </div>
           </div>
 
-          <button class="buy-now-btn text-white w-full py-3 rounded-md font-medium">
-            BUY NOW
+          <button class="enroll-now-btn text-white w-full py-3 rounded-md font-medium">
+            ENROLL NOW
           </button>
         </div>
       </div>
