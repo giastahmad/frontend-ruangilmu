@@ -157,18 +157,16 @@
             const passwordValue = loginPassword.value.trim();
 
             if (emailValue === "dummy@dummy.com" && passwordValue === "dummyPw") {
-                // Simpan status sukses login ke sessionStorage
                 sessionStorage.setItem('loginStatus', 'success');
 
                 setTimeout(() => {
-                    window.location.href = "home.html"; // Ganti dengan URL homepage yang sesuai
-                }, 100); // Bisa langsung redirect tanpa delay
-            } else {
-                // Simpan status error login ke sessionStorage
+                    window.location.href = "home.html"; 
+                }, 100); 
+            } else {e
                 sessionStorage.setItem('loginStatus', 'error');
 
                 setTimeout(() => {
-                    window.location.reload(); // Reload halaman untuk menampilkan toast error
+                    window.location.reload(); 
                 }, 100);
             }
         });
@@ -178,13 +176,12 @@
             const successToast = document.getElementById("successToast");
             const errorToast = document.getElementById("errorToast");
 
-            // Cek status login dan tampilkan toast yang sesuai
             if (loginStatus === 'success') {
                 window.dispatchEvent(new CustomEvent('show-toast-success'));
-                sessionStorage.removeItem('loginStatus'); // Hapus status setelah toast muncul
+                sessionStorage.removeItem('loginStatus'); 
             } else if (loginStatus === 'error') {
                 window.dispatchEvent(new CustomEvent('show-toast-error'));
-                sessionStorage.removeItem('loginStatus'); // Hapus status setelah toast muncul
+                sessionStorage.removeItem('loginStatus'); 
             }
         });
     </script>
