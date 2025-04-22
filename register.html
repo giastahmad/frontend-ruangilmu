@@ -8,7 +8,13 @@
     <link href='https://fonts.googleapis.com/css?family=Nunito' rel='stylesheet'>
     <link rel="icon" href="aset/logo ruangilmu.svg" type="image/svg+xml" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="stylesheet" href="style/login.css">
+    <style>
+        [x-cloak] {
+            display: none !important;
+        }
+    </style>
     <title>RuangIlmu - Register</title>
 </head>
 
@@ -20,8 +26,8 @@
                 <h1 class="font-[Overpass] font-extrabold text-[#444b59] lg:text-3xl text-xl">WELCOME!</h1>
             </div>
             <div class="flex pb-5">
-                <h2 class="font-[Nunito] lg:text-xl text-md text-[#444b59]">Already have an account? <a href="login.html"
-                        class="text-[#026078] font-bold hover:underline">Sign In</a></h2>
+                <h2 class="font-[Nunito] lg:text-xl text-md text-[#444b59]">Already have an account? <a
+                        href="login.html" class="text-[#026078] font-bold hover:underline">Sign In</a></h2>
             </div>
             <div class="flex flex-col space-y-3 lg:space-y-6 w-5/6">
                 <div class="form">
@@ -42,7 +48,8 @@
                                 class="border-2 border-[#026078] rounded-md font-[Nunito] text-[#444b59] lg:text-xl text-md placeholder:text-[#026078] placeholder:opacity-50 w-full lg:py-3 py-1 lg:px-4 px-2 pr-10">
                             <img src="aset/eye_icon.svg" id="togglePassword" alt="Toggle Password"
                                 class="absolute right-3 top-[55%] translate-y-[-50%] w-6 h-6 cursor-pointer opacity-100">
-                            <p id="passwordError" class="text-sm text-red-600 font-[Nunito] invisible">Password must be at
+                            <p id="passwordError" class="text-sm text-red-600 font-[Nunito] invisible">Password must be
+                                at
                                 least 6 characters.</p>
                         </div>
                         <div class="space-y-1 lg:space-y-2 relative">
@@ -93,6 +100,25 @@
                 <img src="aset/Side Image.svg" alt="" class="w-full">
             </div>
         </div>
+    </div>
+
+    <div id="registerSuccessToast"
+        class=" fixed top-5 left-1/2 -translate-x-1/2 bg-white border-3 border-[#026078] text-green-500 py-2 px-4 rounded-md shadow-lg"
+        x-data="{ show: false }" x-cloak @show-toast-success.window="show = true; setTimeout(() => show = false, 3000)"
+        x-transition:enter="transition ease-out duration-300 transform"
+        x-transition:enter-start="opacity-0 -translate-y-10" x-transition:enter-end="opacity-100 translate-y-0"
+        x-transition:leave="transition ease-in duration-200 transform" x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0" x-show="show">
+        Register Successful! Please check your email.
+    </div>
+    <div id="registerErrorToast"
+        class=" fixed top-5 left-1/2 -translate-x-1/2 bg-white border-3 border-[#026078] text-red-500 py-2 px-4 rounded-md shadow-lg"
+        x-data="{ show: false }" x-cloak @show-toast-error.window="show = true; setTimeout(() => show = false, 3000)"
+        x-transition:enter="transition ease-out duration-300 transform"
+        x-transition:enter-start="opacity-0 -translate-y-10" x-transition:enter-end="opacity-100 translate-y-0"
+        x-transition:leave="transition ease-in duration-200 transform" x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0" x-show="show">
+        Email Already in Use!
     </div>
 
     <!-- External Script -->
@@ -163,6 +189,44 @@
             } else {
                 confirmPassword.type = "password";
                 toggleConfirm.style.opacity = "1";
+            }
+        });
+
+        const registerForm = document.getElementById("registerForm"); // form ID kamu
+        const registerEmail = document.getElementById("email"); // input email
+        const registerPassword = document.getElementById("password"); // input password
+
+        registerForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            const emailValue = registerEmail.value.trim();
+            const passwordValue = registerPassword.value.trim();
+
+            // Simulasi: misal kalau email sudah dipakai
+            if (emailValue === "dummy@dummy.com") {
+                sessionStorage.setItem('registerStatus', 'error');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 100); // reload biar toast muncul
+            } else {
+                sessionStorage.setItem('registerStatus', 'success');
+                setTimeout(() => {
+                    window.location.href = "verify.html"; // redirect ke halaman verifikasi
+                }, 100); // langsung redirect
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const status = sessionStorage.getItem('registerStatus');
+            const successToast = document.getElementById("registerSuccessToast");
+            const errorToast = document.getElementById("registerErrorToast");
+
+            if (status === 'success') {
+                window.dispatchEvent(new CustomEvent('show-toast-success'));
+                sessionStorage.removeItem('registerStatus');
+            } else if (status === 'error') {
+                window.dispatchEvent(new CustomEvent('show-toast-error'));
+                sessionStorage.removeItem('registerStatus');
             }
         });
 
