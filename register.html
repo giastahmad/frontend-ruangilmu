@@ -192,9 +192,9 @@
             }
         });
 
-        const registerForm = document.getElementById("registerForm"); // form ID kamu
-        const registerEmail = document.getElementById("email"); // input email
-        const registerPassword = document.getElementById("password"); // input password
+        const registerForm = document.getElementById("registerForm");
+        const registerEmail = document.getElementById("email");
+        const registerPassword = document.getElementById("password"); 
 
         registerForm.addEventListener("submit", (e) => {
             e.preventDefault();
@@ -202,17 +202,17 @@
             const emailValue = registerEmail.value.trim();
             const passwordValue = registerPassword.value.trim();
 
-            // Simulasi: misal kalau email sudah dipakai
+            // Simulasi: email sudah dipakai
             if (emailValue === "dummy@dummy.com") {
                 sessionStorage.setItem('registerStatus', 'error');
                 setTimeout(() => {
                     window.location.reload();
-                }, 100); // reload biar toast muncul
+                }, 100); 
             } else {
                 sessionStorage.setItem('registerStatus', 'success');
                 setTimeout(() => {
-                    window.location.href = "verify.html"; // redirect ke halaman verifikasi
-                }, 100); // langsung redirect
+                    window.location.href = "verify.html"; 
+                }, 100); 
             }
         });
 
