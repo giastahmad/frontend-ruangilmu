@@ -54,11 +54,9 @@
                     <img src="aset/logo ruangilmu.svg" alt="RuangIlmu Logo" class="h-10">
                     <span class="text-2xl font-extrabold text-[#026078]">RuangIlmu</span>
                 </a>
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="home.html" class="text-gray-600 hover:text-[#0B7077]">Home</a>
-                    <a href="course.html" class="text-gray-600 hover:text-[#0B7077]">Courses</a>
-                    <a href="#" class="text-gray-600 hover:text-[#0B7077]">Blog</a>
-                    <a href="#" class="text-gray-600 hover:text-[#0B7077]">About Us</a>
+                <div class="hidden md:flex items-center space-x-30">
+                    <a href="home.html" class="text-gray-800 font-medium hover:text-blue-600">Beranda</a>
+                    <a href="course.html" class="text-gray-600 hover:text-blue-600">Kelas</a>
                 </div>
                 <div class="flex items-center space-x-4">
                     <div class="relative group">
@@ -69,10 +67,9 @@
                         </button>
                         <div
                             class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 hidden group-hover:block">
-                            <a href="profile.html" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">My
-                                Profile</a>
-                            <a href="settings.html" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Settings</a>
-                            <a href="login.html" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Logout</a>
+                            <a href="profile.html" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Profil Saya</a>
+                            <a href="settings.html" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Pengaturan</a>
+                            <a href="login.html" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Keluar</a>
                         </div>
                     </div>
                 </div>
@@ -92,7 +89,7 @@
                                 class="w-32 h-32 rounded-md border-4 border-[#0B7077] object-cover">
                         </div>
                         <h2 class="text-xl font-bold text-gray-800">John Doe</h2>
-                        <p class="text-gray-600 mb-4">Student at RuangIlmu</p>
+                        <p class="text-gray-600 mb-4">Murid di RuangIlmu</p>
 
                         <!-- Navigation Menu -->
                         <div class="w-full mt-6 space-y-2">
@@ -111,11 +108,11 @@
             <!-- Main Edit Form -->
             <div class="lg:w-3/4">
                 <div class="bg-white rounded-lg profile-card p-8">
-                    <h1 class="text-2xl font-bold text-gray-800 mb-6">Edit Profile</h1>
+                    <h1 class="text-2xl font-bold text-gray-800 mb-6">Edit Profil</h1>
 
                     <!-- Profile Picture Upload -->
                     <div class="mb-8">
-                        <label class="block text-gray-700 font-medium mb-3">Profile Picture</label>
+                        <label class="block text-gray-700 font-medium mb-3">Foto Profil</label>
                         <div class="flex items-center space-x-6">
                             <div class="relative">
                                 <img src="img/profile-pic.jpg" alt="Current Profile"
@@ -131,9 +128,9 @@
                                             d="M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.121-1.121A2 2 0 0011.172 3H8.828a2 2 0 00-1.414.586L6.293 4.707A1 1 0 015.586 5H4zm6 9a3 3 0 100-6 3 3 0 000 6z"
                                             clip-rule="evenodd" />
                                     </svg>
-                                    Change Photo
+                                    Ganti Foto
                                 </label>
-                                <button class="ml-3 text-gray-500 hover:text-red-500">Remove</button>
+                                <button class="ml-3 text-gray-500 hover:text-red-500">Hapus</button>
                             </div>
                         </div>
                     </div>
@@ -142,13 +139,13 @@
                     <form>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                             <div>
-                                <label for="first-name" class="block text-gray-700 font-medium mb-2">First Name</label>
+                                <label for="first-name" class="block text-gray-700 font-medium mb-2">Nama Depan</label>
                                 <input type="text" id="first-name"
                                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0B7077]"
                                     value="John">
                             </div>
                             <div>
-                                <label for="last-name" class="block text-gray-700 font-medium mb-2">Last Name</label>
+                                <label for="last-name" class="block text-gray-700 font-medium mb-2">Nama Belakang</label>
                                 <input type="text" id="last-name"
                                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0B7077]"
                                     value="Doe">
@@ -156,7 +153,7 @@
                         </div>
 
                         <div class="mb-6">
-                            <label for="email" class="block text-gray-700 font-medium mb-2">Email Address</label>
+                            <label for="email" class="block text-gray-700 font-medium mb-2">Alamat Email</label>
                             <input type="email" id="email"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0B7077]"
                                 value="john.doe@example.com">
@@ -170,13 +167,13 @@
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                             <div>
-                                <label for="location" class="block text-gray-700 font-medium mb-2">Location</label>
+                                <label for="location" class="block text-gray-700 font-medium mb-2">Lokasi</label>
                                 <input type="text" id="location"
                                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0B7077]"
                                     value="Jakarta, Indonesia">
                             </div>
                             <div>
-                                <label for="phone" class="block text-gray-700 font-medium mb-2">Phone Number</label>
+                                <label for="phone" class="block text-gray-700 font-medium mb-2">Nomor Telepon</label>
                                 <input type="tel" id="phone"
                                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0B7077]"
                                     value="+62 812-3456-7890">
@@ -185,7 +182,7 @@
 
                         <!-- Social Media Links -->
                         <div class="mb-8">
-                            <h3 class="text-lg font-medium text-gray-800 mb-4">Social Media Links</h3>
+                            <h3 class="text-lg font-medium text-gray-800 mb-4">Sosial Media</h3>
                             <div class="space-y-4">
                                 <div class="flex items-center">
                                     <div class="w-10 flex-shrink-0 text-[#0B7077]">
@@ -226,10 +223,10 @@
                         <!-- Form Actions -->
                         <div class="flex justify-end space-x-4">
                             <button type="button" class="cancel-btn px-6 py-2 rounded-md font-medium">
-                                Cancel
+                                Batalkan
                             </button>
                             <button type="submit" class="save-btn text-white px-6 py-2 rounded-md font-medium">
-                                Save Changes
+                                Simpan Perubahan
                             </button>
                         </div>
                     </form>
@@ -244,45 +241,47 @@
             <div class="flex flex-col md:flex-row justify-between">
                 <div class="mb-8 md:mb-0">
                     <div class="flex items-center space-x-2 mb-4">
-                        <img src="aset/logo ruangilmu.svg" alt="RuangIlmu Logo" class="h-8">
-                        <span class="text-xl font-extrabold text-[#026078]">RuangIlmu</span>
+                        <a href="home.html" class="flex items-center space-x-2">
+                            <img src="aset/logo ruangilmu.svg" alt="RuangIlmu Logo" class="h-8">
+                            <span class="text-xl font-extrabold text-[#026078]">RuangIlmu</span>
+                        </a>
                     </div>
-                    <p class="text-[#026078] max-w-xs">Empowering your learning journey with quality online education.
-                    </p>
+                    <p class="text-[#026078] max-w-xs">Membantu perjalanan belajarmu dengan kelas online yang seru dan
+                        berkualitas!</p>
                 </div>
-
+    
                 <div class="grid grid-cols-2 md:grid-cols-3 gap-8">
                     <div>
-                        <h3 class="text-lg font-semibold text-[#026078] mb-4">Company</h3>
+                        <h3 class="text-lg font-semibold text-[#026078] mb-4">Perusahaan</h3>
                         <ul class="space-y-2">
-                            <li><a href="#" class="text-[#026078] hover:underline">About Us</a></li>
-                            <li><a href="#" class="text-[#026078] hover:underline">Careers</a></li>
+                            <li><a href="#" class="text-[#026078] hover:underline">Tentang Kami</a></li>
+                            <li><a href="#" class="text-[#026078] hover:underline">Karir</a></li>
                             <li><a href="#" class="text-[#026078] hover:underline">Blog</a></li>
                         </ul>
                     </div>
-
+    
                     <div>
-                        <h3 class="text-lg font-semibold text-[#026078] mb-4">Support</h3>
+                        <h3 class="text-lg font-semibold text-[#026078] mb-4">Dukungan</h3>
                         <ul class="space-y-2">
-                            <li><a href="#" class="text-[#026078] hover:underline">Help Center</a></li>
-                            <li><a href="#" class="text-[#026078] hover:underline">Contact Us</a></li>
-                            <li><a href="#" class="text-[#026078] hover:underline">FAQ</a></li>
+                            <li><a href="#" class="text-[#026078] hover:underline">Pusat Bantuan</a></li>
+                            <li><a href="#" class="text-[#026078] hover:underline">Kontak Kami</a></li>
+                            <li><a href="#" class="text-[#026078] hover:underline">Pertanyaan</a></li>
                         </ul>
                     </div>
-
+    
                     <div>
-                        <h3 class="text-lg font-semibold text-[#026078] mb-4">Legal</h3>
+                        <h3 class="text-lg font-semibold text-[#026078] mb-4">Hukum</h3>
                         <ul class="space-y-2">
-                            <li><a href="#" class="text-[#026078] hover:underline">Privacy Policy</a></li>
-                            <li><a href="#" class="text-[#026078] hover:underline">Terms of Service</a></li>
-                            <li><a href="#" class="text-[#026078] hover:underline">Cookie Policy</a></li>
+                            <li><a href="#" class="text-[#026078] hover:underline">Kebijakan Privasi</a></li>
+                            <li><a href="#" class="text-[#026078] hover:underline">Persyaratan Layanan</a></li>
+                            <li><a href="#" class="text-[#026078] hover:underline">Kebijakan Cookie</a></li>
                         </ul>
                     </div>
                 </div>
             </div>
-
+    
             <div class="border-t border-[#026078]/20 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
-                <p class="text-[#026078] mb-4 md:mb-0">© 2023 RuangIlmu. All rights reserved.</p>
+                <p class="text-[#026078] mb-4 md:mb-0">© 2023 RuangIlmu. Semua hak dilingungi undang-undang.</p>
                 <div class="flex space-x-6">
                     <a href="#" class="text-[#026078] hover:text-[#014b60]">
                         <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
