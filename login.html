@@ -8,8 +8,14 @@
     <link href='https://fonts.googleapis.com/css?family=Nunito' rel='stylesheet'>
     <link rel="icon" href="aset/logo ruangilmu.svg" type="image/svg+xml" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="stylesheet" href="style/login.css">
     <title>RuangIlmu - Login</title>
+    <style>
+        [x-cloak] {
+            display: none !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -79,6 +85,25 @@
             </div>
         </div>
     </div>
+    <div id="successToast"
+        class=" fixed top-5 left-1/2 -translate-x-1/2 bg-white border-3 border-[#026078] text-green-500 py-2 px-4 rounded-md shadow-lg"
+        x-data="{ show: false }" x-cloak @show-toast-success.window="show = true; setTimeout(() => show = false, 3000)"
+        x-transition:enter="transition ease-out duration-300 transform"
+        x-transition:enter-start="opacity-0 -translate-y-10" x-transition:enter-end="opacity-100 translate-y-0"
+        x-transition:leave="transition ease-in duration-200 transform" x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0" x-show="show">
+        Login Successful!
+    </div>
+    <div id="errorToast"
+        class=" fixed top-5 left-1/2 -translate-x-1/2 bg-white border-3 border-[#026078] text-red-500 py-2 px-4 rounded-md shadow-lg"
+        x-data="{ show: false }" x-cloak @show-toast-error.window="show = true; setTimeout(() => show = false, 3000)"
+        x-transition:enter="transition ease-out duration-300 transform"
+        x-transition:enter-start="opacity-0 -translate-y-10" x-transition:enter-end="opacity-100 translate-y-0"
+        x-transition:leave="transition ease-in duration-200 transform" x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0" x-show="show">
+        Incorrect Email or Password!
+    </div>
+
 
     <!-- External Script -->
     <script>
@@ -117,6 +142,46 @@
             } else {
                 loginPassword.type = "password";
                 toggleLoginPassword.style.opacity = "1";
+            }
+        });
+
+        const loginForm = document.getElementById("loginForm");
+        const successToast = document.getElementById("successToast");
+        const errorToast = document.getElementById("errorToast");
+
+        loginForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            const emailValue = loginEmail.value.trim();
+            const passwordValue = loginPassword.value.trim();
+
+            // DIGANTI YA BANG
+            if (emailValue === "dummy@dummy.com" && passwordValue === "dummyPw") {
+                sessionStorage.setItem('loginStatus', 'success');
+
+                setTimeout(() => {
+                    window.location.href = "home.html"; 
+                }, 100); 
+            } else {e
+                sessionStorage.setItem('loginStatus', 'error');
+
+                setTimeout(() => {
+                    window.location.reload(); 
+                }, 100);
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const loginStatus = sessionStorage.getItem('loginStatus');
+            const successToast = document.getElementById("successToast");
+            const errorToast = document.getElementById("errorToast");
+
+            if (loginStatus === 'success') {
+                window.dispatchEvent(new CustomEvent('show-toast-success'));
+                sessionStorage.removeItem('loginStatus'); 
+            } else if (loginStatus === 'error') {
+                window.dispatchEvent(new CustomEvent('show-toast-error'));
+                sessionStorage.removeItem('loginStatus'); 
             }
         });
     </script>

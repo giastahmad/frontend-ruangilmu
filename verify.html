@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://fonts.googleapis.com/css?family=Overpass' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Nunito' rel='stylesheet'>
+    <link rel="icon" href="aset/logo ruangilmu.svg" type="image/svg+xml" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="style/login.css">
+    <style>
+        [x-cloak] {
+            display: none !important;
+        }
+    </style>
+    <title>RuangIlmu - Verify</title>
+</head>
+
+<body>
+    <div class="fixed left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 lg:w-full w-5/6">
+        <div class="grid grid-row-3 lg:gap-y-12 gap-y-6 justify-center">
+            <div class="flex flex-col items-center">
+                <h1 class="font-[Overpass] font-extrabold text-[#444b59] lg:text-3xl text-xl lg:mb-6 mb-3">Verify your
+                    email address</h1>
+                <p class="font-[Nunito] lg:text-xl text-md text-[#444b59] text-center">Please click on the link that has
+                    just been sent to your email address to verify your email and continue the registration process.</p>
+            </div>
+            <div class="flex flex-col items-center">
+                <p class="font-[Nunito] lg:text-xl text-md text-[#444b59] lg:mb-3 mb-1">Still can't find the email?</p>
+                <button
+                    class="bg-[#026078] font-[Nunito] rounded-md lg:text-lg text-sm text-white font-bold cursor-pointer hover:bg-[#004b5f] active:bg-[#004455] py-3 px-4">Resend
+                    Email</button>
+            </div>
+            <div class="flex flex-col items-center">
+                <p class="font-[Nunito] lg:text-xl text-md text-[#444b59]">Need help? <a href=""
+                        class="text-[#026078] font-bold hover:underline">Contact Us</a></p>
+            </div>
+        </div>
+    </div>
+    <div id="registerSuccessToast"
+        class=" fixed top-5 left-1/2 -translate-x-1/2 bg-white border-3 border-[#026078] text-green-500 py-2 px-4 rounded-md shadow-lg"
+        x-data="{ show: false }" x-cloak @show-toast-success.window="show = true; setTimeout(() => show = false, 3000)"
+        x-transition:enter="transition ease-out duration-300 transform"
+        x-transition:enter-start="opacity-0 -translate-y-10" x-transition:enter-end="opacity-100 translate-y-0"
+        x-transition:leave="transition ease-in duration-200 transform" x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0" x-show="show">
+        Register Successful! Please check your email.
+    </div>
+</body>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const status = sessionStorage.getItem('registerStatus');
+        if (status === 'success') {
+            window.dispatchEvent(new CustomEvent('show-toast-success'));
+            sessionStorage.removeItem('registerStatus');
+        }
+    });
+</script>
+
+</html>

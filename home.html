@@ -8,6 +8,7 @@
     <link href='https://fonts.googleapis.com/css?family=Nunito' rel='stylesheet'>
     <link rel="icon" href="aset/logo ruangilmu.svg" type="image/svg+xml" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="stylesheet" href="style/login.css">
     <title>RuangIlmu - Home</title>
     <style>
@@ -15,21 +16,25 @@
             font-family: 'Poppins', sans-serif;
             background-color: #D2E6E4;
         }
-    
+
         .hero-text {
             text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
         }
-    
+
         .explore-btn {
             transition: all 0.3s ease;
         }
-    
+
         .explore-btn:hover {
             transform: translateY(-3px);
         }
 
         footer {
             background-color: #D2E6E4;
+        }
+
+        [x-cloak] {
+            display: none !important;
         }
     </style>
 </head>
@@ -47,13 +52,13 @@
     </div>
 
     <div class="flex items-center space-x-4">
-        <a href="login.html" class="bg-white text-[#0B7077] px-7 py-3 rounded-md hover:bg-[#014b60] transition"">MASUK</a>
-        <a href="register.html" class="bg-[#0B7077] text-white px-7 py-3 rounded-md hover:bg-[#014b60] transition">DAFTAR</a>
+        <a href="login.html" class="bg-white text-[#0B7077] px-7 py-3 rounded-md hover:bg-[#014b60] transition"">LOG IN</a>
+        <a href="register.html" class="bg-[#0B7077] text-white px-7 py-3 rounded-md hover:bg-[#014b60] transition">SIGN UP</a>
     </div>
 </nav>
 
 <body class="bg-white">
-    
+
 
     <!-- Hero Section -->
     <section class="container mx-auto px-6 py-12 md:py-24">
@@ -63,7 +68,7 @@
                     Never stop learning
                 </h1>
                 <p class="text-xl md:text-2xl text-gray-700 mb-8">
-                    Perluas <span class="font-bold text-[#0B7077]">kemampuanmu</span> dengan belajar di <span class="font-bold text-[#0B7077]">RuangIlmu!</span>
+                    Grow up your <span class="font-bold text-[#0B7077]">skills</span> by online courses with <span class="font-bold text-[#0B7077]">RuangIlmu!</span>
                 </p>
 
                 <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6">
@@ -126,7 +131,7 @@
             </div>
 
             <div class="md:w-1/2 relative">
-                <img src="aset/kids.png" alt="Learning Illustration"
+                <img src="aset/jempol.png" alt="Learning Illustration"
                     class="w-full h-auto max-w-lg mx-auto">
             </div>
         </div>
@@ -187,9 +192,19 @@
             <p class="text-xl mb-8 max-w-2xl mx-auto">Join thousands of students who are already advancing their careers
                 with RuangIlmu.</p>
             <a href="register.html"
-                class="bg-[#0B7077] text-white px-8 py-3 rounded-md text-lg font-semibold hover:bg-[#014b60] transition inline-block"> SIGN UP NOW </a>
+                class="bg-[#0B7077] text-white px-8 py-3 rounded-md text-lg font-semibold hover:bg-[#014b60] transition inline-block">
+                SIGN UP NOW </a>
         </div>
     </section>
+    <div id="successToast"
+        class=" fixed top-5 left-1/2 -translate-x-1/2 bg-white border-3 border-[#026078] text-green-500 py-2 px-4 rounded-md shadow-lg"
+        x-data="{ show: false }" x-cloak @show-toast-success.window="show = true; setTimeout(() => show = false, 3000)"
+        x-transition:enter="transition ease-out duration-300 transform"
+        x-transition:enter-start="opacity-0 -translate-y-10" x-transition:enter-end="opacity-100 translate-y-0"
+        x-transition:leave="transition ease-in duration-200 transform" x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0" x-show="show">
+        Login Successful!
+    </div>
 </body>
 
     <!-- Footer -->
@@ -203,41 +218,41 @@
                             <span class="text-xl font-extrabold text-[#026078]">RuangIlmu</span>
                         </a>
                     </div>
-                    <p class="text-[#026078] max-w-xs">Membantu perjalanan belajarmu dengan kelas online yang seru dan berkualitas!</p>
+                    <p class="text-[#026078] max-w-xs">Empowering your learning journey with quality online education.</p>
                 </div>
     
                 <div class="grid grid-cols-2 md:grid-cols-3 gap-8">
                     <div>
-                        <h3 class="text-lg font-semibold text-[#026078] mb-4">Perusahaan</h3>
+                        <h3 class="text-lg font-semibold text-[#026078] mb-4">Company</h3>
                         <ul class="space-y-2">
-                            <li><a href="#" class="text-[#026078] hover:underline">Tentang Kami</a></li>
-                            <li><a href="#" class="text-[#026078] hover:underline">Karir</a></li>
+                            <li><a href="#" class="text-[#026078] hover:underline">About Us</a></li>
+                            <li><a href="#" class="text-[#026078] hover:underline">Careers</a></li>
                             <li><a href="#" class="text-[#026078] hover:underline">Blog</a></li>
                         </ul>
                     </div>
     
                     <div>
-                        <h3 class="text-lg font-semibold text-[#026078] mb-4">Dukungan</h3>
+                        <h3 class="text-lg font-semibold text-[#026078] mb-4">Support</h3>
                         <ul class="space-y-2">
-                            <li><a href="#" class="text-[#026078] hover:underline">Pusat Bantuan</a></li>
-                            <li><a href="#" class="text-[#026078] hover:underline">Kontak Kami</a></li>
-                            <li><a href="#" class="text-[#026078] hover:underline">Pertanyaan</a></li>
+                            <li><a href="#" class="text-[#026078] hover:underline">Help Center</a></li>
+                            <li><a href="#" class="text-[#026078] hover:underline">Contact Us</a></li>
+                            <li><a href="#" class="text-[#026078] hover:underline">FAQ</a></li>
                         </ul>
                     </div>
     
                     <div>
-                        <h3 class="text-lg font-semibold text-[#026078] mb-4">Hukum</h3>
+                        <h3 class="text-lg font-semibold text-[#026078] mb-4">Legal</h3>
                         <ul class="space-y-2">
-                            <li><a href="#" class="text-[#026078] hover:underline">Kebijakan Privasi</a></li>
-                            <li><a href="#" class="text-[#026078] hover:underline">Persyaratan Layanan</a></li>
-                            <li><a href="#" class="text-[#026078] hover:underline">Kebijakan Cookie</a></li>
+                            <li><a href="#" class="text-[#026078] hover:underline">Privacy Policy</a></li>
+                            <li><a href="#" class="text-[#026078] hover:underline">Terms of Service</a></li>
+                            <li><a href="#" class="text-[#026078] hover:underline">Cookie Policy</a></li>
                         </ul>
                     </div>
                 </div>
             </div>
     
             <div class="border-t border-[#026078]/20 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
-                <p class="text-[#026078] mb-4 md:mb-0">© 2023 RuangIlmu. Semua hak dilingungi undang-undang.</p>
+                <p class="text-[#026078] mb-4 md:mb-0">© 2023 RuangIlmu. All rights reserved.</p>
                 <div class="flex space-x-6">
                     <a href="#" class="text-[#026078] hover:text-[#014b60]">
                         <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -264,5 +279,15 @@
             </div>
         </div>
     </footer>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const loginStatus = sessionStorage.getItem('loginStatus');
+        if (loginStatus === 'success') {
+            window.dispatchEvent(new CustomEvent('show-toast-success'));
+            sessionStorage.removeItem('loginStatus');
+        }
+    });
+</script>
 
 </html>
