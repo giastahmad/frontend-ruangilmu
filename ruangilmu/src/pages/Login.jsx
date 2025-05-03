@@ -1,19 +1,24 @@
-// src/pages/LoginPage.jsx
+// src/pages/Login.jsx
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import eyeIcon from '../components/eye_icon.svg';
-import googleLogo from '../components/google_logo.svg';
-import facebookLogo from '../components/facebook_logo.svg';
-import kidImage from '../components/kid.png';
+import Toast from '../components/jsx/Toast';
+import eyeIcon from '../components/img/eye_icon.svg';
+import googleLogo from '../components/img/google_logo.svg';
+import facebookLogo from '../components/img/facebook_logo.svg';
+import kidImage from '../components/img/kid.png';
 import '../index.css';
 
-const LoginPage = () => {
+const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
-  const [showSuccessToast, setShowSuccessToast] = useState(false);
-  const [showErrorToast, setShowErrorToast] = useState(false);
+  
+  // State untuk Toast
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastType, setToastType] = useState('success');
+  
   const navigate = useNavigate();
 
   // Validasi form
@@ -33,7 +38,10 @@ const LoginPage = () => {
 
     // Simulasi login (ganti dengan integrasi API nantinya)
     if (email === 'dummy@dummy.com' && password === 'dummyPw') {
-      setShowSuccessToast(true);
+      // Tampilkan toast sukses
+      setToastMessage('Login berhasil!');
+      setToastType('success');
+      setShowToast(true);
       
       // Simpan status login ke sessionStorage
       sessionStorage.setItem('loginStatus', 'success');
@@ -43,15 +51,13 @@ const LoginPage = () => {
         navigate('/home');
       }, 100);
     } else {
-      setShowErrorToast(true);
+      // Tampilkan toast error
+      setToastMessage('Email atau kata sandi salah!');
+      setToastType('error');
+      setShowToast(true);
       
       // Simpan status login error ke sessionStorage
       sessionStorage.setItem('loginStatus', 'error');
-      
-      // Tampilkan error selama 3 detik
-      setTimeout(() => {
-        setShowErrorToast(false);
-      }, 3000);
     }
   };
 
@@ -60,12 +66,14 @@ const LoginPage = () => {
     const loginStatus = sessionStorage.getItem('loginStatus');
     
     if (loginStatus === 'success') {
-      setShowSuccessToast(true);
-      setTimeout(() => setShowSuccessToast(false), 3000);
+      setToastMessage('Login berhasil!');
+      setToastType('success');
+      setShowToast(true);
       sessionStorage.removeItem('loginStatus');
     } else if (loginStatus === 'error') {
-      setShowErrorToast(true);
-      setTimeout(() => setShowErrorToast(false), 3000);
+      setToastMessage('Email atau kata sandi salah!');
+      setToastType('error');
+      setShowToast(true);
       sessionStorage.removeItem('loginStatus');
     }
   }, []);
@@ -132,7 +140,7 @@ const LoginPage = () => {
                   isFormValid ? 'hover:bg-[#004b5f] active:bg-[#004455] cursor-pointer' : 'opacity-50 cursor-not-allowed'
                 }`}
               >
-                Login
+                Masuk
               </button>
             </div>
           </form>
@@ -172,20 +180,15 @@ const LoginPage = () => {
         </div>
       </div>
       
-      {/* Toast notifications */}
-      {showSuccessToast && (
-        <div className="fixed top-5 left-1/2 transform -translate-x-1/2 bg-white border-2 border-[#026078] text-green-500 py-2 px-4 rounded-md shadow-lg transition-all duration-300">
-          Login berhasil!
-        </div>
-      )}
-      
-      {showErrorToast && (
-        <div className="fixed top-5 left-1/2 transform -translate-x-1/2 bg-white border-2 border-[#026078] text-red-500 py-2 px-4 rounded-md shadow-lg transition-all duration-300">
-          Email atau kata sandi salah!
-        </div>
-      )}
+      {/* Menggunakan komponen Toast */}
+      <Toast 
+        message={toastMessage} 
+        type={toastType} 
+        isVisible={showToast} 
+        onClose={() => setShowToast(false)} 
+      />
     </div>
   );
 };
 
-export default LoginPage;
+export default Login;

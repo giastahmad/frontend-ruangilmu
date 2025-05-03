@@ -1,10 +1,11 @@
 // src/pages/RegisterPage.jsx
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import eyeIcon from '../components/eye_icon.svg';
-import googleLogo from '../components/google_logo.svg';
-import facebookLogo from '../components/facebook_logo.svg';
-import kidImage from '../components/kid.png';
+import Toast from '../components/jsx/Toast'; // Mengimpor komponen Toast
+import eyeIcon from '../components/img/eye_icon.svg';
+import googleLogo from '../components/img/google_logo.svg';
+import facebookLogo from '../components/img/facebook_logo.svg';
+import kidImage from '../components/img/kid.png';
 import '../index.css';
 
 const RegisterPage = () => {
@@ -15,8 +16,14 @@ const RegisterPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
-  const [showSuccessToast, setShowSuccessToast] = useState(false);
-  const [showErrorToast, setShowErrorToast] = useState(false);
+  
+  // State untuk Toast
+  const [toastConfig, setToastConfig] = useState({
+    message: '',
+    type: 'success',
+    isVisible: false
+  });
+  
   const navigate = useNavigate();
 
   // Validasi form
@@ -38,23 +45,35 @@ const RegisterPage = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
 
+  // Handle toast close
+  const handleToastClose = () => {
+    setToastConfig({
+      ...toastConfig,
+      isVisible: false
+    });
+  };
+
+  // Menampilkan toast
+  const showToast = (message, type = 'success') => {
+    setToastConfig({
+      message,
+      type,
+      isVisible: true
+    });
+  };
+
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
 
     // Simulasi register (ganti dengan integrasi API nantinya)
     if (email === 'dummy@dummy.com') {
-      setShowErrorToast(true);
+      showToast('Email telah digunakan!', 'error');
       
       // Simpan status register error ke sessionStorage
       sessionStorage.setItem('registerStatus', 'error');
-      
-      // Tampilkan error selama 3 detik
-      setTimeout(() => {
-        setShowErrorToast(false);
-      }, 3000);
     } else {
-      setShowSuccessToast(true);
+      showToast('Register berhasil! Silahkan periksa email anda.', 'success');
       
       // Simpan status register success ke sessionStorage
       sessionStorage.setItem('registerStatus', 'success');
@@ -71,18 +90,16 @@ const RegisterPage = () => {
     const registerStatus = sessionStorage.getItem('registerStatus');
     
     if (registerStatus === 'success') {
-      setShowSuccessToast(true);
-      setTimeout(() => setShowSuccessToast(false), 3000);
+      showToast('Register berhasil! Silahkan periksa email anda.', 'success');
       sessionStorage.removeItem('registerStatus');
     } else if (registerStatus === 'error') {
-      setShowErrorToast(true);
-      setTimeout(() => setShowErrorToast(false), 3000);
+      showToast('Email telah digunakan!', 'error');
       sessionStorage.removeItem('registerStatus');
     }
   }, []);
 
   return (
-    <div className="flex lg:flex-row w-full h-screen">
+    <div className="flex lg:flex-row h-screen">
       <div className="flex flex-col h-max my-10 lg:mx-[100px] mx-5 lg:w-1/2 w-full lg:space-y-0 space-y-2 justify-center lg:items-start items-center tracking-widest">
         <div className="flex">
           <h1 className="font-[Overpass] font-extrabold text-[#444b59] lg:text-3xl text-xl">SELAMAT DATANG!</h1>
@@ -103,7 +120,7 @@ const RegisterPage = () => {
                   placeholder="Nama lengkap kamu"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  className="border-2 border-[#026078] rounded-md font-[Nunito] text-[#444b59] lg:text-lg text-md placeholder:text-[#026078] placeholder:opacity-50 w-full lg:py-2 py-1 lg:px-4 px-2"
+                  className="border-2 border-[#026078] rounded-md font-[Nunito] text-[#444b59] lg:text-lg text-md placeholder:text-[#026078] placeholder:opacity-50 w-full lg:py-[5px] py-1 lg:px-4 px-2"
                 />
               </div>
               
@@ -114,7 +131,7 @@ const RegisterPage = () => {
                   placeholder="kamu@contoh.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="border-2 border-[#026078] rounded-md font-[Nunito] text-[#444b59] lg:text-lg text-md placeholder:text-[#026078] placeholder:opacity-50 w-full lg:py-2 py-1 lg:px-4 px-2"
+                  className="border-2 border-[#026078] rounded-md font-[Nunito] text-[#444b59] lg:text-lg text-md placeholder:text-[#026078] placeholder:opacity-50 w-full lg:py-[5px] py-1 lg:px-4 px-2"
                 />
               </div>
               
@@ -125,7 +142,7 @@ const RegisterPage = () => {
                   placeholder="6 karakter atau lebih"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="border-2 border-[#026078] rounded-md font-[Nunito] text-[#444b59] lg:text-lg text-md placeholder:text-[#026078] placeholder:opacity-50 w-full lg:py-2 py-1 lg:px-4 px-2 pr-10"
+                  className="border-2 border-[#026078] rounded-md font-[Nunito] text-[#444b59] lg:text-lg text-md placeholder:text-[#026078] placeholder:opacity-50 w-full lg:py-[5px] py-1 lg:px-4 px-2 pr-10"
                 />
                 <img
                   src={eyeIcon}
@@ -145,7 +162,7 @@ const RegisterPage = () => {
                   placeholder="6 karakter atau lebih"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="border-2 border-[#026078] rounded-md font-[Nunito] text-[#444b59] lg:text-lg text-md placeholder:text-[#026078] placeholder:opacity-50 w-full lg:py-2 py-1 lg:px-4 px-2 pr-10"
+                  className="border-2 border-[#026078] rounded-md font-[Nunito] text-[#444b59] lg:text-lg text-md placeholder:text-[#026078] placeholder:opacity-50 w-full lg:py-[5px] py-1 lg:px-4 px-2 pr-10"
                 />
                 <img
                   src={eyeIcon}
@@ -158,7 +175,7 @@ const RegisterPage = () => {
                 </p>
               </div>
               
-              <div className="flex lg:flex-row">
+              <div className="flex lg:flex-row my-2">
                 <input
                   type="checkbox"
                   id="remember"
@@ -167,7 +184,7 @@ const RegisterPage = () => {
                 <p className="font-[Nunito] lg:text-lg text-sm text-[#444b59]">Ingat aku</p>
               </div>
               
-              <div>
+              <div className="mt-4">
                 <button
                   type="submit"
                   disabled={!isFormValid}
@@ -181,7 +198,7 @@ const RegisterPage = () => {
             </form>
           </div>
           
-          <div className="grid grid-cols-3 items-center content-center gap-x-20 w-full">
+          <div className="grid grid-cols-3 items-center content-center gap-x-20 w-full my-4">
             <div className="lg:pl-5 pl-2">
               <hr className="border-1 border-[#026078]" />
             </div>
@@ -216,18 +233,14 @@ const RegisterPage = () => {
         </div>
       </div>
       
-      {/* Toast notifications */}
-      {showSuccessToast && (
-        <div className="fixed top-5 left-1/2 transform -translate-x-1/2 bg-white border-3 border-[#026078] text-green-500 py-2 px-4 rounded-md shadow-lg transition-all duration-300">
-          Register berhasil! Silahkan periksa email anda.
-        </div>
-      )}
-      
-      {showErrorToast && (
-        <div className="fixed top-5 left-1/2 transform -translate-x-1/2 bg-white border-3 border-[#026078] text-red-500 py-2 px-4 rounded-md shadow-lg transition-all duration-300">
-          Email telah digunakan!
-        </div>
-      )}
+      {/* Komponen Toast */}
+      <Toast 
+        message={toastConfig.message}
+        type={toastConfig.type}
+        isVisible={toastConfig.isVisible}
+        onClose={handleToastClose}
+        duration={3000}
+      />
     </div>
   );
 };
