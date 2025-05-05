@@ -5,7 +5,7 @@ import logo from '../img/logo ruangilmu.svg';
 
 const Footer = () => {
   return (
-    <footer className="bg-[#D2E6E4] py-12 mt-12">
+    <footer className="bg-[#D2E6E4] md:px-24 py-12 mt-12">
       <div className="container mx-auto px-6">
         <div className="flex flex-col md:flex-row justify-between">
           <div className="mb-8 md:mb-0">

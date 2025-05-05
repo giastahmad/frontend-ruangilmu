@@ -58,12 +58,10 @@
 </nav>
 
 <body class="bg-white">
-
-
     <!-- Hero Section -->
-    <section class="container mx-auto px-6 py-12 md:py-24">
-        <div class="flex flex-col md:flex-row items-center">
-            <div class="md:w-1/2 mb-12 md:mb-0">
+    <section class="container mx-auto px-24">
+        <div class="flex flex-row">
+            <div class="md:w-1/2 mb-12 pb-4 md:mb-0 items-start">
                 <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 hero-text">
                     Never stop learning
                 </h1>
@@ -72,34 +70,14 @@
                 </p>
 
                 <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6">
-                    <a href="course.html"
+                    <a href="register.html"
                         class="bg-[#0B7077] text-white px-8 py-3 rounded-md text-lg font-semibold hover:bg-[#014b60] transition text-center explore-btn">
-                        PILIH KELAS
+                        DAFTAR SEKARANG!
                     </a>
 
-                    <div class="flex items-center space-x-4 bg-gray-100 px-6 py-3 rounded-md">
-                        <div class="flex -space-x-2">
-                            <img src="img/ellipse-67.png" class="w-10 h-10 rounded-full border-2 border-white"
-                                alt="Student">
-                            <img src="img/ellipse-68.png" class="w-10 h-10 rounded-full border-2 border-white"
-                                alt="Student">
-                            <img src="img/ellipse-69.png" class="w-10 h-10 rounded-full border-2 border-white"
-                                alt="Student">
-                        </div>
-                        <div>
-                            <div class="flex">
-                                <img src="img/star.svg" class="w-5 h-5" alt="Star">
-                                <img src="img/star.svg" class="w-5 h-5" alt="Star">
-                                <img src="img/star.svg" class="w-5 h-5" alt="Star">
-                                <img src="img/star.svg" class="w-5 h-5" alt="Star">
-                                <img src="img/star.svg" class="w-5 h-5" alt="Star">
-                            </div>
-                            <p class="text-sm text-gray-600">(10k+ Ulasan)</p>
-                        </div>
-                    </div>
                 </div>
 
-                <div class="mt-12 flex items-center space-x-8">
+                <div class="mt-6 flex items-center space-x-8">
                     <div class="flex items-center space-x-3">
                         <div class="bg-blue-100 p-3 rounded-full">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none"
@@ -130,56 +108,121 @@
                 </div>
             </div>
 
-            <div class="md:w-1/2 relative">
+            <div class="flex md:w-1/2 relative items-end">
                 <img src="aset/kids.png" alt="Learning Illustration"
                     class="w-full h-auto max-w-lg mx-auto">
             </div>
         </div>
     </section>
 
-    <!-- Features Section -->
-    <section class="bg-gray-50 py-16">
-        <div class="container mx-auto px-6">
-            <h2 class="text-3xl font-bold text-center text-gray-900 mb-12">Why Choose RuangIlmu?</h2>
+    <!-- Subject Section -->
+    <section class="flex bg-gray-50 py-8 px-24">
+        <div class="flex flex-col container mx-auto px-6 space-y-4">
+            <div class="flex flex-row items-center">
+                <h2 class="text-3xl font-bold text-left text-gray-900">Materi untuk</h2>
+                <select name="Kelas" id="kelas" class="text-xl border-2 border-[#026078] rounded-md mx-3 py-1 px-2">
+                    <option value="Kelas 4">Kelas 4</option>
+                    <option value="Kelas 5">Kelas 5</option>
+                    <option value="Kelas 6">Kelas 6</option>
+                </select>
+                <select name="Semester" id="semester" class="text-xl border-2 border-[#026078] rounded-md py-1 px-2">
+                    <option value="Semester 1">Semester 1</option>
+                    <option value="Semester 2">Semester 2</option>
+                </select>
+            </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition">
-                    <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                        </svg>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div class="bg-white rounded-lg shadow-md overflow-hidden course-card">
+                    <img src="img/rectangle-2749.png" alt="Course Image" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-sm text-gray-500">1 - 20 July 2022</span>
+                            <div class="flex items-center text-sm text-gray-500">
+                                <span>40</span>
+                                <span class="ml-1">students</span>
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Product Management Basic - Course</h3>
+                        <p class="text-gray-600 mb-4">
+                            Product Management Materials: you will learn with Dutch Literature - Head of Product Customer Platform Graph Features.
+                        </p>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="text-lg font-bold text-[#0B7077]">$380</span>
+                                <span class="ml-2 text-sm text-gray-500 line-through">$500</span>
+                            </div>
+                            <button class="enroll-btn text-white px-4 py-2 rounded-md">Enroll Now</button>
+                        </div>
                     </div>
-                    <h3 class="text-xl font-semibold mb-2">Expert Instructors</h3>
-                    <p class="text-gray-600">Learn from industry professionals with years of experience in their fields.
-                    </p>
                 </div>
-
-                <div class="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition">
-                    <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                        </svg>
+                <div class="bg-white rounded-lg shadow-md overflow-hidden course-card">
+                    <img src="img/rectangle-2749.png" alt="Course Image" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-sm text-gray-500">1 - 20 July 2022</span>
+                            <div class="flex items-center text-sm text-gray-500">
+                                <span>40</span>
+                                <span class="ml-1">students</span>
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Product Management Basic - Course</h3>
+                        <p class="text-gray-600 mb-4">
+                            Product Management Materials: you will learn with Dutch Literature - Head of Product Customer Platform Graph Features.
+                        </p>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="text-lg font-bold text-[#0B7077]">$380</span>
+                                <span class="ml-2 text-sm text-gray-500 line-through">$500</span>
+                            </div>
+                            <button class="enroll-btn text-white px-4 py-2 rounded-md">Enroll Now</button>
+                        </div>
                     </div>
-                    <h3 class="text-xl font-semibold mb-2">Comprehensive Courses</h3>
-                    <p class="text-gray-600">Access a wide range of courses covering various subjects and skill levels.
-                    </p>
                 </div>
-
-                <div class="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition">
-                    <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                        </svg>
+                <div class="bg-white rounded-lg shadow-md overflow-hidden course-card">
+                    <img src="img/rectangle-2749.png" alt="Course Image" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-sm text-gray-500">1 - 20 July 2022</span>
+                            <div class="flex items-center text-sm text-gray-500">
+                                <span>40</span>
+                                <span class="ml-1">students</span>
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Product Management Basic - Course</h3>
+                        <p class="text-gray-600 mb-4">
+                            Product Management Materials: you will learn with Dutch Literature - Head of Product Customer Platform Graph Features.
+                        </p>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="text-lg font-bold text-[#0B7077]">$380</span>
+                                <span class="ml-2 text-sm text-gray-500 line-through">$500</span>
+                            </div>
+                            <button class="enroll-btn text-white px-4 py-2 rounded-md">Enroll Now</button>
+                        </div>
                     </div>
-                    <h3 class="text-xl font-semibold mb-2">Certification</h3>
-                    <p class="text-gray-600">Earn recognized certificates upon course completion to boost your career.
-                    </p>
+                </div>
+                <div class="bg-white rounded-lg shadow-md overflow-hidden course-card">
+                    <img src="img/rectangle-2749.png" alt="Course Image" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-sm text-gray-500">1 - 20 July 2022</span>
+                            <div class="flex items-center text-sm text-gray-500">
+                                <span>40</span>
+                                <span class="ml-1">students</span>
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Product Management Basic - Course</h3>
+                        <p class="text-gray-600 mb-4">
+                            Product Management Materials: you will learn with Dutch Literature - Head of Product Customer Platform Graph Features.
+                        </p>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="text-lg font-bold text-[#0B7077]">$380</span>
+                                <span class="ml-2 text-sm text-gray-500 line-through">$500</span>
+                            </div>
+                            <button class="enroll-btn text-white px-4 py-2 rounded-md">Enroll Now</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -189,8 +232,7 @@
     <section class="py-16 bg-gray-50">
         <div class="container mx-auto px-6 text-center">
             <h2 class="text-3xl font-bold mb-6">Ready to start your learning journey?</h2>
-            <p class="text-xl mb-8 max-w-2xl mx-auto">Join thousands of students who are already advancing their careers
-                with RuangIlmu.</p>
+            <p class="text-xl mb-8 max-w-2xl mx-auto">Join thousands of students who are already advancing their careers with RuangIlmu.</p>
             <a href="register.html"
                 class="bg-[#0B7077] text-white px-8 py-3 rounded-md text-lg font-semibold hover:bg-[#014b60] transition inline-block">
                 SIGN UP NOW </a>

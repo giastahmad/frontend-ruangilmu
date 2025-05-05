@@ -181,7 +181,7 @@ const RegisterPage = () => {
                   id="remember"
                   className="font-[Nunito] lg:text-lg text-sm text-[#444b59] checked:bg-[#026078] mr-2"
                 />
-                <p className="font-[Nunito] lg:text-lg text-sm text-[#444b59]">Ingat aku</p>
+                <label for="remember" className="font-[Nunito] lg:text-lg text-sm text-[#444b59]">Ingat aku</label>
               </div>
               
               <div className="mt-4">

@@ -16,7 +16,7 @@ const CourseCard = ({ course }) => {
   } = course;
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden course-card">
+    <div className="bg-white rounded-lg shadow-md overflow-hidden transition duration-300 hover:-translate-y-[5px] hover:shadow-[0_10px_25px_rgba(0,0,0,0.1)]">
       <img src={image} alt={title} className="w-full h-48 object-cover" />
       <div className="p-6">
         <div className="flex justify-between items-start mb-2">
@@ -39,7 +39,7 @@ const CourseCard = ({ course }) => {
           </div>
           <Link 
             to={`/courses/${id}`} 
-            className="enroll-btn text-white bg-[#0B7077] hover:bg-[#014b60] px-4 py-2 rounded-md transition"
+            className=" text-white bg-[#0B7077] hover:bg-[#014b60] px-4 py-2 rounded-md transition duration-300"
           >
             Enroll Now
           </Link>

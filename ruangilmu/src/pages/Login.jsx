@@ -13,12 +13,12 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
-  
+
   // State untuk Toast
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [toastType, setToastType] = useState('success');
-  
+
   const navigate = useNavigate();
 
   // Validasi form
@@ -42,10 +42,10 @@ const Login = () => {
       setToastMessage('Login berhasil!');
       setToastType('success');
       setShowToast(true);
-      
+
       // Simpan status login ke sessionStorage
       sessionStorage.setItem('loginStatus', 'success');
-      
+
       // Redirect setelah login berhasil
       setTimeout(() => {
         navigate('/home');
@@ -55,7 +55,7 @@ const Login = () => {
       setToastMessage('Email atau kata sandi salah!');
       setToastType('error');
       setShowToast(true);
-      
+
       // Simpan status login error ke sessionStorage
       sessionStorage.setItem('loginStatus', 'error');
     }
@@ -64,7 +64,7 @@ const Login = () => {
   // Cek login status dari sessionStorage saat komponen dimount
   useEffect(() => {
     const loginStatus = sessionStorage.getItem('loginStatus');
-    
+
     if (loginStatus === 'success') {
       setToastMessage('Login berhasil!');
       setToastType('success');
@@ -89,7 +89,7 @@ const Login = () => {
             Belum punya akun? <Link to="/register" className="text-[#026078] font-bold hover:underline">Daftar</Link>
           </h2>
         </div>
-        
+
         <div className="flex flex-col space-y-3 lg:space-y-6 w-5/6">
           <form onSubmit={handleSubmit} className="space-y-3 lg:space-y-6">
             <div className="space-y-1 lg:space-y-2">
@@ -102,7 +102,7 @@ const Login = () => {
                 className="border-2 border-[#026078] rounded-md font-[Nunito] text-[#444b59] lg:text-lg text-md placeholder:text-[#026078] placeholder:opacity-50 w-full lg:py-2 py-1 lg:px-4 px-2"
               />
             </div>
-            
+
             <div className="space-y-1 lg:space-y-2 relative">
               <h3 className="font-[Nunito] text-[#444b59] lg:text-xl text-lg">Kata Sandi</h3>
               <input
@@ -122,29 +122,33 @@ const Login = () => {
                 Kata sandi minimal 6 karakter.
               </p>
             </div>
-            
-            <div className="flex lg:flex-row">
-              <input
-                type="checkbox"
-                id="remember"
-                className="font-[Nunito] lg:text-lg text-sm text-[#444b59] checked:bg-[#026078] mr-2"
-              />
-              <p className="font-[Nunito] lg:text-lg text-sm text-[#444b59]">Ingat aku</p>
+
+            <div className="grid grid-cols-2 lg:flex-row">
+              <div className='flex flex-row'>
+                <input
+                  type="checkbox"
+                  id="remember"
+                  className="font-[Nunito] lg:text-lg text-sm text-[#444b59] checked:bg-[#026078] mr-2"
+                />
+                <label for="remember" className="flex font-[Nunito] lg:text-lg text-sm text-[#444b59] justify-center items-center">Ingat aku</label>
+              </div>
+              <div>
+                <Link href="/Lupa_Password" className='flex justify-end items-center lg:text-lg text-sm text-[#026078] hover:underline'>Lupa password?</Link>
+              </div>
             </div>
-            
+
             <div>
               <button
                 type="submit"
                 disabled={!isFormValid}
-                className={`bg-[#026078] font-[Nunito] rounded-md lg:text-xl text-md text-white font-extrabold inset-shadow-sm inset-shadow-white py-3 px-4 w-full ${
-                  isFormValid ? 'hover:bg-[#004b5f] active:bg-[#004455] cursor-pointer' : 'opacity-50 cursor-not-allowed'
-                }`}
+                className={`bg-[#026078] font-[Nunito] rounded-md lg:text-xl text-md text-white font-extrabold inset-shadow-sm inset-shadow-white py-3 px-4 w-full ${isFormValid ? 'hover:bg-[#004b5f] active:bg-[#004455] cursor-pointer' : 'opacity-50 cursor-not-allowed'
+                  }`}
               >
                 Masuk
               </button>
             </div>
           </form>
-          
+
           <div className="grid grid-cols-3 items-center content-center gap-x-20 w-full">
             <div className="lg:pl-5 pl-2">
               <hr className="border-1 border-[#026078]" />
@@ -156,36 +160,36 @@ const Login = () => {
               <hr className="border-1 border-[#026078]" />
             </div>
           </div>
-          
+
           <div className="flex flex-row items-center justify-center space-x-6 w-full">
             <button
               type="button"
               className="border border-[#026078] rounded-md cursor-pointer hover:bg-gray-500/20 lg:py-2 py-1 lg:px-6 px-3 h-full"
             >
-              <img src={googleLogo} alt="Google" className="h-[48px]"/>
+              <img src={googleLogo} alt="Google" className="h-[48px]" />
             </button>
             <button
               type="button"
               className="border border-[#026078] rounded-md cursor-pointer hover:bg-gray-500/20 lg:py-2 py-1 lg:px-6 px-3 h-full"
             >
-              <img src={facebookLogo} alt="Facebook" className="h-[48px]"/>
+              <img src={facebookLogo} alt="Facebook" className="h-[48px]" />
             </button>
           </div>
         </div>
       </div>
-      
+
       <div className="invisible lg:visible flex justify-end items-end bottom-0 right-0 fixed w-1/2">
         <div>
           <img src={kidImage} alt="Kid" className="w-full" />
         </div>
       </div>
-      
+
       {/* Menggunakan komponen Toast */}
-      <Toast 
-        message={toastMessage} 
-        type={toastType} 
-        isVisible={showToast} 
-        onClose={() => setShowToast(false)} 
+      <Toast
+        message={toastMessage}
+        type={toastType}
+        isVisible={showToast}
+        onClose={() => setShowToast(false)}
       />
     </div>
   );
