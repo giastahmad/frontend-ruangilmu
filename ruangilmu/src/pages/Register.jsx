@@ -107,7 +107,7 @@ const RegisterPage = () => {
       const data = await response.json();
 
       if (response.ok) {
-        localStorage.setItem('accesToken', data.accesToken);
+        localStorage.setItem('accessToken', data.accesToken);
         localStorage.setItem('user', JSON.stringify(data.user));
         showToast(data.message || 'Google login berhasil!', 'success');
 

@@ -1,5 +1,5 @@
 // src/pages/Home.jsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import CourseCard from '../components/jsx/CourseCard';
 import Navbar from '../components/jsx/Navbar';
@@ -9,58 +9,82 @@ import kidImage from '../components/img/kids.png';
 const Home = () => {
   const [selectedClass, setSelectedClass] = useState('Kelas 4');
   const [selectedSemester, setSelectedSemester] = useState('Semester 1');
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+
+  useEffect(() => {
+    const token = localStorage.getItem('accessToken');
+    setIsLoggedIn(!!token);
+
+    fetchCourses();
+  }, []);
+
+  const fetchCourses = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('http://localhost:8000/courses');
+
+      if (!response.ok) {
+        throw new Error('Gagal Mengambil Data');
+      }
+
+      const data = await response.json();
+      console.log('Fetched courses data:', data);
+
+      setCourses(data.data);
+      setLoading(false);
+
+    } catch (error) {
+      console.error('Error mengambil data: ', error);
+      setError('Gagal Menampilkan kelas, coba sesaat lagi');
+      setLoading(false);
+
+      setCourses(Dummycourses);
+    }
+  };
 
   // Sample course data - this would typically come from an API
-  const courses = [
-    {
-      id: 1,
-      image: "/img/rectangle-2749.png",
-      startDate: "1 July 2022",
-      endDate: "20 July 2022",
-      studentCount: 40,
-      title: "Product Management Basic - Course",
-      description: "Product Management Materials: you will learn with Dutch Literature - Head of Product Customer Platform Graph Features.",
-      price: 380,
-      originalPrice: 500
-    },
-    {
-      id: 2,
-      image: "/img/rectangle-2749.png",
-      startDate: "1 July 2022",
-      endDate: "20 July 2022",
-      studentCount: 40,
-      title: "Product Management Basic - Course",
-      description: "Product Management Materials: you will learn with Dutch Literature - Head of Product Customer Platform Graph Features.",
-      price: 380,
-      originalPrice: 500
-    },
-    {
-      id: 3,
-      image: "/img/rectangle-2749.png",
-      startDate: "1 July 2022",
-      endDate: "20 July 2022",
-      studentCount: 40,
-      title: "Product Management Basic - Course",
-      description: "Product Management Materials: you will learn with Dutch Literature - Head of Product Customer Platform Graph Features.",
-      price: 380,
-      originalPrice: 500
-    },
-    {
-      id: 4,
-      image: "/img/rectangle-2749.png",
-      startDate: "1 July 2022",
-      endDate: "20 July 2022",
-      studentCount: 40,
-      title: "Product Management Basic - Course",
-      description: "Product Management Materials: you will learn with Dutch Literature - Head of Product Customer Platform Graph Features.",
-      price: 380,
-      originalPrice: 500
-    }
-  ];
+  const Dummycourses = [
+        {
+          course_id: 1,
+          course_name: "Matematika Dasar Kelas 4",
+          course_description: "Materi matematika dasar untuk siswa kelas 4 SD yang mencakup operasi hitung dasar, pecahan, dan geometri.",
+          course_image_cover: "/img/rectangle-2749.png",
+          course_prize: 150000,
+          created_at: "2022-07-01T00:00:00.000Z"
+        },
+        {
+          course_id: 2,
+          course_name: "Bahasa Indonesia Kelas 4",
+          course_description: "Pembelajaran bahasa Indonesia untuk siswa kelas 4 SD, fokus pada pemahaman teks, tata bahasa, dan keterampilan menulis.",
+          course_image_cover: "/img/rectangle-2749.png",
+          course_prize: 120000,
+          created_at: "2022-07-05T00:00:00.000Z"
+        },
+        {
+          course_id: 3,
+          course_name: "Ilmu Pengetahuan Alam Kelas 4",
+          course_description: "Materi IPA untuk siswa kelas 4 SD yang mencakup makhluk hidup, lingkungan, dan fenomena alam.",
+          course_image_cover: "/img/rectangle-2749.png",
+          course_prize: 135000,
+          created_at: "2022-07-10T00:00:00.000Z"
+        },
+        {
+          course_id: 4,
+          course_name: "Ilmu Pengetahuan Sosial Kelas 4",
+          course_description: "Pembelajaran IPS untuk siswa kelas 4 SD, fokus pada keragaman budaya, sejarah, dan geografi Indonesia.",
+          course_image_cover: "/img/rectangle-2749.png",
+          course_prize: 125000,
+          created_at: "2022-07-15T00:00:00.000Z"
+        }
+      ];
 
   return (
     <div className="bg-[#d2e6e4]">
-      <Navbar />
+      <Navbar isLoggedIn={isLoggedIn}/>
       
       {/* Hero Section */}
       <section className="container mx-auto px-4 md:px-24">
@@ -73,14 +97,16 @@ const Home = () => {
               Perluas <span className="font-bold text-[#0B7077]">kemampuanmu</span> dengan belajar di <span className="font-bold text-[#0B7077]">RuangIlmu!</span>
             </p>
 
-            <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6">
-              <Link 
-                to="/register" 
-                className="bg-[#0B7077] text-white px-8 py-3 rounded-md text-lg font-semibold hover:bg-[#014b60] transition text-center explore-btn"
-              >
-                DAFTAR SEKARANG
-              </Link>
-            </div>
+            {!isLoggedIn && (
+              <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6">
+                <Link 
+                  to="/register" 
+                  className="bg-[#0B7077] text-white px-8 py-3 rounded-md text-lg font-semibold hover:bg-[#014b60] transition text-center explore-btn"
+                >
+                  DAFTAR SEKARANG
+                </Link>
+              </div>
+            )}
 
             <div className="mt-6 flex flex-wrap items-center gap-8">
               <div className="flex items-center space-x-3">
@@ -153,29 +179,42 @@ const Home = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {courses.map(course => (
-              <CourseCard key={course.id} course={course} />
-            ))}
-          </div>
+          {loading ? (
+            <div className="flex justify-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#0B7077]"></div>
+            </div>
+          ) : error ? (
+            <div className="text-center py-8 text-red-500">
+              {error}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {courses.map(course => (
+                <CourseCard key={course.course_id} course={course} />
+              ))}
+            </div>
+          )}
+
         </div>
       </section>
 
       {/* Call to Action */}
-      <section className="py-12 md:py-16 bg-gray-50">
-        <div className="container mx-auto px-6 text-center">
-          <h2 className="text-2xl md:text-3xl font-bold mb-6">Siap memulai perjalanan belajarmu?</h2>
-          <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto">
-          Bergabunglah bersama ribuan pelajar yang telah lebih dulu mengembangkan karier mereka bersama RuangIlmu.
-          </p>
-          <Link
-            to="/register"
-            className="bg-[#0B7077] text-white px-8 py-3 rounded-md text-lg font-semibold hover:bg-[#014b60] transition inline-block"
-          >
-            DAFTAR SEKARANG
-          </Link>
-        </div>
-      </section>
+      {!isLoggedIn && (
+        <section className="py-12 md:py-16 bg-gray-50">
+          <div className="container mx-auto px-6 text-center">
+            <h2 className="text-2xl md:text-3xl font-bold mb-6">Siap memulai perjalanan belajarmu?</h2>
+            <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto">
+            Bergabunglah bersama ribuan pelajar yang telah lebih dulu mengembangkan karier mereka bersama RuangIlmu.
+            </p>
+            <Link
+              to="/register"
+              className="bg-[#0B7077] text-white px-8 py-3 rounded-md text-lg font-semibold hover:bg-[#014b60] transition inline-block"
+            >
+              DAFTAR SEKARANG
+            </Link>
+          </div>
+        </section>
+      )}
 
       {/* Success Toast */}
       <div 
