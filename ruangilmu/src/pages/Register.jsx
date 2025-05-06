@@ -7,6 +7,24 @@ import googleLogo from '../components/img/google_logo.svg';
 import facebookLogo from '../components/img/facebook_logo.svg';
 import kidImage from '../components/img/kid.png';
 import '../index.css';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+
+// Initialize Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyDo2N8rNOYXgXJDTahHCKwosF0AsCDxLwM",
+  authDomain: "ppl-ruang-ilmu.firebaseapp.com",
+  projectId: "ppl-ruang-ilmu",
+  storageBucket: "ppl-ruang-ilmu.firebasestorage.app",
+  messagingSenderId: "488500636968",
+  appId: "1:488500636968:web:75618c5406a6e10f75341d",
+  measurementId: "G-9HQY9B3PDG"
+};
+
+// Initialize Firebase only once
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
 
 const RegisterPage = () => {
   const [fullName, setFullName] = useState('');
@@ -16,6 +34,7 @@ const RegisterPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
+  const [isLoading, setIsLoading] = useState(false)
   
   // State untuk Toast
   const [toastConfig, setToastConfig] = useState({
@@ -62,26 +81,96 @@ const RegisterPage = () => {
     });
   };
 
-  // Handle form submission
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  // Handle Google Sign in
+  const handleGoogleSignIn = async () => {
+    try {
+      setIsLoading(true);
+      const provider = new firebase.auth.GoogleAuthProvider();
+      const result = await firebase.auth().signInWithPopup(provider);
 
-    // Simulasi register (ganti dengan integrasi API nantinya)
-    if (email === 'dummy@dummy.com') {
-      showToast('Email telah digunakan!', 'error');
-      
-      // Simpan status register error ke sessionStorage
+      const idToken = await result.user.getIdToken();
+      const email = result.user.email;
+      const displayName = result.user.displayName;
+
+      const response = await fetch('http://localhost:8000/auth/oauth-google', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          idToken,
+          email,
+          displayName
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        localStorage.setItem('accesToken', data.accesToken);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        showToast(data.message || 'Google login berhasil!', 'success');
+
+        setTimeout(() => {
+          navigate('/');
+        }, 1500);
+      } else {
+        showToast(data.message || 'Google login gagal pada server', 'error');
+      }
+    } catch (error) {
+      console.error('Google Sign-In error : ', error);
+      showToast('Google Login gagal : ', + error.message, 'error');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      const response = await fetch('http://localhost:8000/auth/register', {
+        method: 'POST', 
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          nama: fullName,
+          email: email,
+          password: password,
+          confirmPassword: confirmPassword
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        showToast(data.message || 'Registrasi gagal', 'error');
+        sessionStorage.setItem('registerStatus', 'error');
+      } else {
+        showToast('Register berhasil Silahkan periksa email kamu', 'success');
+        sessionStorage.setItem('registerStatus', 'success');
+
+        if (data.accesToken) {
+          localStorage.setItem('accessToken', data.accesToken);
+        }
+
+        if (data.user) {
+          localStorage.setItem('user', JSON.stringify(data.user));
+        }
+
+        setTimeout(() => {
+          navigate('/Login');
+        }, 1500);
+      }
+    } catch (error) {
+      console.error('Registrasi Gagal: ', error);
+      showToast('Terjadi Kesalahan pada server!', 'error');
       sessionStorage.setItem('registerStatus', 'error');
-    } else {
-      showToast('Register berhasil! Silahkan periksa email anda.', 'success');
-      
-      // Simpan status register success ke sessionStorage
-      sessionStorage.setItem('registerStatus', 'success');
-      
-      // Redirect ke halaman verifikasi
-      setTimeout(() => {
-        navigate('/verify');
-      }, 100);
+    } finally {
+      setIsLoading(false)
     }
   };
 
@@ -181,18 +270,18 @@ const RegisterPage = () => {
                   id="remember"
                   className="font-[Nunito] lg:text-lg text-sm text-[#444b59] checked:bg-[#026078] mr-2"
                 />
-                <label for="remember" className="font-[Nunito] lg:text-lg text-sm text-[#444b59]">Ingat aku</label>
+                <label htmlFor="remember" className="font-[Nunito] lg:text-lg text-sm text-[#444b59]">Ingat aku</label>
               </div>
               
               <div className="mt-4">
                 <button
                   type="submit"
-                  disabled={!isFormValid}
+                  disabled={!isFormValid || isLoading}
                   className={`bg-[#026078] font-[Nunito] rounded-md lg:text-xl text-md text-white font-extrabold inset-shadow-sm inset-shadow-white py-3 px-4 w-full ${
                     isFormValid ? 'hover:bg-[#004b5f] active:bg-[#004455] cursor-pointer' : 'opacity-50 cursor-not-allowed'
                   }`}
                 >
-                  Daftar
+                  {isLoading ? 'Memproses...' : 'Daftar'}
                 </button>
               </div>
             </form>
@@ -213,6 +302,8 @@ const RegisterPage = () => {
           <div className="flex flex-row items-start justify-center space-x-6 w-full h-full">
             <button
               type="button"
+              onClick={handleGoogleSignIn}
+              disabled={isLoading}
               className="border border-[#026078] rounded-md cursor-pointer hover:bg-gray-500/20 lg:py-2 py-1 lg:px-6 px-3 h-max"
             >
               <img src={googleLogo} alt="Google" className="h-[48px]"/>
@@ -220,6 +311,7 @@ const RegisterPage = () => {
             <button
               type="button"
               className="border border-[#026078] rounded-md cursor-pointer hover:bg-gray-500/20 lg:py-2 py-1 lg:px-6 px-3 h-max"
+              disabled={isLoading}
             >
               <img src={facebookLogo} alt="Facebook" className="h-[48px]"/>
             </button>

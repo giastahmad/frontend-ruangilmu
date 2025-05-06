@@ -7,12 +7,30 @@ import googleLogo from '../components/img/google_logo.svg';
 import facebookLogo from '../components/img/facebook_logo.svg';
 import kidImage from '../components/img/kid.png';
 import '../index.css';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDo2N8rNOYXgXJDTahHCKwosF0AsCDxLwM",
+  authDomain: "ppl-ruang-ilmu.firebaseapp.com",
+  projectId: "ppl-ruang-ilmu",
+  storageBucket: "ppl-ruang-ilmu.firebasestorage.app",
+  messagingSenderId: "488500636968",
+  appId: "1:488500636968:web:75618c5406a6e10f75341d",
+  measurementId: "G-9HQY9B3PDG"
+};
+
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
+  const [isLoading, setIsLoading] = useState(false)
 
   // State untuk Toast
   const [showToast, setShowToast] = useState(false);
@@ -32,32 +50,104 @@ const Login = () => {
     setShowPassword(!showPassword);
   };
 
+  const showToastMessage = (message, type = 'success') => {
+    setToastMessage(message);
+    setToastType(type);
+    setShowToast(true);
+  
+    setTimeout(() => {
+      setShowToast(false);
+    }, 3000); // auto hide after 3s
+  };
+
+  // Handle Google Sign in
+  const handleGoogleSignIn = async () => {
+      try {
+        setIsLoading(true);
+        const provider = new firebase.auth.GoogleAuthProvider();
+        const result = await firebase.auth().signInWithPopup(provider);
+  
+        const idToken = await result.user.getIdToken();
+        const email = result.user.email;
+        const displayName = result.user.displayName;
+  
+        const response = await fetch('http://localhost:8000/auth/oauth-google', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            idToken,
+            email,
+            displayName
+          }),
+        });
+  
+        const data = await response.json();
+  
+        if (response.ok) {
+          localStorage.setItem('accesToken', data.accesToken);
+          localStorage.setItem('user', JSON.stringify(data.user));
+          showToastMessage(data.message || 'Google login berhasil!', 'success');
+  
+          setTimeout(() => {
+            navigate('/');
+          }, 1500);
+        } else {
+          showToastMessage(data.message || 'Google login gagal pada server', 'error');
+        }
+      } catch (error) {
+        console.error('Google Sign-In error : ', error);
+        showToastMessage('Google Login gagal : ', + error.message, 'error');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
-    // Simulasi login (ganti dengan integrasi API nantinya)
-    if (email === 'dummy@dummy.com' && password === 'dummyPw') {
-      // Tampilkan toast sukses
-      setToastMessage('Login berhasil!');
-      setToastType('success');
-      setShowToast(true);
+    try {
+      const response = await fetch('http://localhost:8000/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password
+        }),
+      });
 
-      // Simpan status login ke sessionStorage
-      sessionStorage.setItem('loginStatus', 'success');
+      const data = await response.json();
 
-      // Redirect setelah login berhasil
-      setTimeout(() => {
-        navigate('/home');
-      }, 100);
-    } else {
-      // Tampilkan toast error
-      setToastMessage('Email atau kata sandi salah!');
-      setToastType('error');
-      setShowToast(true);
+      if (!response.ok) {
+        showToastMessage(data.message || 'Gagal Masuk', 'error');
+        sessionStorage.getItem('loginStatus', 'error');
+      } else {
+        showToastMessage('Berhasil Masuk', 'success');
+        sessionStorage.setItem('loginStatus', 'success');
 
-      // Simpan status login error ke sessionStorage
+        if (data.accessToken) {
+          localStorage.setItem('accessToken', data.accessToken);
+        }
+
+        if (data.user) {
+          localStorage.setItem('user', JSON.stringify(data.user));
+        }
+
+        setTimeout(() => {
+          navigate('/');
+        }, 1500);
+      }
+    } catch (error) {
+      console.error('Gagal Masuk: ', error);
+      showToastMessage('Terjadi Kesalahan pada server!', 'error');
       sessionStorage.setItem('loginStatus', 'error');
+    } finally {
+      setIsLoading(false)
     }
   };
 
@@ -140,11 +230,11 @@ const Login = () => {
             <div>
               <button
                 type="submit"
-                disabled={!isFormValid}
+                disabled={!isFormValid || isLoading}
                 className={`bg-[#026078] font-[Nunito] rounded-md lg:text-xl text-md text-white font-extrabold inset-shadow-sm inset-shadow-white py-3 px-4 w-full ${isFormValid ? 'hover:bg-[#004b5f] active:bg-[#004455] cursor-pointer' : 'opacity-50 cursor-not-allowed'
                   }`}
               >
-                Masuk
+                {isLoading ? 'Memproses...' : 'Masuk'}
               </button>
             </div>
           </form>
@@ -164,12 +254,15 @@ const Login = () => {
           <div className="flex flex-row items-center justify-center space-x-6 w-full">
             <button
               type="button"
+              onClick={handleGoogleSignIn}
+              disabled={isLoading}
               className="border border-[#026078] rounded-md cursor-pointer hover:bg-gray-500/20 lg:py-2 py-1 lg:px-6 px-3 h-full"
             >
               <img src={googleLogo} alt="Google" className="h-[48px]" />
             </button>
             <button
               type="button"
+              disabled={isLoading}
               className="border border-[#026078] rounded-md cursor-pointer hover:bg-gray-500/20 lg:py-2 py-1 lg:px-6 px-3 h-full"
             >
               <img src={facebookLogo} alt="Facebook" className="h-[48px]" />
