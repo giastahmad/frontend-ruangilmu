@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import CourseCard from '../components/jsx/CourseCard';
 import Navbar from '../components/jsx/Navbar';
 import Footer from '../components/jsx/Footer';
-// import kidImage from '../components/img/kids.png';
+import kidImage from '../components/img/kids.png';
 
 // import course1Image from '../components/img/temp.svg';
 // import course2Image from '../components/img/temp.svg';
@@ -93,7 +93,7 @@ const Home = () => {
 
       {/* Hero Section */}
       <section className="container mx-auto px-4 md:px-24">
-        <div className="flex flex-col md:flex-row">
+        <div className="flex flex-col md:flex-row md:mt-5">
           <div className="w-full md:w-1/2 mb-8 md:mb-0 pb-4 items-start">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 hero-text">
               Ruang Hidup Belajar
@@ -112,6 +112,9 @@ const Home = () => {
                 </Link>
               </div>
             )}
+          </div>
+          <div className='flex md:w-1/2 items-end'>
+              <img src={kidImage} alt="Kids_Image" className='w-full h-auto max-w-lg mx-auto'/>
           </div>
         </div>
       </section>
