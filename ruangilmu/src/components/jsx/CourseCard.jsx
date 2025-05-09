@@ -83,11 +83,7 @@ const CourseCard = ({ course }) => {
             )} */}
           </div>
           <Link 
-<<<<<<< HEAD
-            to={`/course/${id}`} 
-=======
             to={`/course/${course_id}`} 
->>>>>>> 8dba86c5f8584261445908035d0a506ff7126e26
             className=" text-white bg-[#0B7077] hover:bg-[#014b60] px-4 py-2 rounded-md transition duration-300"
           >
             Lihat Detail

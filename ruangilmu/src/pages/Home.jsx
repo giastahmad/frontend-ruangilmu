@@ -4,12 +4,12 @@ import { Link } from 'react-router-dom';
 import CourseCard from '../components/jsx/CourseCard';
 import Navbar from '../components/jsx/Navbar';
 import Footer from '../components/jsx/Footer';
-import kidImage from '../components/img/kids.png';
+// import kidImage from '../components/img/kids.png';
 
-import course1Image from '../components/img/temp.svg';
-import course2Image from '../components/img/temp.svg';
-import course3Image from '../components/img/temp.svg';
-import course4Image from '../components/img/temp.svg';
+// import course1Image from '../components/img/temp.svg';
+// import course2Image from '../components/img/temp.svg';
+// import course3Image from '../components/img/temp.svg';
+// import course4Image from '../components/img/temp.svg';
 
 const Home = () => {
   const [selectedClass, setSelectedClass] = useState('Kelas 4');
