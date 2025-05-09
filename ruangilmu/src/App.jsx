@@ -24,6 +24,7 @@ function App() {
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/edit_profile" element={<EditProfile />} />
         <Route path="/edit_profile" element={<EditProfile />} />
+        <Route path="/dashboard" element={<Dashboard />} />
         {/* Tambahkan route lain sesuai kebutuhan */}
       </Routes>
     </Router>
