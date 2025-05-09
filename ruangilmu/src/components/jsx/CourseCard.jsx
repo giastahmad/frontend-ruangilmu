@@ -38,7 +38,7 @@ const CourseCard = ({ course }) => {
             )}
           </div>
           <Link 
-            to={`/courses/${id}`} 
+            to={`/course/${id}`} 
             className=" text-white bg-[#0B7077] hover:bg-[#014b60] px-4 py-2 rounded-md transition duration-300"
           >
             Enroll Now

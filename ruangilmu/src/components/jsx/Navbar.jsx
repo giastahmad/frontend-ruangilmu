@@ -11,7 +11,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="container mx-auto px-6 md:px-24 py-6 flex justify-between items-center">
+    <nav className="container mx-auto px-6 md:px-24 py-6 flex justify-between items-center bg-[#d2e6e4]">
       <Link to="/" className="flex items-center space-x-2">
         <img src={logo} alt="RuangIlmu Logo" className="h-8 md:h-10" />
         <span className="text-xl md:text-2xl font-extrabold text-[#026078]">RuangIlmu</span>
