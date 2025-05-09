@@ -1,13 +1,34 @@
 // src/components/Navbar.jsx
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import logo from '../img/logo ruangilmu.svg';
 
-const Navbar = () => {
+const Navbar = ({isLoggedIn}) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleLogout = () => {
+    // Clear user authentication data
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    
+    // Show success toast
+    const toast = document.getElementById('successToast');
+    if (toast) {
+      toast.innerText = 'Logout Successful!';
+      toast.classList.remove('hidden');
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 3000);
+    }
+    
+    // Redirect to homepage and refresh
+    navigate('/', { replace: true });
+    window.location.reload();
   };
 
   return (
@@ -25,18 +46,29 @@ const Navbar = () => {
 
       {/* Desktop Auth Buttons */}
       <div className="hidden md:flex items-center space-x-4">
-        <Link 
-          to="/login" 
-          className="bg-white text-[#0B7077] px-7 py-3 rounded-md hover:bg-gray-100 transition"
-        >
-          Masuk
-        </Link>
-        <Link 
-          to="/register" 
-          className="bg-[#0B7077] text-white px-7 py-3 rounded-md hover:bg-[#014b60] transition"
-        >
-          Daftar
-        </Link>
+      {isLoggedIn ? (
+          <button 
+            onClick={handleLogout}
+            className="bg-[#0B7077] text-white px-7 py-3 rounded-md hover:bg-[#014b60] transition"
+          >
+            Keluar
+          </button>
+        ) : (
+          <>
+            <Link 
+              to="/login" 
+              className="bg-white text-[#0B7077] px-7 py-3 rounded-md hover:bg-gray-100 transition"
+            >
+              Masuk
+            </Link>
+            <Link 
+              to="/register" 
+              className="bg-[#0B7077] text-white px-7 py-3 rounded-md hover:bg-[#014b60] transition"
+            >
+              Daftar
+            </Link>
+          </>
+        )}
       </div>
 
       {/* Mobile Menu Button */}
@@ -87,20 +119,35 @@ const Navbar = () => {
             Kelas
           </Link>
           <div className="border-t border-gray-200 my-2"></div>
-          <Link 
-            to="/login" 
-            className="block px-4 py-2 text-[#0B7077] hover:bg-gray-100"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            Masuk
-          </Link>
-          <Link 
-            to="/register" 
-            className="block px-4 py-2 text-[#0B7077] font-medium hover:bg-gray-100"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            Daftar
-          </Link>
+
+          {isLoggedIn ? (
+            <button 
+              onClick={() => {
+                setIsMenuOpen(false);
+                handleLogout();
+              }}
+              className="block w-full text-left px-4 py-2 text-[#0B7077] font-medium hover:bg-gray-100"
+            >
+              Keluar
+            </button>
+          ) : (
+            <>
+              <Link 
+                to="/login" 
+                className="block px-4 py-2 text-[#0B7077] hover:bg-gray-100"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Masuk
+              </Link>
+              <Link 
+                to="/register" 
+                className="block px-4 py-2 text-[#0B7077] font-medium hover:bg-gray-100"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Daftar
+              </Link>
+            </>
+          )}
         </div>
       )}
     </nav>

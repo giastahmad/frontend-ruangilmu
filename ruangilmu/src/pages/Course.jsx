@@ -1,76 +1,57 @@
 // src/pages/CoursesPage.jsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Navbar from '../components/jsx/Navbar';
 import Footer from '../components/jsx/Footer';
 import CourseCard from '../components/jsx/CourseCard';
 
 // Import gambar
-import course1Image from '../components/img/temp.svg';
-import course2Image from '../components/img/temp.svg';
-import course3Image from '../components/img/temp.svg';
-import course4Image from '../components/img/temp.svg';
-
-// Data kursus
-const courseData = [
-  {
-    id: 1,
-    image: course1Image,
-    startDate: '1',
-    endDate: '20 July 2022',
-    studentCount: 40,
-    title: 'Product Management Basic - Course',
-    description: 'Product Management Materials: you will learn with Dutch Literature - Head of Product Customer Platform Graph Features.',
-    price: 380,
-    originalPrice: 500
-  },
-  {
-    id: 2,
-    image: course2Image,
-    startDate: '1',
-    endDate: '25 July 2022',
-    studentCount: 11,
-    title: 'BN Data Science Professional Certificate',
-    description: 'Product Management Materials: you will learn with Danish Literature - Head of Product Customer Platform Graph Features.',
-    price: 678,
-    originalPrice: 800
-  },
-  {
-    id: 3,
-    image: course3Image,
-    startDate: '1',
-    endDate: '22 July 2022',
-    studentCount: 234,
-    title: 'The Science of Well-Being',
-    description: 'Product Management Materials: you will learn with Spider Enterprise - Head of Product Customer Platform Graph Features.',
-    price: 123,
-    originalPrice: 500
-  },
-  {
-    id: 4,
-    image: course4Image,
-    startDate: '1',
-    endDate: '26 July 2022',
-    studentCount: 342,
-    title: 'Python for Everybody Specialization',
-    description: 'Product Management Materials: you will learn with Smart Sciences - Head of Product Customer Platform Graph Features.',
-    price: 567,
-    originalPrice: 700
-  }
-];
+import tempCover from '../components/img/temp.svg';
 
 // Kategori kursus
 const categories = [
-  'All Courses',
-  'Mathematics',
-  'English',
-  'Bahasa Indonesia',
-  'Science',
-  'Social'
+  'Semua Kelas',
+  'Kelas 4',
+  'Kelas 5',
+  'Kelas 6',
 ];
 
 const CoursesPage = () => {
-  const [activeCategory, setActiveCategory] = useState('All Courses');
+  const [activeCategory, setActiveCategory] = useState('Semua Kelas');
   const [currentPage, setCurrentPage] = useState(1);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem('accessToken');
+    setIsLoggedIn(!!token);
+
+    fetchCourses();
+  }, []);
+
+  const fetchCourses = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('http://localhost:8000/courses');
+
+      if (!response.ok) {
+        throw new Error('Gagal Mengambil Data');
+      }
+
+      const data = await response.json();
+      console.log('Fetched courses data:', data);
+
+      setCourses(data.data);
+      setLoading(false);
+
+    } catch (error) {
+      console.error('Error mengambil data: ', error);
+      setError('Gagal Menampilkan kelas, coba sesaat lagi');
+      setLoading(false);
+    }
+  };
+
 
   // Handler untuk mengubah kategori
   const handleCategoryChange = (category) => {
@@ -85,24 +66,23 @@ const CoursesPage = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#d2e6e4]">
-      <Navbar />
-      
+      <Navbar isLoggedIn={isLoggedIn}/>
+
       <div className="container mx-auto px-6 py-12 flex-grow">
         <div className="flex flex-col md:flex-row gap-8">
           {/* Sidebar */}
           <div className="md:w-1/4">
             <div className="bg-white rounded-lg shadow-sm p-6 sticky top-6">
-              <h2 className="text-2xl font-bold text-gray-800 mb-6">All Programs</h2>
+              <h2 className="text-2xl font-bold text-gray-800 mb-6">Daftar Program</h2>
               <ul className="space-y-3">
                 {categories.map((category, index) => (
                   <li key={index}>
-                    <button 
+                    <button
                       onClick={() => handleCategoryChange(category)}
-                      className={`block w-full text-left px-4 py-2 rounded-md ${
-                        activeCategory === category 
-                          ? 'bg-[#0B7077] text-white' 
+                      className={`block w-full text-left px-4 py-2 rounded-md ${activeCategory === category
+                          ? 'bg-[#0B7077] text-white'
                           : 'hover:bg-gray-100'
-                      }`}
+                        }`}
                     >
                       {category}
                     </button>
@@ -114,18 +94,28 @@ const CoursesPage = () => {
 
           {/* Courses List */}
           <div className="md:w-3/4">
-            <h1 className="text-3xl font-bold text-gray-800 mb-8">Popular Courses</h1>
-            
+            <h1 className="text-3xl font-bold text-gray-800 mb-8">Kelas Populer</h1>
+
+            {loading ? (
+            <div className="flex justify-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#0B7077]"></div>
+            </div>
+          ) : error ? (
+            <div className="text-center py-8 text-red-500">
+              {error}
+            </div>
+          ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {courseData.map(course => (
-                <CourseCard key={course.id} course={course} />
+              {courses.map(course => (
+                <CourseCard key={course.course_id} course={course} />
               ))}
             </div>
-
+          )}
+            
             {/* Pagination */}
             <div className="mt-12 flex justify-center">
               <nav className="flex items-center space-x-2">
-                <button 
+                <button
                   onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
                   className="px-4 py-2 border rounded-md text-gray-600 hover:bg-gray-100"
                 >
@@ -135,16 +125,15 @@ const CoursesPage = () => {
                   <button
                     key={page}
                     onClick={() => handlePageChange(page)}
-                    className={`px-4 py-2 border rounded-md ${
-                      currentPage === page 
-                        ? 'bg-[#0B7077] text-white' 
+                    className={`px-4 py-2 border rounded-md ${currentPage === page
+                        ? 'bg-[#0B7077] text-white'
                         : 'text-gray-600 hover:bg-gray-100'
-                    }`}
+                      }`}
                   >
                     {page}
                   </button>
                 ))}
-                <button 
+                <button
                   onClick={() => handlePageChange(Math.min(3, currentPage + 1))}
                   className="px-4 py-2 border rounded-md text-gray-600 hover:bg-gray-100"
                 >
@@ -155,7 +144,7 @@ const CoursesPage = () => {
           </div>
         </div>
       </div>
-      
+
       <Footer />
     </div>
   );
