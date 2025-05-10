@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Akhir - RuangIlmu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Baloo 2', cursive;
+            background-color: #f8fafc;
+        }
+
+        .quiz-container {
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .question-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #0B7077;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .option-item {
+            transition: all 0.2s ease;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+        }
+
+        .option-item:hover {
+            border-color: #0B7077;
+            background-color: #f0f9ff;
+        }
+
+        .option-item.selected {
+            border-color: #0B7077;
+            background-color: #e6f7ff;
+        }
+
+        .progress-bar {
+            height: 10px;
+            border-radius: 5px;
+            background-color: #e2e8f0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 5px;
+            background-color: #0B7077;
+            transition: width 0.3s ease;
+        }
+
+        .timer {
+            background-color: #fff3f3;
+            color: #e53e3e;
+            border-radius: 20px;
+        }
+
+        /* New styles for question navigation */
+        .question-nav-item {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background-color: #f1f5f9;
+            color: #64748b;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .question-nav-item:hover {
+            background-color: #e2e8f0;
+        }
+
+        .question-nav-item.active {
+            background-color: #0B7077;
+            color: white;
+        }
+
+        .question-nav-item.answered {
+            background-color: #10b981;
+            color: white;
+        }
+
+        .question-nav-item.flagged {
+            background-color: #f59e0b;
+            color: white;
+        }
+
+        .question-nav-panel {
+            position: sticky;
+            top: 20px;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+
+    <!-- Navigation -->
+    <div class="bg-[#D2E6E4] shadow-sm">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="home.html" class="flex items-center space-x-2">
+                <img src="aset/logo ruangilmu.svg" alt="RuangIlmu Logo" class="h-10">
+                <span class="text-2xl font-extrabold text-[#026078]">RuangIlmu</span>
+            </a>
+            <div class="flex items-center space-x-4">
+                <div class="timer px-4 py-2 font-bold flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20"
+                        fill="currentColor">
+                        <path fill-rule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    <span id="time">10:00</span>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Quiz Content -->
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- Main Quiz Content -->
+            <div class="lg:w-2/3">
+                <!-- Quiz Header -->
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+                    <div>
+                        <h1 class="text-3xl font-bold text-[#026078]">Kuis Akhir: Matematika Dasar</h1>
+                        <p class="text-gray-600">Jawab semua pertanyaan dengan benar!</p>
+                    </div>
+                    <div class="mt-4 md:mt-0">
+                        <div class="text-sm font-medium text-gray-600 mb-1">Progress</div>
+                        <div class="flex items-center">
+                            <div class="progress-bar w-40 mr-2">
+                                <div class="progress-fill" style="width: 25%"></div>
+                            </div>
+                            <span class="text-sm font-bold text-[#026078]">1/10</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quiz Container -->
+                <div class="quiz-container p-6 md:p-8 mb-8">
+                    <!-- Question -->
+                    <div class="flex items-center mb-6">
+                        <div class="question-number mr-4">1</div>
+                        <h2 class="text-xl font-bold text-gray-800">Berapakah hasil dari 125 + 37?</h2>
+                    </div>
+
+                    <!-- Options -->
+                    <div class="space-y-4">
+                        <div class="option-item p-4 cursor-pointer">
+                            <div class="flex items-center">
+                                <div class="w-6 h-6 rounded-full border-2 border-gray-300 mr-3 flex-shrink-0"></div>
+                                <span class="font-medium">152</span>
+                            </div>
+                        </div>
+                        <div class="option-item p-4 cursor-pointer selected">
+                            <div class="flex items-center">
+                                <div
+                                    class="w-6 h-6 rounded-full border-2 border-[#0B7077] mr-3 flex-shrink-0 flex items-center justify-center">
+                                    <div class="w-3 h-3 rounded-full bg-[#0B7077]"></div>
+                                </div>
+                                <span class="font-medium">162</span>
+                            </div>
+                        </div>
+                        <div class="option-item p-4 cursor-pointer">
+                            <div class="flex items-center">
+                                <div class="w-6 h-6 rounded-full border-2 border-gray-300 mr-3 flex-shrink-0"></div>
+                                <span class="font-medium">172</span>
+                            </div>
+                        </div>
+                        <div class="option-item p-4 cursor-pointer">
+                            <div class="flex items-center">
+                                <div class="w-6 h-6 rounded-full border-2 border-gray-300 mr-3 flex-shrink-0"></div>
+                                <span class="font-medium">182</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="flex justify-between">
+                    <button
+                        class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-3 rounded-lg font-medium transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-1" viewBox="0 0 20 20"
+                            fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        Sebelumnya
+                    </button>
+                    <button
+                        class="bg-[#0B7077] hover:bg-[#014b60] text-white px-6 py-3 rounded-lg font-medium transition-colors">
+                        Selanjutnya
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline ml-1" viewBox="0 0 20 20"
+                            fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Question Navigation Panel -->
+            <div class="lg:w-1/3">
+                <div class="quiz-container p-6 question-nav-panel">
+                    <h3 class="text-lg font-bold text-[#026078] mb-4 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20"
+                            fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M3 5a2 2 0 012-2h10a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V5zm2-1a1 1 0 00-1 1v10a1 1 0 001 1h10a1 1 0 001-1V5a1 1 0 00-1-1H5z"
+                                clip-rule="evenodd" />
+                            <path d="M8 9a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" />
+                        </svg>
+                        Navigasi Soal
+                    </h3>
+
+                    <!-- Question Grid -->
+                    <div class="grid grid-cols-5 gap-3 mb-6">
+                        <div class="question-nav-item active">1</div>
+                        <div class="question-nav-item answered">2</div>
+                        <div class="question-nav-item flagged">3</div>
+                        <div class="question-nav-item">4</div>
+                        <div class="question-nav-item">5</div>
+                        <div class="question-nav-item">6</div>
+                        <div class="question-nav-item">7</div>
+                        <div class="question-nav-item">8</div>
+                        <div class="question-nav-item">9</div>
+                        <div class="question-nav-item">10</div>
+                    </div>
+
+                    <!-- Legend -->
+                    <div class="space-y-2 text-sm">
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 rounded-full bg-[#0B7077] mr-2"></div>
+                            <span>Sedang dikerjakan</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 rounded-full bg-green-500 mr-2"></div>
+                            <span>Sudah dijawab</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 rounded-full bg-yellow-400 mr-2"></div>
+                            <span>Ditandai</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 rounded-full bg-gray-300 mr-2"></div>
+                            <span>Belum dikerjakan</span>
+                        </div>
+                    </div>
+
+                    <!-- Flag Current Question Button -->
+                    <button id="flagButton"
+                        class="mt-6 w-full flex items-center justify-center py-2 px-4 border border-[#0B7077] text-[#0B7077] rounded-lg hover:bg-[#f0f9ff] transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20"
+                            fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M3 6a3 3 0 013-3h10a1 1 0 01.8 1.6L14.25 8l2.55 3.4A1 1 0 0116 13H6a1 1 0 00-1 1v3a1 1 0 11-2 0V6z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        Tandai Soal Ini
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-[#D2E6E4] py-8 mt-12">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center space-x-2 mb-4 md:mb-0">
+                    <img src="aset/logo ruangilmu.svg" alt="RuangIlmu Logo" class="h-8">
+                    <span class="text-xl font-extrabold text-[#026078]">RuangIlmu</span>
+                </div>
+                <p class="text-[#026078] text-sm">© 2023 RuangIlmu. Semua hak dilindungi.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Timer Countdown
+        let timeLeft = 600; // 10 menit dalam detik
+        const timerElement = document.getElementById('time');
+
+        const timer = setInterval(() => {
+            timeLeft--;
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerElement.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                alert('Waktu sudah habis! Kuis akan dikirim otomatis.');
+                // Submit quiz logic here
+            }
+        }, 1000);
+
+        // Option Selection
+        document.querySelectorAll('.option-item').forEach(item => {
+            item.addEventListener('click', () => {
+                // Remove selected class from all options
+                document.querySelectorAll('.option-item').forEach(opt => {
+                    opt.classList.remove('selected');
+                    opt.querySelector('div > div').className = 'w-6 h-6 rounded-full border-2 border-gray-300 mr-3 flex-shrink-0';
+                });
+
+                // Add selected class to clicked option
+                item.classList.add('selected');
+                const innerCircle = item.querySelector('div > div');
+                innerCircle.className = 'w-6 h-6 rounded-full border-2 border-[#0B7077] mr-3 flex-shrink-0 flex items-center justify-center';
+                innerCircle.innerHTML = '<div class="w-3 h-3 rounded-full bg-[#0B7077]"></div>';
+
+                // Mark question as answered in navigation
+                const currentQuestion = 1; // You'll need to track current question
+                document.querySelector(`.question-nav-item:nth-child(${currentQuestion})`).classList.add('answered');
+                document.querySelector(`.question-nav-item:nth-child(${currentQuestion})`).classList.remove('flagged');
+            });
+        });
+
+        // Flag Current Question
+        document.getElementById('flagButton').addEventListener('click', function () {
+            const currentQuestion = 1; // You'll need to track current question
+            const questionElement = document.querySelector(`.question-nav-item:nth-child(${currentQuestion})`);
+
+            if (questionElement.classList.contains('flagged')) {
+                questionElement.classList.remove('flagged');
+                this.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M3 6a3 3 0 013-3h10a1 1 0 01.8 1.6L14.25 8l2.55 3.4A1 1 0 0116 13H6a1 1 0 00-1 1v3a1 1 0 11-2 0V6z" clip-rule="evenodd" />
+                    </svg>
+                    Tandai Soal Ini
+                `;
+            } else {
+                questionElement.classList.add('flagged');
+                this.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-yellow-500" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M3 6a3 3 0 013-3h10a1 1 0 01.8 1.6L14.25 8l2.55 3.4A1 1 0 0116 13H6a1 1 0 00-1 1v3a1 1 0 11-2 0V6z" clip-rule="evenodd" />
+                    </svg>
+                    Hapus Tanda
+                `;
+            }
+        });
+
+        // Question Navigation
+        document.querySelectorAll('.question-nav-item').forEach((item, index) => {
+            item.addEventListener('click', function () {
+                // Remove active class from all questions
+                document.querySelectorAll('.question-nav-item').forEach(q => {
+                    q.classList.remove('active');
+                });
+
+                // Add active class to clicked question
+                this.classList.add('active');
+
+                // Here you would load the selected question
+                // loadQuestion(index + 1);
+
+                // Update progress
+                const progressFill = document.querySelector('.progress-fill');
+                progressFill.style.width = `${((index + 1) / 10) * 100}%`;
+                document.querySelector('.text-sm.font-bold.text-\[\#026078\]').textContent = `${index + 1}/10`;
+            });
+        });
+    </script>
+</body>
+
+</html>
