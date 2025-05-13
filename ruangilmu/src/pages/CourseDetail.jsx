@@ -13,6 +13,7 @@ const CourseDetailPage = () => {
   const [course, setCourse] = useState(null);
   const [error, setError] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [currentRating, setCurrentRating] = useState(0);
   const params = useParams();
   const location = useLocation();
   
@@ -84,6 +85,24 @@ const CourseDetailPage = () => {
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
+  };
+
+  // Function to update rating
+  const updateRating = (rating) => {
+    setCurrentRating(rating);
+  };
+
+  // Get rating text based on current rating
+  const getRatingText = () => {
+    const ratingMessages = [
+      "Klik bintang untuk memberi nilai (1-5)",
+      "Buruk 🤢",
+      "Cukup 😐",
+      "Lumayan 👍",
+      "Bagus 😊",
+      "Sangat Bagus 🤩"
+    ];
+    return ratingMessages[currentRating];
   };
 
   if (loading) {
@@ -193,7 +212,47 @@ const CourseDetailPage = () => {
               {activeTab === 'Ulasan' && (
                 <div>
                   <h2 className="text-xl font-bold text-gray-800 mb-4">ULASAN KURSUS</h2>
-                  <p className="text-gray-600">Ulasan siswa akan ditampilkan di sini.</p>
+                  
+                  {/* Review Section */}
+                  <div className="bg-white rounded-lg p-6">
+                    <h3 className="text-lg font-bold text-gray-800 mb-6">Bagaimana pengalaman belajarmu?</h3>
+
+                    <div className="flex flex-col md:flex-row gap-6">
+                      {/* Rating Stars */}
+                      <div className="md:w-1/3">
+                        <h4 className="text-md font-semibold text-gray-800 mb-3">Beri Rating</h4>
+                        <div className="flex items-center space-x-1 mb-4">
+                          {[1, 2, 3, 4, 5].map((rating) => (
+                            <button
+                              key={rating}
+                              type="button"
+                              className={`text-3xl ${currentRating >= rating ? 'text-yellow-400' : 'text-gray-300'} hover:text-yellow-400 focus:outline-none`}
+                              onClick={() => updateRating(rating)}
+                            >
+                              ★
+                            </button>
+                          ))}
+                        </div>
+                        <p className="text-sm text-gray-500">{getRatingText()}</p>
+                      </div>
+
+                      {/* Review Form */}
+                      <div className="md:w-2/3">
+                        <h4 className="text-md font-semibold text-gray-800 mb-3">Tulis Ulasan</h4>
+                        <textarea
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0B7077] focus:border-transparent"
+                          rows="4"
+                          placeholder="Bagaimana pengalaman belajarmu di kelas ini?"
+                        ></textarea>
+
+                        <div className="flex justify-end mt-4">
+                          <button className="bg-[#0B7077] hover:bg-[#014b60] text-white px-6 py-2 rounded-md font-medium transition-colors">
+                            Kirim Ulasan
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>

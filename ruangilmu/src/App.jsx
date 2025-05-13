@@ -9,6 +9,7 @@ import CourseDetailPage from "./pages/CourseDetail";
 import Dashboard from "./pages/Dashboard";
 import ProfilePage from "./pages/Profile";
 import EditProfile from "./pages/EditProfile";
+import QuizApp from "./pages/Quiz";
 import './index.css';
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/edit_profile" element={<EditProfile />} />
+        <Route path="/quiz" element={<QuizApp />} />
         {/* Tambahkan route lain sesuai kebutuhan */}
       </Routes>
     </Router>
