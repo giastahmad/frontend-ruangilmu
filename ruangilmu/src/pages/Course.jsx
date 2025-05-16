@@ -94,7 +94,7 @@ const CoursesPage = () => {
 
           {/* Courses List */}
           <div className="md:w-3/4">
-            <h1 className="text-3xl font-bold text-gray-800 mb-8">Kelas Populer</h1>
+            <h1 className="text-3xl font-bold text-gray-800 mb-8">Daftar Kelas</h1>
 
             {loading ? (
             <div className="flex justify-center py-12">

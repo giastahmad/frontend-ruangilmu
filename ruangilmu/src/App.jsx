@@ -10,6 +10,7 @@ import Dashboard from "./pages/Dashboard";
 import ProfilePage from "./pages/Profile";
 import EditProfile from "./pages/EditProfile";
 import QuizApp from "./pages/Quiz";
+import Modul from "./pages/Modul";
 import './index.css';
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/edit_profile" element={<EditProfile />} />
         <Route path="/quiz" element={<QuizApp />} />
+        <Route path="/modul" element={<Modul />} />
         {/* Tambahkan route lain sesuai kebutuhan */}
       </Routes>
     </Router>
