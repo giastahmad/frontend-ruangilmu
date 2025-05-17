@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import '../index.css'; // Pastikan path CSS sesuai dengan struktur folder Anda
+import '../index.css'; 
 import Toast from '../components/jsx/Toast';
 
 const Verify = () => {
