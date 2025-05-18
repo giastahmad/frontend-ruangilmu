@@ -107,7 +107,7 @@ const RegisterPage = () => {
       const data = await response.json();
 
       if (response.ok) {
-        localStorage.setItem('accessToken', data.accesToken);
+        localStorage.setItem('accessToken', data.accessToken);
         localStorage.setItem('user', JSON.stringify(data.user));
         showToast(data.message || 'Google login berhasil!', 'success');
 
@@ -152,10 +152,6 @@ const RegisterPage = () => {
       } else {
         showToast('Register berhasil Silahkan periksa email kamu', 'success');
         sessionStorage.setItem('registerStatus', 'success');
-
-        if (data.accesToken) {
-          localStorage.setItem('accessToken', data.accesToken);
-        }
 
         if (data.user) {
           localStorage.setItem('user', JSON.stringify(data.user));

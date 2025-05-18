@@ -1,6 +1,6 @@
 // src/pages/CourseDetailPage.jsx
 import React, { useEffect, useState } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/jsx/Navbar';
 import Footer from '../components/jsx/Footer';
@@ -14,8 +14,11 @@ const CourseDetailPage = () => {
   const [error, setError] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentRating, setCurrentRating] = useState(0);
+  const [enrollLoading, setEnrollLoading] = useState(false);
+  const [enrollStatus, setEnrollStatus] = useState(null);
   const params = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
   
   console.log('All URL params:', params);
   console.log('Current path:', location.pathname);
@@ -103,6 +106,56 @@ const CourseDetailPage = () => {
       "Sangat Bagus 🤩"
     ];
     return ratingMessages[currentRating];
+  };
+
+  // Function to handle course enrollment
+  const handleEnrollCourse = async () => {
+    const token = localStorage.getItem('accessToken');
+    
+    // Check if user is logged in
+    if (!token) {
+      // Redirect to login page if not logged in
+      navigate('/login', { state: { from: location.pathname, message: 'Silakan login untuk mendaftar kelas' } });
+      return;
+    }
+    
+    try {
+      setEnrollLoading(true);
+      setEnrollStatus(null);
+      
+      const response = await fetch(`http://localhost:8000/courses/${id}/enroll`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.message || 'Gagal mendaftar kelas');
+      }
+      
+      setEnrollStatus({
+        success: true,
+        message: 'Berhasil mendaftar kelas! Anda dapat mengakses kelas ini di dashboard.'
+      });
+      
+      // Redirect to learning page or dashboard after successful enrollment
+      setTimeout(() => {
+        navigate('/modul');
+      }, 2000);
+      
+    } catch (err) {
+      console.error('Error enrolling course:', err);
+      setEnrollStatus({
+        success: false,
+        message: err.message || 'Terjadi kesalahan saat mendaftar kelas'
+      });
+    } finally {
+      setEnrollLoading(false);
+    }
   };
 
   if (loading) {
@@ -295,8 +348,23 @@ const CourseDetailPage = () => {
              
               </div>
 
-              <button className="bg-[#0B7077] hover:bg-[#014b60] text-white w-full py-3 rounded-md font-medium transition">
-                Daftar Sekarang
+               {/* Enrollment Status Message */}
+               {enrollStatus && (
+                <div className={`mb-4 p-3 rounded-md ${
+                  enrollStatus.success ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                }`}>
+                  {enrollStatus.message}
+                </div>
+              )}
+
+              <button 
+                className={`bg-[#0B7077] hover:bg-[#014b60] text-white w-full py-3 rounded-md font-medium transition ${
+                  enrollLoading ? 'opacity-70 cursor-not-allowed' : ''
+                }`}
+                onClick={handleEnrollCourse}
+                disabled={enrollLoading}
+              >
+                {enrollLoading ? 'Mendaftar...' : 'Daftar Sekarang'}
               </button>
             </div>
           </div>

@@ -2,9 +2,9 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../img/logo ruangilmu.svg';
-import PopupModal from './Popup'; 
+import PopupModal from './Popup';
 
-const Navbar = ({isLoggedIn}) => {
+const Navbar = ({ isLoggedIn }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false); // State untuk mengontrol popup
   const navigate = useNavigate();
@@ -25,9 +25,9 @@ const Navbar = ({isLoggedIn}) => {
 
   const handleLogout = () => {
     // Clear user authentication data
-    localStorage.removeItem('token');
+    localStorage.removeItem('accessToken');
     localStorage.removeItem('user');
-    
+
     // Show success toast
     const toast = document.getElementById('successToast');
     if (toast) {
@@ -37,7 +37,7 @@ const Navbar = ({isLoggedIn}) => {
         toast.classList.add('hidden');
       }, 3000);
     }
-    
+
     // Redirect to homepage and refresh
     navigate('/', { replace: true });
     window.location.reload();
@@ -59,23 +59,45 @@ const Navbar = ({isLoggedIn}) => {
 
         {/* Desktop Auth Buttons */}
         <div className="hidden md:flex items-center space-x-4">
-        {isLoggedIn ? (
-            <button 
-              onClick={openLogoutConfirmation} // Ubah ke fungsi untuk membuka popup
-              className="bg-[#0B7077] text-white px-7 py-3 rounded-md hover:bg-[#014b60] transition"
-            >
-              Keluar
-            </button>
+          {isLoggedIn ? (
+            <div className="flex items-center space-x-4">
+              {/* Profile Icon */}
+              <Link to="/profile" className="group text-gray-800 hover:text-[#0B7077]">
+                <div className="bg-[#d2e6e4] text-[#0B7077] p-2 rounded group-hover:bg-[#014b60] group-hover:text-white transition">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-7 w-10"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="butt"
+                      strokeLinejoin="miter"
+                      strokeWidth="2"
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                    />
+                  </svg>
+                </div>
+              </Link>
+              {/* Logout Button */}
+              <button
+                onClick={openLogoutConfirmation}
+                className="bg-[#0B7077] text-white px-7 py-3 rounded-md hover:bg-[#014b60] transition"
+              >
+                Keluar
+              </button>
+            </div>
           ) : (
             <>
-              <Link 
-                to="/login" 
+              <Link
+                to="/login"
                 className="bg-white text-[#0B7077] px-7 py-3 rounded-md hover:bg-gray-100 transition"
               >
                 Masuk
               </Link>
-              <Link 
-                to="/register" 
+              <Link
+                to="/register"
                 className="bg-[#0B7077] text-white px-7 py-3 rounded-md hover:bg-[#014b60] transition"
               >
                 Daftar
@@ -117,15 +139,15 @@ const Navbar = ({isLoggedIn}) => {
         {/* Mobile Dropdown Menu */}
         {isMenuOpen && (
           <div className="absolute top-20 right-4 w-48 bg-white rounded-md shadow-lg py-2 z-10 md:hidden">
-            <Link 
-              to="/" 
+            <Link
+              to="/"
               className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
               onClick={() => setIsMenuOpen(false)}
             >
               Beranda
             </Link>
-            <Link 
-              to="/course" 
+            <Link
+              to="/course"
               className="block px-4 py-2 text-gray-600 hover:bg-gray-100"
               onClick={() => setIsMenuOpen(false)}
             >
@@ -134,7 +156,7 @@ const Navbar = ({isLoggedIn}) => {
             <div className="border-t border-gray-200 my-2"></div>
 
             {isLoggedIn ? (
-              <button 
+              <button
                 onClick={() => {
                   setIsMenuOpen(false);
                   openLogoutConfirmation(); // Ubah ke fungsi untuk membuka popup
@@ -145,15 +167,15 @@ const Navbar = ({isLoggedIn}) => {
               </button>
             ) : (
               <>
-                <Link 
-                  to="/login" 
+                <Link
+                  to="/login"
                   className="block px-4 py-2 text-[#0B7077] hover:bg-gray-100"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Masuk
                 </Link>
-                <Link 
-                  to="/register" 
+                <Link
+                  to="/register"
                   className="block px-4 py-2 text-[#0B7077] font-medium hover:bg-gray-100"
                   onClick={() => setIsMenuOpen(false)}
                 >
