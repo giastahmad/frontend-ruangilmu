@@ -13,12 +13,23 @@ const CourseDetailPage = () => {
   const [course, setCourse] = useState(null);
   const [error, setError] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [currentRating, setCurrentRating] = useState(0);
   const [enrollLoading, setEnrollLoading] = useState(false);
   const [enrollStatus, setEnrollStatus] = useState(null);
+  const [reviewText, setReviewText] = useState('');
+  const [showReviewForm, setShowReviewForm] = useState(true);
+  const [reviewFilter, setReviewFilter] = useState('Semua');
   const params = useParams();
   const location = useLocation();
   const navigate = useNavigate();
+  
+  // Sample reviews for demonstration
+  const [reviews, setReviews] = useState([
+    { id: 1, username: "Ahmad Fauzi", date: "12 Mei 2025", text: "Kursus ini sangat membantu saya memahami konsep dasar. Materinya disajikan dengan jelas.", type: "Dukungan" },
+    { id: 2, username: "Budi Santoso", date: "8 Mei 2025", text: "Beberapa materi kurang mendalam dan butuh penjelasan lebih detail.", type: "Keluhan" },
+    { id: 3, username: "Citra Dewi", date: "2 Mei 2025", text: "Instrukturnya sangat responsif terhadap pertanyaan-pertanyaan di forum diskusi.", type: "Dukungan" },
+    { id: 4, username: "Diana Putri", date: "29 April 2025", text: "Saya suka format video pendek yang diberikan, mudah dipahami!", type: "Dukungan" },
+    { id: 5, username: "Eko Prasetyo", date: "25 April 2025", text: "Kurang puas dengan tugas akhirnya, instruksinya tidak jelas.", type: "Keluhan" },
+  ]);
   
   console.log('All URL params:', params);
   console.log('Current path:', location.pathname);
@@ -90,22 +101,30 @@ const CourseDetailPage = () => {
     setActiveTab(tab);
   };
 
-  // Function to update rating
-  const updateRating = (rating) => {
-    setCurrentRating(rating);
+  // Function to handle review submission
+  const handleSubmitReview = () => {
+    if (reviewText.trim() === '') return;
+    
+    // Add the new review to the reviews list
+    const newReview = {
+      id: reviews.length + 1,
+      username: "Anda", // Assuming the user's name
+      date: formatDate(new Date()),
+      text: reviewText,
+      type: "Dukungan" // Default type, could be determined by sentiment analysis
+    };
+    
+    setReviews([newReview, ...reviews]);
+    setReviewText('');
+    setShowReviewForm(false); // Hide the form after submission
   };
 
-  // Get rating text based on current rating
-  const getRatingText = () => {
-    const ratingMessages = [
-      "Klik bintang untuk memberi nilai (1-5)",
-      "Buruk 🤢",
-      "Cukup 😐",
-      "Lumayan 👍",
-      "Bagus 😊",
-      "Sangat Bagus 🤩"
-    ];
-    return ratingMessages[currentRating];
+  // Function to filter reviews
+  const getFilteredReviews = () => {
+    if (reviewFilter === 'Semua') {
+      return reviews;
+    }
+    return reviews.filter(review => review.type === reviewFilter);
   };
 
   // Function to handle course enrollment
@@ -268,41 +287,76 @@ const CourseDetailPage = () => {
                   
                   {/* Review Section */}
                   <div className="bg-white rounded-lg p-6">
-                    <h3 className="text-lg font-bold text-gray-800 mb-6">Bagaimana pengalaman belajarmu?</h3>
+                    {showReviewForm ? (
+                      <div>
+                        <h3 className="text-lg font-bold text-gray-800 mb-6">Bagaimana pengalaman belajarmu?</h3>
+                        <div className="mb-6">
+                          <textarea
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0B7077] focus:border-transparent"
+                            rows="4"
+                            placeholder="Bagaimana pengalaman belajarmu di kelas ini?"
+                            value={reviewText}
+                            onChange={(e) => setReviewText(e.target.value)}
+                          ></textarea>
 
-                    <div className="flex flex-col md:flex-row gap-6">
-                      {/* Rating Stars */}
-                      <div className="md:w-1/3">
-                        <h4 className="text-md font-semibold text-gray-800 mb-3">Beri Rating</h4>
-                        <div className="flex items-center space-x-1 mb-4">
-                          {[1, 2, 3, 4, 5].map((rating) => (
-                            <button
-                              key={rating}
-                              type="button"
-                              className={`text-3xl ${currentRating >= rating ? 'text-yellow-400' : 'text-gray-300'} hover:text-yellow-400 focus:outline-none`}
-                              onClick={() => updateRating(rating)}
+                          <div className="flex justify-end mt-4">
+                            <button 
+                              className="bg-[#0B7077] hover:bg-[#014b60] text-white px-6 py-2 rounded-md font-medium transition-colors"
+                              onClick={handleSubmitReview}
                             >
-                              ★
+                              Kirim Ulasan
                             </button>
-                          ))}
+                          </div>
                         </div>
-                        <p className="text-sm text-gray-500">{getRatingText()}</p>
                       </div>
+                    ) : (
+                      <div className="mb-6">
+                        <h3 className="text-lg font-bold text-gray-800 mb-2">Terima kasih atas ulasanmu!</h3>
+                        <p className="text-gray-600">Ulasanmu telah berhasil dikirim dan akan ditampilkan di bawah.</p>
+                      </div>
+                    )}
 
-                      {/* Review Form */}
-                      <div className="md:w-2/3">
-                        <h4 className="text-md font-semibold text-gray-800 mb-3">Tulis Ulasan</h4>
-                        <textarea
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0B7077] focus:border-transparent"
-                          rows="4"
-                          placeholder="Bagaimana pengalaman belajarmu di kelas ini?"
-                        ></textarea>
-
-                        <div className="flex justify-end mt-4">
-                          <button className="bg-[#0B7077] hover:bg-[#014b60] text-white px-6 py-2 rounded-md font-medium transition-colors">
-                            Kirim Ulasan
-                          </button>
+                    {/* Reviews List with Filter */}
+                    <div className="mt-8">
+                      <div className="flex justify-between items-center mb-6">
+                        <h3 className="text-lg font-bold text-gray-800">Ulasan Pengguna</h3>
+                        <div className="relative">
+                          <div className="inline-block">
+                            <select
+                              value={reviewFilter}
+                              onChange={(e) => setReviewFilter(e.target.value)}
+                              className="text-lg border-2 border-[#026078] rounded-md py-1 px-2"
+                            >
+                              <option value="Semua">Semua</option>
+                              <option value="Dukungan">Dukungan</option>
+                              <option value="Keluhan">Keluhan</option>
+                            </select>
+                          </div>
                         </div>
+                      </div>
+                      
+                      {/* Reviews */}
+                      <div className="space-y-6">
+                        {getFilteredReviews().length > 0 ? (
+                          getFilteredReviews().map((review) => (
+                            <div key={review.id} className="border-b border-gray-200 pb-6">
+                              <div className="flex justify-between items-center mb-2">
+                                <span className="font-semibold text-gray-800">{review.username}</span>
+                                <span className="text-sm text-gray-500">{review.date}</span>
+                              </div>
+                              <p className="text-gray-700 mb-2">{review.text}</p>
+                              <span className={`text-xs px-2 py-1 rounded-full ${
+                                review.type === 'Dukungan' 
+                                  ? 'bg-green-100 text-green-800' 
+                                  : 'bg-orange-100 text-orange-800'
+                              }`}>
+                                {review.type}
+                              </span>
+                            </div>
+                          ))
+                        ) : (
+                          <p className="text-gray-500 text-center py-4">Tidak ada ulasan yang ditemukan</p>
+                        )}
                       </div>
                     </div>
                   </div>
