@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom';
 import Navbar from '../components/jsx/Navbar';
 import Footer from '../components/jsx/Footer';
 import temporaryImage from '../components/img/temp.svg';
+import deleteIcon from '../components/img/delete.png';
+import PopupModal from '../components/jsx/Popup';
 
 const CourseDetailPage = () => {
   const { id } = useParams();
@@ -18,24 +20,15 @@ const CourseDetailPage = () => {
   const [reviewText, setReviewText] = useState('');
   const [showReviewForm, setShowReviewForm] = useState(true);
   const [reviewFilter, setReviewFilter] = useState('Semua');
-  const params = useParams();
+  const [reviews, setReviews] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedReviewId, setSelectedReviewId] = useState(null);
+
   const location = useLocation();
   const navigate = useNavigate();
 
-
-  // Sample reviews for demonstration
-  // const [reviews, setReviews] = useState([
-  //   { id: 1, username: "Ahmad Fauzi", date: "12 Mei 2025", text: "Kursus ini sangat membantu saya memahami konsep dasar. Materinya disajikan dengan jelas.", type: "Dukungan" },
-  //   { id: 2, username: "Budi Santoso", date: "8 Mei 2025", text: "Beberapa materi kurang mendalam dan butuh penjelasan lebih detail.", type: "Keluhan" },
-  //   { id: 3, username: "Citra Dewi", date: "2 Mei 2025", text: "Instrukturnya sangat responsif terhadap pertanyaan-pertanyaan di forum diskusi.", type: "Dukungan" },
-  //   { id: 4, username: "Diana Putri", date: "29 April 2025", text: "Saya suka format video pendek yang diberikan, mudah dipahami!", type: "Dukungan" },
-  //   { id: 5, username: "Eko Prasetyo", date: "25 April 2025", text: "Kurang puas dengan tugas akhirnya, instruksinya tidak jelas.", type: "Keluhan" },
-  // ]);
-
-  const [reviews, setReviews] = useState([]);
-
-  console.log('All URL params:', params);
-  console.log('Current path:', location.pathname);
+  const user = localStorage.getItem('user');
+  const userId = user ? JSON.parse(user).id : null;
 
   useEffect(() => {
     const fetchCourseDetails = async () => {
@@ -50,8 +43,6 @@ const CourseDetailPage = () => {
 
         const data = await response.json();
         setCourse(data.data);
-        console.log('DATA course :', course)
-        console.log('DATA data :', data)
       } catch (err) {
         console.error('Error fetching course details:', err);
         setError(err.message);
@@ -102,24 +93,6 @@ const CourseDetailPage = () => {
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
-  };
-
-  // Function to handle review submission
-  const handleSubmitReview = () => {
-    if (reviewText.trim() === '') return;
-
-    // Add the new review to the reviews list
-    const newReview = {
-      id: reviews.length + 1,
-      username: "Anda", // Assuming the user's name
-      date: formatDate(new Date()),
-      text: reviewText,
-      type: "Dukungan" // Default type, could be determined by sentiment analysis
-    };
-
-    setReviews([newReview, ...reviews]);
-    setReviewText('');
-    setShowReviewForm(false); // Hide the form after submission
   };
 
   // Function to filter reviews
@@ -191,14 +164,14 @@ const CourseDetailPage = () => {
   // Fetch semua reviews dari course yang ada
   const fetchReviews = async () => {
     try {
-      const res = await fetch(`http://localhost:8000/review/course/${id}`,{
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-          }
+      const res = await fetch(`http://localhost:8000/review/course/${id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+        }
       });
-      
+
       if (!res.ok) {
         throw new Error('Gagal mengambil data ulasan');
       }
@@ -213,7 +186,88 @@ const CourseDetailPage = () => {
     }
   }
 
-  console.log('Review:', fetchReviews);
+  // Atur post review ke server
+  const postReview = async () => {
+    try {
+      const res = await fetch(`http://localhost:8000/review`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+        },
+        body: JSON.stringify({
+          course_id: id,
+          content: reviewText
+        })
+      });
+
+      if (!res.ok) {
+        throw new Error('Gagal mengirim ulasan');
+      }
+
+      const response = await res.json();
+      const dataReview = response.data;
+
+      setReviews(prevReview => [...prevReview, dataReview]);
+      fetchReviews();
+      setShowReviewForm(false);
+    } catch (error) {
+      console.error('Error: ', error);
+    }
+  }
+
+  useEffect(() => {
+    const checkUserReview = async () => {
+      try {
+        const res = await fetch(`http://localhost:8000/review/user/course/${id}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+          }
+        });
+
+        if (!res.ok) {
+          throw new Error('Gagal mengambil data ulasan pengguna');
+        }
+
+        const response = await res.json();
+
+        if (response.status === 'success' && response.data) {
+          setShowReviewForm(false);
+        } else {
+          setShowReviewForm(true);
+        }
+
+      } catch (error) {
+        console.error('Error: ', error);
+        setShowReviewForm(true);
+      }
+    };
+
+    checkUserReview();
+  }, [id]);
+
+  const deleteHandleClick = async (reviewId) => {
+    try {
+      const res = await fetch(`http://localhost:8000/review/delete/${reviewId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+        }
+      });
+      if (!res.ok) {
+        throw new Error('Gagal menghapus ulasan');
+      }
+
+      setReviews((prevReviews) => prevReviews.filter((review) => review.review_id !== reviewId));
+      setReviewText('');
+      setShowReviewForm(true);
+    } catch (error) {
+      console.error('Error deleting review:', error);
+    }
+  };
 
   if (loading) {
     return (
@@ -273,14 +327,14 @@ const CourseDetailPage = () => {
               <p className="text-gray-600 mb-4">Dibuat: {formatDate(course.created_at)}</p>
 
               {/* Course Tabs */}
-              <div className="border-b border-gray-200 mb-8">
+              <div className="border-b border-gray-200 mb-6">
                 <nav className="flex space-x-8">
                   {['Overview', 'Kurikulum', 'Penulis', 'Ulasan'].map((tab) => (
                     <button
                       key={tab}
                       className={`py-4 px-1 ${activeTab === tab
-                          ? 'active-tab border-b-3 border-[#0B7077] text-[#0B7077] font-semibold'
-                          : 'text-gray-500 hover:text-[#0B7077]'
+                        ? 'active-tab border-b-3 border-[#0B7077] text-[#0B7077] font-semibold'
+                        : 'text-gray-500 hover:text-[#0B7077]'
                         }`}
                       onClick={() => handleTabChange(tab)}
                     >
@@ -320,10 +374,8 @@ const CourseDetailPage = () => {
 
               {activeTab === 'Ulasan' && (
                 <div>
-                  <h2 className="text-xl font-bold text-gray-800 mb-4">ULASAN KURSUS</h2>
-
                   {/* Review Section */}
-                  <div className="bg-white rounded-lg p-6">
+                  <div className="bg-white rounded-lg">
                     {showReviewForm ? (
                       <div>
                         <h3 className="text-lg font-bold text-gray-800 mb-6">Bagaimana pengalaman belajarmu?</h3>
@@ -339,22 +391,18 @@ const CourseDetailPage = () => {
                           <div className="flex justify-end mt-4">
                             <button
                               className="bg-[#0B7077] hover:bg-[#014b60] text-white px-6 py-2 rounded-md font-medium transition-colors"
-                              onClick={handleSubmitReview}
+                              onClick={postReview}
                             >
                               Kirim Ulasan
                             </button>
                           </div>
                         </div>
                       </div>
-                    ) : (
-                      <div className="mb-6">
-                        <h3 className="text-lg font-bold text-gray-800 mb-2">Terima kasih atas ulasanmu!</h3>
-                        <p className="text-gray-600">Ulasanmu telah berhasil dikirim dan akan ditampilkan di bawah.</p>
-                      </div>
-                    )}
+                    ) : null
+                    }
 
                     {/* Reviews List with Filter */}
-                    <div className="mt-8">
+                    <div>
                       <div className="flex justify-between items-center mb-6">
                         <h3 className="text-lg font-bold text-gray-800">Ulasan Pengguna</h3>
                         <div className="relative">
@@ -365,8 +413,8 @@ const CourseDetailPage = () => {
                               className="text-lg border-2 border-[#026078] rounded-md py-1 px-2"
                             >
                               <option value="Semua">Semua</option>
-                              <option value="positif">Dukungan</option>
-                              <option value="negatif">Keluhan</option>
+                              <option value="positif">Positif</option>
+                              <option value="negatif">Negatif</option>
                             </select>
                           </div>
                         </div>
@@ -376,18 +424,31 @@ const CourseDetailPage = () => {
                       <div className="space-y-6">
                         {getFilteredReviews().length > 0 ? (
                           getFilteredReviews().map((review) => (
-                            <div key={review.review_id} className="border-b border-gray-200 pb-6">
+                            <div key={review.review_id} className="border-b border-gray-200 pb-4">
                               <div className="flex justify-between items-center mb-2">
                                 <span className="font-semibold text-gray-800">{review.nama}</span>
                                 <span className="text-sm text-gray-500">{formatDate(review.updated_at)}</span>
                               </div>
                               <p className="text-gray-700 mb-2">{review.content}</p>
-                              <span className={`text-xs px-2 py-1 rounded-full ${review.sentiment === 'positif'
+                              <div className='flex items-center justify-between'>
+                                <span className={`text-xs px-2 py-1 rounded-full ${review.sentiment === 'positif'
                                   ? 'bg-green-100 text-green-800'
                                   : 'bg-orange-100 text-orange-800'
-                                }`}>
-                                {review.sentiment === 'positif' ? 'Dukungan' : 'Keluhan'}
-                              </span>
+                                  }`}>
+                                  {review.sentiment === 'positif' ? 'Positif' : 'Negatif'}
+                                </span>
+                                {review.user_id === userId && (
+                                  <img 
+                                    src={deleteIcon}
+                                    alt="delete"
+                                    className="w-4 cursor-pointer"
+                                    onClick={() => { 
+                                      setSelectedReviewId(review.review_id);
+                                      setShowModal(true); 
+                                    }} 
+                                  />
+                                )}
+                              </div>
                             </div>
                           ))
                         ) : (
@@ -458,6 +519,20 @@ const CourseDetailPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Confirmation Modal */}
+      <PopupModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        onConfirm={() => {
+          if (selectedReviewId) {
+            deleteHandleClick(selectedReviewId);
+          }
+        }}
+        message="Apakah Anda yakin ingin menghapus ulasan ini?"
+        confirmText="Hapus"
+        cancelText="Batal"
+      />
 
       {/* Footer */}
       <Footer />
