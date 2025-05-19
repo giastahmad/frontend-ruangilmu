@@ -100,7 +100,7 @@ const ProfilePage = () => {
               <div className="flex flex-col items-center">
                 <div className="relative mb-4">
                   <img
-                    src={user.photo_profile || '/default-profile.jpg'}
+                    src={user.photo_profile || '/images/profile.png'}
                     alt="Profile"
                     className="w-32 h-32 rounded-md border-4 border-[#0B7077] object-cover"
                   />
@@ -194,7 +194,7 @@ const ProfilePage = () => {
                   {activeCourses.length === 0 ? (
                     <div className="text-center py-8">
                       <p className="text-gray-500">Anda belum mengikuti kelas apapun.</p>
-                      <Link to="/courses">
+                      <Link to="/course">
                         <button className="mt-4 bg-[#0B7077] text-white px-6 py-2 rounded-md hover:bg-[#014b60] transition">
                           Jelajahi Kelas
                         </button>
@@ -208,7 +208,7 @@ const ProfilePage = () => {
                           className="bg-white border border-gray-200 rounded-lg overflow-hidden transform transition duration-300 hover:translate-y-[-3px] hover:shadow-lg"
                         >
                           <img
-                            src={course.course_image_profile || '/default-course.jpg'}
+                            src={course.course_image_cover || '/default-course.jpg'}
                             alt={course.course_name}
                             className="w-full h-40 object-cover"
                           />
@@ -223,7 +223,7 @@ const ProfilePage = () => {
                                 style={{ width: `${course.progress || 0}%` }}
                               ></div>
                             </div>
-                            <Link to={`/courses/${course.course_id}`}>
+                            <Link to={`/modul/${course.course_id}`}>
                               <button className="w-full bg-[#0B7077] text-white py-2 rounded-md hover:bg-[#014b60] transition">
                                 Lanjut Belajar
                               </button>

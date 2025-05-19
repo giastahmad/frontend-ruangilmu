@@ -84,9 +84,12 @@ const Login = () => {
         });
   
         const data = await response.json();
+        
+
   
         if (response.ok) {
-          localStorage.setItem('accessToken', data.accessToken);
+          console.log("Masuk ok", response)
+          localStorage.setItem('accessToken', data.data.auth.accessToken);
           localStorage.setItem('user', JSON.stringify(data.user));
           showToastMessage(data.message || 'Google login berhasil!', 'success');
   
@@ -122,19 +125,21 @@ const Login = () => {
       });
 
       const data = await response.json();
+      console.log("Masuk ok", response)
 
       if (!response.ok) {
+        console.log("Masuk Kok", response)
         showToastMessage(data.message || 'Gagal Masuk', 'error');
         sessionStorage.getItem('loginStatus', 'error');
       } else {
         showToastMessage('Berhasil Masuk', 'success');
         sessionStorage.setItem('loginStatus', 'success');
 
-        if (data.accessToken) {
-          localStorage.setItem('accessToken', data.accessToken);
+        if (data.data.auth.accessToken) {
+          localStorage.setItem('accessToken', data.data.auth.accessToken);
         }
 
-        if (data.user) {
+        if (data.data.user) {
           localStorage.setItem('user', JSON.stringify(data.user));
         }
 

@@ -27,8 +27,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/edit_profile" element={<EditProfile />} />
         <Route path="/quiz" element={<QuizApp />} />
-        <Route path="/modul" element={<Modul />} />
-        {/* Tambahkan route lain sesuai kebutuhan */}
+        <Route path="/modul/:id" element={<Modul />} />
       </Routes>
     </Router>
   );

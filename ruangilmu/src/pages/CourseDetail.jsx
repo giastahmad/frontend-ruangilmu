@@ -144,7 +144,7 @@ const CourseDetailPage = () => {
       
       // Redirect to learning page or dashboard after successful enrollment
       setTimeout(() => {
-        navigate('/modul');
+        navigate(`/modul/${id}`);
       }, 2000);
       
     } catch (err) {
