@@ -23,6 +23,7 @@ const CourseDetailPage = () => {
   const [reviews, setReviews] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedReviewId, setSelectedReviewId] = useState(null);
+  const [showCertificate, setShowCertificate] = useState(false);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -245,6 +246,37 @@ const CourseDetailPage = () => {
       }
     };
 
+    // Cek apakah user sudah selesai proses pembelajarannya pada course ini
+    const checkUserFinished = async () => {
+      try {
+        const res = await fetch(`http://localhost:8000/course/${id}/certificate`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+          }
+        });
+
+        if (!res.ok) {
+          throw new Error('Gagal mengambil data sertifikat');
+        }
+
+        const response = await res.json();
+
+        if (response.status === 'success' && response.data) {
+          setShowCertificate(true);
+        }
+
+        if (!response.status === 'success') {
+          setShowCertificate(false);
+        }
+
+      } catch (error) {
+        console.error('Error: ', error);
+      }
+    };
+
+    checkUserFinished()
     checkUserReview();
   }, [id]);
 
@@ -268,6 +300,36 @@ const CourseDetailPage = () => {
       console.error('Error deleting review:', error);
     }
   };
+
+  const handleDownloadCertificate = async () => {
+    try {
+      const res = await fetch(`http://localhost:8000/course/${id}/certificate/download`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+        }
+      });
+
+      if (!res.ok) {
+        throw new Error('Gagal mengunduh sertifikat');
+      }
+      
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+
+      a.href = url;
+      a.download = `certificate.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+
+    } catch (error) {
+      console.error('Error downloading certificate:', error);
+    }
+  };
+
 
   if (loading) {
     return (
@@ -438,14 +500,14 @@ const CourseDetailPage = () => {
                                   {review.sentiment === 'positif' ? 'Positif' : 'Negatif'}
                                 </span>
                                 {review.user_id === userId && (
-                                  <img 
+                                  <img
                                     src={deleteIcon}
                                     alt="delete"
                                     className="w-4 cursor-pointer"
-                                    onClick={() => { 
+                                    onClick={() => {
                                       setSelectedReviewId(review.review_id);
-                                      setShowModal(true); 
-                                    }} 
+                                      setShowModal(true);
+                                    }}
                                   />
                                 )}
                               </div>
@@ -515,6 +577,17 @@ const CourseDetailPage = () => {
               >
                 {enrollLoading ? 'Mendaftar...' : 'Daftar Sekarang'}
               </button>
+
+
+              {showCertificate && (
+                <button
+                  className={`bg-[#0B7077] hover:bg-[#014b60] mt-3 text-white w-full py-3 rounded-md font-medium transition ${enrollLoading ? 'opacity-70 cursor-not-allowed' : ''
+                    }`}
+                  onClick={handleDownloadCertificate}
+                >
+                  Download Sertifikat
+                </button>
+              )}
             </div>
           </div>
         </div>
