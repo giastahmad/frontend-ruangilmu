@@ -34,6 +34,10 @@ const CourseDetailPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedReviewId, setSelectedReviewId] = useState(null);
   const [showCertificate, setShowCertificate] = useState(false);
+  const [isEnrolled, setIsEnrolled] = useState(false);
+  const [buttonText, setButtonText] = useState('Daftar Sekarang');
+  const [buttonAction, setButtonAction] = useState('enroll');
+
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -70,7 +74,39 @@ const CourseDetailPage = () => {
     setIsLoggedIn(!!token);
 
     fetchCourseDetails();
-  }, [id]);
+
+    if (isLoggedIn) {
+      checkEnrollmentStatus();
+    }
+  }, [id, isLoggedIn]);
+
+  const checkEnrollmentStatus = async () => {
+    try {
+      const response = await apiService.get(`http://localhost:8000/courses/${id}/enrollment-status`);
+      
+      if (!response.ok) {
+        console.log('User not enrolled in this course');
+        return;
+      }
+      
+      const data = await response.json();
+      
+      if (data.status === 'success' && data.data.enrolled) {
+        setIsEnrolled(true);
+        
+        // Check if user has completed the course
+        if (showCertificate) {
+          setButtonText('Ulas Kelas');
+          setButtonAction('review');
+        } else {
+          setButtonText('Lanjut Belajar');
+          setButtonAction('continue');
+        }
+      }
+    } catch (error) {
+      console.error('Error checking enrollment status:', error);
+    }
+  };
 
   const fetchModuleData = async () => {
     setLoading(true);
@@ -186,6 +222,15 @@ const CourseDetailPage = () => {
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
+
+    if (tab === 'Ulasan' && buttonAction === 'review') {
+      setTimeout(() => {
+        const reviewForm = document.getElementById('review-form');
+        if (reviewForm) {
+          reviewForm.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    }
   };
 
   // Function to filter reviews
@@ -194,6 +239,25 @@ const CourseDetailPage = () => {
       return reviews;
     }
     return reviews.filter(review => review.type === reviewFilter);
+  };
+
+  // Button action handler based on user status
+  const handleButtonClick = () => {
+    switch (buttonAction) {
+      case 'enroll':
+        handleEnrollCourse();
+        break;
+      case 'continue':
+        // Navigate to the learning page
+        navigate(`/modul/${id}`);
+        break;
+      case 'review':
+        // Switch to review tab and focus on review form
+        navigate(`/modul/${id}`);
+        break;
+      default:
+        handleEnrollCourse();
+    }
   };
 
   // Function to handle course enrollment
@@ -223,6 +287,11 @@ const CourseDetailPage = () => {
         success: true,
         message: 'Berhasil mendaftar kelas! Anda dapat mengakses kelas ini di dashboard.'
       });
+
+      // Update button state after successful enrollment
+      setIsEnrolled(true);
+      setButtonText('Lanjut Belajar');
+      setButtonAction('continue');
 
       // Redirect to learning page or dashboard after successful enrollment
       setTimeout(() => {
@@ -326,10 +395,13 @@ const CourseDetailPage = () => {
 
         if (response.status === 'success' && response.data) {
           setShowCertificate(true);
+          setButtonText('Lihat Materi');
+          setButtonAction('continue')
         }
 
         if (!response.status === 'success') {
           setShowCertificate(false);
+          setButtonText('Lanjut Belajar')
         }
 
       } catch (error) {
@@ -361,7 +433,7 @@ const CourseDetailPage = () => {
     try {
 
       const res = await apiService.get(`http://localhost:8000/course/${id}/certificate/download`);
-      
+
       // const res = await fetch(`http://localhost:8000/course/${id}/certificate/download`, {
       //   method: 'GET',
       //   headers: {
@@ -628,10 +700,10 @@ const CourseDetailPage = () => {
               <button
                 className={`bg-[#0B7077] hover:bg-[#014b60] text-white w-full py-3 rounded-md font-medium transition ${enrollLoading ? 'opacity-70 cursor-not-allowed' : ''
                   }`}
-                onClick={handleEnrollCourse}
+                onClick={handleButtonClick}
                 disabled={enrollLoading}
               >
-                {enrollLoading ? 'Mendaftar...' : 'Daftar Sekarang'}
+                {enrollLoading ? 'Mendaftar...' : buttonText}
               </button>
 
 

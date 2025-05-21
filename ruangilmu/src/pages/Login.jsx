@@ -90,7 +90,7 @@ const Login = () => {
         if (response.ok) {
           console.log("Masuk ok", response)
           localStorage.setItem('accessToken', data.data.auth.accessToken);
-          localStorage.setItem('user', JSON.stringify(data.user));
+          localStorage.setItem('user', JSON.stringify(data.data.user));
           showToastMessage(data.message || 'Google login berhasil!', 'success');
   
           setTimeout(() => {
