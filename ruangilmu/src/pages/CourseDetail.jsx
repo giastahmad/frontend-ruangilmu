@@ -1,11 +1,13 @@
 // src/pages/CourseDetailPage.jsx
-import React, { useEffect, useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/jsx/Navbar';
 import Footer from '../components/jsx/Footer';
 import temporaryImage from '../components/img/temp.svg';
 import ModulContent from '../components/jsx/ModulContent';
+import deleteIcon from '../components/img/delete.png';
+import PopupModal from '../components/jsx/Popup';
 
 const CourseDetailPage = () => {
   const { id } = useParams();
@@ -27,20 +29,16 @@ const CourseDetailPage = () => {
       stats: []
     });
   const params = useParams();
+  const [reviews, setReviews] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedReviewId, setSelectedReviewId] = useState(null);
+  const [showCertificate, setShowCertificate] = useState(false);
+
   const location = useLocation();
   const navigate = useNavigate();
-  
-  // Sample reviews for demonstration
-  const [reviews, setReviews] = useState([
-    { id: 1, username: "Ahmad Fauzi", date: "12 Mei 2025", text: "Kursus ini sangat membantu saya memahami konsep dasar. Materinya disajikan dengan jelas.", type: "Dukungan" },
-    { id: 2, username: "Budi Santoso", date: "8 Mei 2025", text: "Beberapa materi kurang mendalam dan butuh penjelasan lebih detail.", type: "Keluhan" },
-    { id: 3, username: "Citra Dewi", date: "2 Mei 2025", text: "Instrukturnya sangat responsif terhadap pertanyaan-pertanyaan di forum diskusi.", type: "Dukungan" },
-    { id: 4, username: "Diana Putri", date: "29 April 2025", text: "Saya suka format video pendek yang diberikan, mudah dipahami!", type: "Dukungan" },
-    { id: 5, username: "Eko Prasetyo", date: "25 April 2025", text: "Kurang puas dengan tugas akhirnya, instruksinya tidak jelas.", type: "Keluhan" },
-  ]);
-  
-  console.log('All URL params:', params);
-  console.log('Current path:', location.pathname);
+
+  const user = localStorage.getItem('user');
+  const userId = user ? JSON.parse(user).id : null;
 
   useEffect(() => {
     const fetchCourseDetails = async () => {
@@ -48,11 +46,11 @@ const CourseDetailPage = () => {
         setLoading(true);
         console.log('course ID : ', id)
         const response = await fetch(`http://localhost:8000/courses/${id}`);
-        
+
         if (!response.ok) {
           throw new Error(`Gagal menampilkan detail kelas: ${response.status}`);
         }
-        
+
         const data = await response.json();
         setCourse(data.data);
         console.log('DATA course :', course)
@@ -69,7 +67,7 @@ const CourseDetailPage = () => {
 
     const token = localStorage.getItem('accessToken');
     setIsLoggedIn(!!token);
-    
+
     fetchCourseDetails();
   }, [id]);
 
@@ -174,12 +172,12 @@ const CourseDetailPage = () => {
     try {
       // Make sure price is a valid number
       const numericPrice = parseFloat(price);
-      
+
       // Check if the conversion result is valid
       if (isNaN(numericPrice) || numericPrice == 0) {
         return 'Gratis';
       }
-      
+
       return new Intl.NumberFormat('id-ID', {
         style: 'currency',
         currency: 'IDR',
@@ -195,24 +193,6 @@ const CourseDetailPage = () => {
     setActiveTab(tab);
   };
 
-  // Function to handle review submission
-  const handleSubmitReview = () => {
-    if (reviewText.trim() === '') return;
-    
-    // Add the new review to the reviews list
-    const newReview = {
-      id: reviews.length + 1,
-      username: "Anda", // Assuming the user's name
-      date: formatDate(new Date()),
-      text: reviewText,
-      type: "Dukungan" // Default type, could be determined by sentiment analysis
-    };
-    
-    setReviews([newReview, ...reviews]);
-    setReviewText('');
-    setShowReviewForm(false); // Hide the form after submission
-  };
-
   // Function to filter reviews
   const getFilteredReviews = () => {
     if (reviewFilter === 'Semua') {
@@ -224,18 +204,18 @@ const CourseDetailPage = () => {
   // Function to handle course enrollment
   const handleEnrollCourse = async () => {
     const token = localStorage.getItem('accessToken');
-    
+
     // Check if user is logged in
     if (!token) {
       // Redirect to login page if not logged in
       navigate('/login', { state: { from: location.pathname, message: 'Silakan login untuk mendaftar kelas' } });
       return;
     }
-    
+
     try {
       setEnrollLoading(true);
       setEnrollStatus(null);
-      
+
       const response = await fetch(`http://localhost:8000/courses/${id}/enroll`, {
         method: 'POST',
         headers: {
@@ -243,23 +223,23 @@ const CourseDetailPage = () => {
           'Authorization': `Bearer ${token}`
         }
       });
-      
+
       const data = await response.json();
-      
+
       if (!response.ok) {
         throw new Error(data.message || 'Gagal mendaftar kelas');
       }
-      
+
       setEnrollStatus({
         success: true,
         message: 'Berhasil mendaftar kelas! Anda dapat mengakses kelas ini di dashboard.'
       });
-      
+
       // Redirect to learning page or dashboard after successful enrollment
       setTimeout(() => {
         navigate(`/modul/${id}`);
       }, 2000);
-      
+
     } catch (err) {
       console.error('Error enrolling course:', err);
       setEnrollStatus({
@@ -270,6 +250,183 @@ const CourseDetailPage = () => {
       setEnrollLoading(false);
     }
   };
+
+
+  // Fetch review ketika pengguna mengklik tab Ulasan
+  useEffect(() => {
+    if (activeTab === 'Ulasan') {
+      fetchReviews();
+    }
+  }, [activeTab]);
+
+  // Fetch semua reviews dari course yang ada
+  const fetchReviews = async () => {
+    try {
+      const res = await fetch(`http://localhost:8000/review/course/${id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+        }
+      });
+
+      if (!res.ok) {
+        throw new Error('Gagal mengambil data ulasan');
+      }
+
+      const response = await res.json();
+      const dataReview = response.data;
+
+      setReviews(dataReview);
+      console.log('DATA review :', dataReview)
+    } catch (error) {
+      console.error('Error: ', error);
+    }
+  }
+
+  // Atur post review ke server
+  const postReview = async () => {
+    try {
+      const res = await fetch(`http://localhost:8000/review`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+        },
+        body: JSON.stringify({
+          course_id: id,
+          content: reviewText
+        })
+      });
+
+      if (!res.ok) {
+        throw new Error('Gagal mengirim ulasan');
+      }
+
+      const response = await res.json();
+      const dataReview = response.data;
+
+      setReviews(prevReview => [...prevReview, dataReview]);
+      fetchReviews();
+      setShowReviewForm(false);
+    } catch (error) {
+      console.error('Error: ', error);
+    }
+  }
+
+  useEffect(() => {
+    const checkUserReview = async () => {
+      try {
+        const res = await fetch(`http://localhost:8000/review/user/course/${id}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+          }
+        });
+
+        if (!res.ok) {
+          throw new Error('Gagal mengambil data ulasan pengguna');
+        }
+
+        const response = await res.json();
+
+        if (response.status === 'success' && response.data) {
+          setShowReviewForm(false);
+        } else {
+          setShowReviewForm(true);
+        }
+
+      } catch (error) {
+        console.error('Error: ', error);
+        setShowReviewForm(true);
+      }
+    };
+
+    // Cek apakah user sudah selesai proses pembelajarannya pada course ini
+    const checkUserFinished = async () => {
+      try {
+        const res = await fetch(`http://localhost:8000/course/${id}/certificate`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+          }
+        });
+
+        if (!res.ok) {
+          throw new Error('Gagal mengambil data sertifikat');
+        }
+
+        const response = await res.json();
+
+        if (response.status === 'success' && response.data) {
+          setShowCertificate(true);
+        }
+
+        if (!response.status === 'success') {
+          setShowCertificate(false);
+        }
+
+      } catch (error) {
+        console.error('Error: ', error);
+      }
+    };
+
+    checkUserFinished()
+    checkUserReview();
+  }, [id]);
+
+  const deleteHandleClick = async (reviewId) => {
+    try {
+      const res = await fetch(`http://localhost:8000/review/delete/${reviewId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+        }
+      });
+      if (!res.ok) {
+        throw new Error('Gagal menghapus ulasan');
+      }
+
+      setReviews((prevReviews) => prevReviews.filter((review) => review.review_id !== reviewId));
+      setReviewText('');
+      setShowReviewForm(true);
+    } catch (error) {
+      console.error('Error deleting review:', error);
+    }
+  };
+
+  const handleDownloadCertificate = async () => {
+    try {
+      const res = await fetch(`http://localhost:8000/course/${id}/certificate/download`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+        }
+      });
+
+      if (!res.ok) {
+        throw new Error('Gagal mengunduh sertifikat');
+      }
+      
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+
+      a.href = url;
+      a.download = `certificate.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+
+    } catch (error) {
+      console.error('Error downloading certificate:', error);
+    }
+  };
+
 
   if (loading) {
     return (
@@ -303,7 +460,7 @@ const CourseDetailPage = () => {
     <div className="flex flex-col min-h-screen bg-gray-50">
       {/* Navigation */}
       <div className="bg-[#D2E6E4] shadow-sm">
-        <Navbar isLoggedIn={isLoggedIn}/>
+        <Navbar isLoggedIn={isLoggedIn} />
       </div>
 
       {/* Course Details Content */}
@@ -313,9 +470,9 @@ const CourseDetailPage = () => {
           {/* Main Course Content */}
           <div className="lg:w-2/3">
             <div className="bg-white rounded-lg shadow-sm p-8">
-            <div className="mb-6">
-                <img 
-                  src={course.course_image_cover} 
+              <div className="mb-6">
+                <img
+                  src={course.course_image_cover}
                   alt={course.course_name}
                   className="w-full h-32 object-cover rounded-lg mb-4"
                   onError={(e) => {
@@ -324,21 +481,20 @@ const CourseDetailPage = () => {
                   }}
                 />
               </div>
-              
+
               <h1 className="text-3xl font-bold text-gray-800 mb-4">{course.course_name}</h1>
               <p className="text-gray-600 mb-4">Dibuat: {formatDate(course.created_at)}</p>
 
               {/* Course Tabs */}
-              <div className="border-b border-gray-200 mb-8">
+              <div className="border-b border-gray-200 mb-6">
                 <nav className="flex space-x-8">
                   {['Overview', 'Kurikulum', 'Penulis', 'Ulasan'].map((tab) => (
                     <button
                       key={tab}
-                      className={`py-4 px-1 ${
-                        activeTab === tab
-                          ? 'active-tab border-b-3 border-[#0B7077] text-[#0B7077] font-semibold'
-                          : 'text-gray-500 hover:text-[#0B7077]'
-                      }`}
+                      className={`py-4 px-1 ${activeTab === tab
+                        ? 'active-tab border-b-3 border-[#0B7077] text-[#0B7077] font-semibold'
+                        : 'text-gray-500 hover:text-[#0B7077]'
+                        }`}
                       onClick={() => handleTabChange(tab)}
                     >
                       {tab}
@@ -353,8 +509,8 @@ const CourseDetailPage = () => {
                   {/* Course Description */}
                   <div className="mb-8">
                     <h2 className="text-xl font-bold text-gray-800 mb-4">DESKRIPSI KURSUS</h2>
-                
-                      <p className="text-gray-600 mb-4">
+
+                    <p className="text-gray-600 mb-4">
                       {course.course_description}
                     </p>
                   </div>
@@ -374,10 +530,8 @@ const CourseDetailPage = () => {
 
               {activeTab === 'Ulasan' && (
                 <div>
-                  <h2 className="text-xl font-bold text-gray-800 mb-4">ULASAN KURSUS</h2>
-                  
                   {/* Review Section */}
-                  <div className="bg-white rounded-lg p-6">
+                  <div className="bg-white rounded-lg">
                     {showReviewForm ? (
                       <div>
                         <h3 className="text-lg font-bold text-gray-800 mb-6">Bagaimana pengalaman belajarmu?</h3>
@@ -391,24 +545,20 @@ const CourseDetailPage = () => {
                           ></textarea>
 
                           <div className="flex justify-end mt-4">
-                            <button 
+                            <button
                               className="bg-[#0B7077] hover:bg-[#014b60] text-white px-6 py-2 rounded-md font-medium transition-colors"
-                              onClick={handleSubmitReview}
+                              onClick={postReview}
                             >
                               Kirim Ulasan
                             </button>
                           </div>
                         </div>
                       </div>
-                    ) : (
-                      <div className="mb-6">
-                        <h3 className="text-lg font-bold text-gray-800 mb-2">Terima kasih atas ulasanmu!</h3>
-                        <p className="text-gray-600">Ulasanmu telah berhasil dikirim dan akan ditampilkan di bawah.</p>
-                      </div>
-                    )}
+                    ) : null
+                    }
 
                     {/* Reviews List with Filter */}
-                    <div className="mt-8">
+                    <div>
                       <div className="flex justify-between items-center mb-6">
                         <h3 className="text-lg font-bold text-gray-800">Ulasan Pengguna</h3>
                         <div className="relative">
@@ -419,30 +569,42 @@ const CourseDetailPage = () => {
                               className="text-lg border-2 border-[#026078] rounded-md py-1 px-2"
                             >
                               <option value="Semua">Semua</option>
-                              <option value="Dukungan">Dukungan</option>
-                              <option value="Keluhan">Keluhan</option>
+                              <option value="positif">Positif</option>
+                              <option value="negatif">Negatif</option>
                             </select>
                           </div>
                         </div>
                       </div>
-                      
+
                       {/* Reviews */}
                       <div className="space-y-6">
                         {getFilteredReviews().length > 0 ? (
                           getFilteredReviews().map((review) => (
-                            <div key={review.id} className="border-b border-gray-200 pb-6">
+                            <div key={review.review_id} className="border-b border-gray-200 pb-4">
                               <div className="flex justify-between items-center mb-2">
-                                <span className="font-semibold text-gray-800">{review.username}</span>
-                                <span className="text-sm text-gray-500">{review.date}</span>
+                                <span className="font-semibold text-gray-800">{review.nama}</span>
+                                <span className="text-sm text-gray-500">{formatDate(review.updated_at)}</span>
                               </div>
-                              <p className="text-gray-700 mb-2">{review.text}</p>
-                              <span className={`text-xs px-2 py-1 rounded-full ${
-                                review.type === 'Dukungan' 
-                                  ? 'bg-green-100 text-green-800' 
+                              <p className="text-gray-700 mb-2">{review.content}</p>
+                              <div className='flex items-center justify-between'>
+                                <span className={`text-xs px-2 py-1 rounded-full ${review.sentiment === 'positif'
+                                  ? 'bg-green-100 text-green-800'
                                   : 'bg-orange-100 text-orange-800'
-                              }`}>
-                                {review.type}
-                              </span>
+                                  }`}>
+                                  {review.sentiment === 'positif' ? 'Positif' : 'Negatif'}
+                                </span>
+                                {review.user_id === userId && (
+                                  <img
+                                    src={deleteIcon}
+                                    alt="delete"
+                                    className="w-4 cursor-pointer"
+                                    onClick={() => {
+                                      setSelectedReviewId(review.review_id);
+                                      setShowModal(true);
+                                    }}
+                                  />
+                                )}
+                              </div>
                             </div>
                           ))
                         ) : (
@@ -467,7 +629,7 @@ const CourseDetailPage = () => {
               <div className="text-green-600 font-medium mb-6">Dari sumber terpercaya</div>
 
               <div className="space-y-4 mb-8">
-              {course.created_at && (
+                {course.created_at && (
                   <div className="course-feature flex justify-between border-b border-gray-200 pb-4">
                     <span className="text-gray-600">Tanggal Terbit</span>
                     <span className="text-gray-800 font-medium">{formatDate(course.created_at)}</span>
@@ -486,35 +648,58 @@ const CourseDetailPage = () => {
                   </div>
                 )} */}
 
-                  <div className="course-feature flex justify-between border-b border-gray-200 pb-4">
-                    <span className="text-gray-600">Bahasa Kursus</span>
-                    <span className="text-gray-800 font-medium">Bahasa Indonesia</span>
-                  </div>
-             
+                <div className="course-feature flex justify-between border-b border-gray-200 pb-4">
+                  <span className="text-gray-600">Bahasa Kursus</span>
+                  <span className="text-gray-800 font-medium">Bahasa Indonesia</span>
+                </div>
+
               </div>
 
-               {/* Enrollment Status Message */}
-               {enrollStatus && (
-                <div className={`mb-4 p-3 rounded-md ${
-                  enrollStatus.success ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
-                }`}>
+              {/* Enrollment Status Message */}
+              {enrollStatus && (
+                <div className={`mb-4 p-3 rounded-md ${enrollStatus.success ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                  }`}>
                   {enrollStatus.message}
                 </div>
               )}
 
-              <button 
-                className={`bg-[#0B7077] hover:bg-[#014b60] text-white w-full py-3 rounded-md font-medium transition ${
-                  enrollLoading ? 'opacity-70 cursor-not-allowed' : ''
-                }`}
+              <button
+                className={`bg-[#0B7077] hover:bg-[#014b60] text-white w-full py-3 rounded-md font-medium transition ${enrollLoading ? 'opacity-70 cursor-not-allowed' : ''
+                  }`}
                 onClick={handleEnrollCourse}
                 disabled={enrollLoading}
               >
                 {enrollLoading ? 'Mendaftar...' : 'Daftar Sekarang'}
               </button>
+
+
+              {showCertificate && (
+                <button
+                  className={`bg-[#0B7077] hover:bg-[#014b60] mt-3 text-white w-full py-3 rounded-md font-medium transition ${enrollLoading ? 'opacity-70 cursor-not-allowed' : ''
+                    }`}
+                  onClick={handleDownloadCertificate}
+                >
+                  Download Sertifikat
+                </button>
+              )}
             </div>
           </div>
         </div>
       </div>
+
+      {/* Confirmation Modal */}
+      <PopupModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        onConfirm={() => {
+          if (selectedReviewId) {
+            deleteHandleClick(selectedReviewId);
+          }
+        }}
+        message="Apakah Anda yakin ingin menghapus ulasan ini?"
+        confirmText="Hapus"
+        cancelText="Batal"
+      />
 
       {/* Footer */}
       <Footer />
