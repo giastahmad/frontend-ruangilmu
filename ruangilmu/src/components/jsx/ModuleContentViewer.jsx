@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { apiService } from '../utils/authMiddleware';
 
 const ModuleContentViewer = () => {
   const { id: courseId } = useParams();
@@ -18,13 +19,7 @@ const ModuleContentViewer = () => {
     const fetchModulesList = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch(`http://localhost:8000/course/${courseId}/module`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-          }
-        });
+        const response = await apiService.get(`http://localhost:8000/course/${courseId}/module`);
 
         if (!response.ok) {
           throw new Error('Failed to fetch modules list');
@@ -108,13 +103,7 @@ const ModuleContentViewer = () => {
 
   // Helper function to fetch module details without changing state
   const fetchModuleDetails = async (moduleId) => {
-    const response = await fetch(`http://localhost:8000/course/${courseId}/module/${moduleId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-      }
-    });
+    const response = await apiService.get(`http://localhost:8000/course/${courseId}/module/${moduleId}`);
 
     if (!response.ok) {
       throw new Error('Failed to fetch module content');
@@ -158,13 +147,7 @@ const ModuleContentViewer = () => {
   // Fetch quiz data for the current module
   const fetchQuizData = async (moduleId, currentModuleData = null) => {
     try {
-      const response = await fetch(`http://localhost:8000/course/${courseId}/module/${moduleId}/quiz`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-        }
-      });
+      const response = await apiService.get(`http://localhost:8000/course/${courseId}/module/${moduleId}/quiz`);
 
       if (!response.ok) {
         throw new Error('Failed to fetch quiz data');
@@ -193,13 +176,7 @@ const ModuleContentViewer = () => {
   const markModuleAsCompleted = async (moduleId) => {
     setIsCompleting(true);
     try {
-      const response = await fetch(`http://localhost:8000/course/${courseId}/module/${moduleId}/complete`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-        }
-      });
+      const response = await apiService.post(`http://localhost:8000/course/${courseId}/module/${moduleId}/complete`, {});
 
       if (!response.ok) {
         throw new Error('Failed to mark module as completed');

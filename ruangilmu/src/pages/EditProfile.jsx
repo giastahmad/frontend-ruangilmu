@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../components/jsx/Navbar';
 import Footer from '../components/jsx/Footer';
 import { Upload, Trash2 } from 'lucide-react';
+import { apiService } from '../components/utils/authMiddleware';
 
 const EditProfile = () => {
   const navigate = useNavigate();
@@ -35,13 +36,7 @@ const EditProfile = () => {
     console.log('TOKENNN: ', token)
     try {
       setIsLoading(true)
-      const response = await fetch('http://localhost:8000/user/me', {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
+      const response = await apiService.get('http://localhost:8000/user/me');
 
       if (!response.ok) {
         console.log('Token user:', token);
@@ -52,12 +47,12 @@ const EditProfile = () => {
       console.log('Fetched user data:', data);
       const userData = data.data.user || {};
       setUser(userData);
-      
+
       // Set profile picture if available
       if (userData.photo_profile) {
         setProfilePic(userData.photo_profile);
       }
-      
+
       // Split name into first name and last name
       if (userData.nama) {
         if (userData.nama.includes(' ')) {
@@ -65,13 +60,13 @@ const EditProfile = () => {
           const nameParts = userData.nama.split(' ');
           const firstName = nameParts[0];
           const lastName = nameParts.slice(1).join(' ');
-          
+
           // Format birth date if available
           let formattedBirthDate = '';
           if (userData.tanggal_lahir) {
             formattedBirthDate = userData.tanggal_lahir.substring(0, 10);
           }
-          
+
           setFormData({
             firstName,
             lastName,
@@ -85,7 +80,7 @@ const EditProfile = () => {
           if (userData.tanggal_lahir) {
             formattedBirthDate = userData.tanggal_lahir.substring(0, 10);
           }
-          
+
           setFormData({
             firstName: userData.nama,
             lastName: '',
@@ -102,8 +97,8 @@ const EditProfile = () => {
     }
   };
 
-   // Handle form input changes
-   const handleChange = (e) => {
+  // Handle form input changes
+  const handleChange = (e) => {
     const { id, value } = e.target;
     setFormData(prevData => ({
       ...prevData,
@@ -132,40 +127,33 @@ const EditProfile = () => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
-    
+
     try {
       // Combine first name and last name to create the full name
       const fullName = formData.firstName + (formData.lastName ? ` ${formData.lastName}` : '');
-      
+
       const token = localStorage.getItem('accessToken');
       if (!token) {
         throw new Error('Token tidak ditemukan. Silakan login kembali.');
       }
-      
-      const response = await fetch('http://localhost:8000/user/update-profile', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          nama: fullName,
-          kelas: formData.classLevel,
-          tanggal_lahir: formData.birthDate,
-        })
+
+      const response = await apiService.post('http://localhost:8000/user/update-profile', {
+        nama: fullName,
+        kelas: formData.classLevel,
+        tanggal_lahir: formData.birthDate,
       });
-      
+
       const data = await response.json();
-      
+
       if (!response.ok) {
         throw new Error(data.message || 'Gagal memperbarui profil');
       }
-      
+
       setSuccessMessage('Profil berhasil diperbarui!');
       setTimeout(() => {
         navigate('/profile');
       }, 1500);
-      
+
     } catch (error) {
       console.error('Error updating profile:', error);
       setError(error.message || 'Terjadi kesalahan saat memperbarui profil');

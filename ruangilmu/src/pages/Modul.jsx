@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import ModuleContentViewer from '../components/jsx/ModuleContentViewer';
 import Navbar from '../components/jsx/Navbar';
 import Footer from '../components/jsx/Footer';
+import { apiService } from '../components/utils/authMiddleware';
 
 const Modul = () => {
   const [activeTab, setActiveTab] = useState('materi');
@@ -27,13 +28,7 @@ const Modul = () => {
 
   const fetchCourseInfo = async () => {
     try {
-      const response = await fetch(`http://localhost:8000/courses/${id}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-        }
-      });
+      const response = await apiService.get(`http://localhost:8000/courses/${id}`);
 
       if (!response.ok) {
         throw new Error('Failed to fetch course information');

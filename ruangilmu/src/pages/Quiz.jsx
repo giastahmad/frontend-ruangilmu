@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import logo from '../components/img/logo ruangilmu.svg'
+import { apiService } from '../components/utils/authMiddleware';
 
 const QuizApp = () => {
   const { moduleid: moduleId } = useParams();
@@ -27,13 +28,7 @@ const QuizApp = () => {
       try {
         setLoading(true);
 
-        const response = await fetch(`http://localhost:8000/course/${courseId}/module/${moduleId}/quiz`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-          }
-        });
+        const response = await apiService.get(`http://localhost:8000/course/${courseId}/module/${moduleId}/quiz`);
 
         if (!response.ok) {
           throw new Error('Failed to fetch quiz data');
@@ -89,14 +84,7 @@ const QuizApp = () => {
     try {
       const answers = prepareAnswersForSubmission();
 
-      const response = await fetch(`http://localhost:8000/course/${courseId}/module/${moduleId}/quiz/submit`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-        },
-        body: JSON.stringify({ answers })
-      });
+      const response = await apiService.post(`http://localhost:8000/course/${courseId}/module/${moduleId}/quiz/submit`, { answers });
 
       if (!response.ok) {
         throw new Error('Failed to submit quiz');

@@ -5,6 +5,7 @@ import CourseCard from '../components/jsx/CourseCard';
 import Navbar from '../components/jsx/Navbar';
 import Footer from '../components/jsx/Footer';
 import kidImage from '../components/img/kids.png';
+import { apiService } from '../components/utils/authMiddleware';
 
 const Home = () => {
   const [selectedClass, setSelectedClass] = useState('Kelas 4');
@@ -32,7 +33,7 @@ const Home = () => {
   const fetchCourses = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:8000/courses');
+      const response = await apiService.get('http://localhost:8000/courses');
 
       if (!response.ok) {
         throw new Error('Gagal Mengambil Data');

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/jsx/Navbar';
 import Footer from '../components/jsx/Footer';
+import { apiService } from '../components/utils/authMiddleware';
 
 const ProfilePage = () => {
   const [activeTab, setActiveTab] = useState("courses");
@@ -24,13 +25,7 @@ const ProfilePage = () => {
 
   const fetchUserProfile = async (token) => {
     try {
-      const response = await fetch('http://localhost:8000/user/me', {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
+      const response = await apiService.get('http://localhost:8000/user/me');
 
       if (!response.ok) {
         console.log('Token user:', token);
@@ -48,13 +43,7 @@ const ProfilePage = () => {
 
   const fetchEnrolledCourses = async (token) => {
     try {
-      const response = await fetch('http://localhost:8000/courses/user/enrolled', {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
+      const response = await apiService.get('http://localhost:8000/courses/user/enrolled');
 
       if (!response.ok) {
         throw new Error('Gagal Mengambil Data');

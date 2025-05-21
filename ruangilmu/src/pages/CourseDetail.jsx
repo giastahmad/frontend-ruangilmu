@@ -8,6 +8,7 @@ import temporaryImage from '../components/img/temp.svg';
 import ModulContent from '../components/jsx/ModulContent';
 import deleteIcon from '../components/img/delete.png';
 import PopupModal from '../components/jsx/Popup';
+import { apiService } from '../components/utils/authMiddleware';
 
 const CourseDetailPage = () => {
   const { id } = useParams();
@@ -23,11 +24,11 @@ const CourseDetailPage = () => {
   const [reviewFilter, setReviewFilter] = useState('Semua');
   const [moduleData, setModuleData] = useState([]);
   const [courseInfo, setCourseInfo] = useState({
-      icon: "aset/math-icon.svg",
-      title: "Loading...",
-      description: "Loading...",
-      stats: []
-    });
+    icon: "aset/math-icon.svg",
+    title: "Loading...",
+    description: "Loading...",
+    stats: []
+  });
   const params = useParams();
   const [reviews, setReviews] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -45,7 +46,7 @@ const CourseDetailPage = () => {
       try {
         setLoading(true);
         console.log('course ID : ', id)
-        const response = await fetch(`http://localhost:8000/courses/${id}`);
+        const response = await apiService.get(`http://localhost:8000/courses/${id}`);
 
         if (!response.ok) {
           throw new Error(`Gagal menampilkan detail kelas: ${response.status}`);
@@ -74,14 +75,8 @@ const CourseDetailPage = () => {
   const fetchModuleData = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:8000/course/${id}/module`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-        }
-      });
-      
+      const response = await apiService.get(`http://localhost:8000/course/${id}/module`);
+
       console.log("SATU", response)
 
       if (!response.ok) {
@@ -216,13 +211,7 @@ const CourseDetailPage = () => {
       setEnrollLoading(true);
       setEnrollStatus(null);
 
-      const response = await fetch(`http://localhost:8000/courses/${id}/enroll`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
-      });
+      const response = await apiService.post(`http://localhost:8000/courses/${id}/enroll`, {});
 
       const data = await response.json();
 
@@ -262,13 +251,7 @@ const CourseDetailPage = () => {
   // Fetch semua reviews dari course yang ada
   const fetchReviews = async () => {
     try {
-      const res = await fetch(`http://localhost:8000/review/course/${id}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-        }
-      });
+      const res = await apiService.get(`http://localhost:8000/review/course/${id}`);
 
       if (!res.ok) {
         throw new Error('Gagal mengambil data ulasan');
@@ -287,16 +270,9 @@ const CourseDetailPage = () => {
   // Atur post review ke server
   const postReview = async () => {
     try {
-      const res = await fetch(`http://localhost:8000/review`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-        },
-        body: JSON.stringify({
-          course_id: id,
-          content: reviewText
-        })
+      const res = await apiService.post(`http://localhost:8000/review`, {
+        course_id: id,
+        content: reviewText
       });
 
       if (!res.ok) {
@@ -317,13 +293,7 @@ const CourseDetailPage = () => {
   useEffect(() => {
     const checkUserReview = async () => {
       try {
-        const res = await fetch(`http://localhost:8000/review/user/course/${id}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-          }
-        });
+        const res = await apiService.get(`http://localhost:8000/review/user/course/${id}`);
 
         if (!res.ok) {
           throw new Error('Gagal mengambil data ulasan pengguna');
@@ -346,13 +316,7 @@ const CourseDetailPage = () => {
     // Cek apakah user sudah selesai proses pembelajarannya pada course ini
     const checkUserFinished = async () => {
       try {
-        const res = await fetch(`http://localhost:8000/course/${id}/certificate`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-          }
-        });
+        const res = await apiService.get(`http://localhost:8000/course/${id}/certificate`);
 
         if (!res.ok) {
           throw new Error('Gagal mengambil data sertifikat');
@@ -379,13 +343,8 @@ const CourseDetailPage = () => {
 
   const deleteHandleClick = async (reviewId) => {
     try {
-      const res = await fetch(`http://localhost:8000/review/delete/${reviewId}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-        }
-      });
+      const res = await apiService.delete(`http://localhost:8000/review/delete/${reviewId}`);
+
       if (!res.ok) {
         throw new Error('Gagal menghapus ulasan');
       }
@@ -400,17 +359,20 @@ const CourseDetailPage = () => {
 
   const handleDownloadCertificate = async () => {
     try {
-      const res = await fetch(`http://localhost:8000/course/${id}/certificate/download`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-        }
-      });
+
+      const res = await apiService.get(`http://localhost:8000/course/${id}/certificate/download`);
+      
+      // const res = await fetch(`http://localhost:8000/course/${id}/certificate/download`, {
+      //   method: 'GET',
+      //   headers: {
+      //     'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+      //   }
+      // });
 
       if (!res.ok) {
         throw new Error('Gagal mengunduh sertifikat');
       }
-      
+
       const blob = await res.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');

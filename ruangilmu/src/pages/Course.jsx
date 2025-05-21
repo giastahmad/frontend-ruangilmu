@@ -6,6 +6,7 @@ import CourseCard from '../components/jsx/CourseCard';
 
 // Import gambar
 import tempCover from '../components/img/temp.svg';
+import { apiService } from '../components/utils/authMiddleware';
 
 // Kategori kursus
 const categories = [
@@ -33,7 +34,7 @@ const CoursesPage = () => {
   const fetchCourses = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:8000/courses');
+      const response = await apiService.get('http://localhost:8000/courses');
 
       if (!response.ok) {
         throw new Error('Gagal Mengambil Data');
