@@ -39,7 +39,7 @@ const ProfilePage = () => {
 
       const data = await response.json();
       console.log('Fetched user data:', data);
-      setUser(data.user);
+      setUser(data.data.user);
     } catch (error) {
       console.error('Error mengambil data: ', error);
       setError('Gagal Menampilkan data user, coba sesaat lagi');

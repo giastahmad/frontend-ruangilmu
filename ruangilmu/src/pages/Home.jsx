@@ -6,11 +6,6 @@ import Navbar from '../components/jsx/Navbar';
 import Footer from '../components/jsx/Footer';
 import kidImage from '../components/img/kids.png';
 
-// import course1Image from '../components/img/temp.svg';
-// import course2Image from '../components/img/temp.svg';
-// import course3Image from '../components/img/temp.svg';
-// import course4Image from '../components/img/temp.svg';
-
 const Home = () => {
   const [selectedClass, setSelectedClass] = useState('Kelas 4');
   const [selectedSemester, setSelectedSemester] = useState('Semester 1');
@@ -19,11 +14,18 @@ const Home = () => {
   const [error, setError] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-
+  // Check login status once on component mount
   useEffect(() => {
-    const token = localStorage.getItem('accessToken');
-    setIsLoggedIn(!!token);
-
+    const checkLoginStatus = () => {
+      const token = localStorage.getItem('accessToken');
+      setIsLoggedIn(!!token);
+    };
+    
+    checkLoginStatus();
+  }, []);
+  
+  // Separate useEffect for fetching courses
+  useEffect(() => {
     fetchCourses();
   }, []);
 
@@ -46,46 +48,8 @@ const Home = () => {
       console.error('Error mengambil data: ', error);
       setError('Gagal Menampilkan kelas, coba sesaat lagi');
       setLoading(false);
-
-      setCourses(Dummycourses);
     }
   };
-
-  // Sample course data - this would typically come from an API
-  const Dummycourses = [
-    {
-      course_id: 1,
-      course_name: "Matematika Dasar Kelas 4",
-      course_description: "Materi matematika dasar untuk siswa kelas 4 SD yang mencakup operasi hitung dasar, pecahan, dan geometri.",
-      course_image_cover: "/img/rectangle-2749.png",
-      course_prize: 150000,
-      created_at: "2022-07-01T00:00:00.000Z"
-    },
-    {
-      course_id: 2,
-      course_name: "Bahasa Indonesia Kelas 4",
-      course_description: "Pembelajaran bahasa Indonesia untuk siswa kelas 4 SD, fokus pada pemahaman teks, tata bahasa, dan keterampilan menulis.",
-      course_image_cover: "/img/rectangle-2749.png",
-      course_prize: 120000,
-      created_at: "2022-07-05T00:00:00.000Z"
-    },
-    {
-      course_id: 3,
-      course_name: "Ilmu Pengetahuan Alam Kelas 4",
-      course_description: "Materi IPA untuk siswa kelas 4 SD yang mencakup makhluk hidup, lingkungan, dan fenomena alam.",
-      course_image_cover: "/img/rectangle-2749.png",
-      course_prize: 135000,
-      created_at: "2022-07-10T00:00:00.000Z"
-    },
-    {
-      course_id: 4,
-      course_name: "Ilmu Pengetahuan Sosial Kelas 4",
-      course_description: "Pembelajaran IPS untuk siswa kelas 4 SD, fokus pada keragaman budaya, sejarah, dan geografi Indonesia.",
-      course_image_cover: "/img/rectangle-2749.png",
-      course_prize: 125000,
-      created_at: "2022-07-15T00:00:00.000Z"
-    }
-  ];
 
   return (
     <div className="bg-[#d2e6e4]">
@@ -102,6 +66,7 @@ const Home = () => {
               Perluas <span className="font-bold text-[#0B7077]">kemampuanmu</span> dengan belajar di <span className="font-bold text-[#0B7077]">RuangIlmu!</span>
             </p>
 
+            {console.log('LOGIN BLOM? :', isLoggedIn)}
             {!isLoggedIn && (
               <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6">
                 <Link
@@ -114,7 +79,7 @@ const Home = () => {
             )}
           </div>
           <div className='flex md:w-1/2 items-end'>
-              <img src={kidImage} alt="Kids_Image" className='w-full h-auto max-w-lg mx-auto'/>
+            <img src={kidImage} alt="Kids_Image" className='w-full h-auto max-w-lg mx-auto' />
           </div>
         </div>
       </section>

@@ -50,7 +50,7 @@ const EditProfile = () => {
 
       const data = await response.json();
       console.log('Fetched user data:', data);
-      const userData = data.user || {};
+      const userData = data.data.user || {};
       setUser(userData);
       
       // Set profile picture if available

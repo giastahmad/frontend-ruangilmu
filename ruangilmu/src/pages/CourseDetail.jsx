@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import Navbar from '../components/jsx/Navbar';
 import Footer from '../components/jsx/Footer';
 import temporaryImage from '../components/img/temp.svg';
+import ModulContent from '../components/jsx/ModulContent';
 
 const CourseDetailPage = () => {
   const { id } = useParams();
@@ -18,6 +19,13 @@ const CourseDetailPage = () => {
   const [reviewText, setReviewText] = useState('');
   const [showReviewForm, setShowReviewForm] = useState(true);
   const [reviewFilter, setReviewFilter] = useState('Semua');
+  const [moduleData, setModuleData] = useState([]);
+  const [courseInfo, setCourseInfo] = useState({
+      icon: "aset/math-icon.svg",
+      title: "Loading...",
+      description: "Loading...",
+      stats: []
+    });
   const params = useParams();
   const location = useLocation();
   const navigate = useNavigate();
@@ -49,12 +57,14 @@ const CourseDetailPage = () => {
         setCourse(data.data);
         console.log('DATA course :', course)
         console.log('DATA data :', data)
+
+        fetchModuleData();
       } catch (err) {
         console.error('Error fetching course details:', err);
         setError(err.message);
       } finally {
         setLoading(false);
-      }
+      };
     };
 
     const token = localStorage.getItem('accessToken');
@@ -62,6 +72,90 @@ const CourseDetailPage = () => {
     
     fetchCourseDetails();
   }, [id]);
+
+  const fetchModuleData = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`http://localhost:8000/course/${id}/module`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+        }
+      });
+      
+      console.log("SATU", response)
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch module data');
+      }
+
+      const data = await response.json();
+      const theData = data.data;
+      console.log('MODULE :', theData)
+      // Transform API data to match the expected format for ModulContent
+      const formattedModules = transformModuleData(theData);
+      setModuleData(formattedModules);
+
+      // Update course stats after we have module data
+      if (formattedModules.length > 0) {
+        let totalLessons = 0;
+        let totalVideos = 0;
+
+        formattedModules.forEach(module => {
+          totalLessons += module.lessons.length;
+          module.lessons.forEach(lesson => {
+            if (lesson.video) totalVideos++;
+          });
+        });
+
+        setCourseInfo(prev => ({
+          ...prev,
+          stats: [
+            { label: `${totalLessons} Materi` }
+          ]
+        }));
+      }
+    } catch (error) {
+      console.error('Error fetching module dataaaaaaaaaaaaaaaaa:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Transform API response to match the format expected by ModulContent
+  const transformModuleData = (apiData) => {
+    // Group modules by their titles
+    const moduleGroups = {};
+
+    apiData.forEach(item => {
+      const moduleTitle = `${item.title}`;
+
+      if (!moduleGroups[moduleTitle]) {
+        moduleGroups[moduleTitle] = {
+          order: item.module_order,
+          id: item.modul_id,
+          title: moduleTitle,
+          description: `Materi ${item.title} untuk siswa kelas 4 SD`,
+          isActive: true,
+          lessons: []
+        };
+      }
+
+      // Add the lesson to this module
+      moduleGroups[moduleTitle].lessons.push({
+        id: item.modul_id,
+        title: item.title,
+        duration: "15 menit", // This could be dynamic if we had duration data
+        hasPdf: true, // This could be dynamic if we had PDF data
+        // // Add image and video conditionally if available
+        // // These would need to be dynamic based on actual data
+      });
+    });
+
+    // Convert the object to an array
+    return Object.values(moduleGroups);
+  };
 
   const formatDate = (dateString) => {
     try {
@@ -268,10 +362,7 @@ const CourseDetailPage = () => {
               )}
 
               {activeTab === 'Kurikulum' && (
-                <div>
-                  <h2 className="text-xl font-bold text-gray-800 mb-4">KURIKULUM KURSUS</h2>
-                  <p className="text-gray-600">Informasi kurikulum akan ditampilkan di sini.</p>
-                </div>
+                <ModulContent modules={moduleData} />
               )}
 
               {activeTab === 'Penulis' && (

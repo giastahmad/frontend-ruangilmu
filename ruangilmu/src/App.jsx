@@ -26,7 +26,7 @@ function App() {
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/edit_profile" element={<EditProfile />} />
-        <Route path="/quiz" element={<QuizApp />} />
+        <Route path="/quiz/:courseid/:moduleid" element={<QuizApp />} />
         <Route path="/modul/:id" element={<Modul />} />
       </Routes>
     </Router>

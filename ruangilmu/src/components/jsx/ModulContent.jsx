@@ -17,16 +17,12 @@ const ModulContent = ({ modules }) => {
       <h2 className="text-2xl font-bold text-[#026078] mb-6">Silabus Pembelajaran</h2>
 
       {modules.map((module, moduleIndex) => (
-        <div key={moduleIndex} className="module-card bg-white p-6 rounded-lg mb-6 transition-all duration-300 border-l-[4px] border-[#0b7077] hover:-translate-y-[3px] hover:shadow-[0_6px_12px_rgba(0,0,0,0.1)]">
-          <div className="flex items-start justify-between">
+        <div key={moduleIndex} className="module-card bg-white px-6 py-2 rounded-lg mb-6 transition-all duration-300 border-l-[4px] border-[#0b7077] hover:-translate-y-[3px] hover:shadow-[0_6px_12px_rgba(0,0,0,0.1)]">
+          {/* <div className="flex items-start justify-between">
             <div>
               <h3 className="text-xl font-bold text-[#026078] mb-2">{module.title}</h3>
-              <p className="text-gray-600 mb-4">{module.description}</p>
             </div>
-            <span className="bg-[#E6F7FF] text-[#0B7077] px-3 py-1 rounded-full text-sm">
-              {module.lessons.length} Materi
-            </span>
-          </div>
+          </div> */}
 
           {module.lessons.map((lesson, lessonIndex) => (
             <div key={lessonIndex} className="border-t border-gray-100 pt-4 mt-4">
@@ -38,16 +34,12 @@ const ModulContent = ({ modules }) => {
                     module.isActive ? 'text-[#0B7077]' : 'text-gray-500'
                   } font-bold`}
                 >
-                  {lessonIndex + 1}
+                  {module.order}
                 </div>
                 <div className="flex-1">
                   <h4 className="text-lg font-bold text-gray-800 mb-2">{lesson.title}</h4>
                   
                   {/* Handle HTML content safely */}
-                  <div 
-                    className="text-gray-600 mb-4"
-                    dangerouslySetInnerHTML={{ __html: lesson.description }}
-                  />
 
                   {lesson.image && (
                     <div className="mb-4">
