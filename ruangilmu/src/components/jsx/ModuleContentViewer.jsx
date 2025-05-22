@@ -4,7 +4,7 @@ import { apiService } from '../utils/authMiddleware';
 
 const ModuleContentViewer = () => {
   const { id: courseId } = useParams();
-  
+
   const [moduleContent, setModuleContent] = useState(null);
   const [modulesList, setModulesList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -27,7 +27,7 @@ const ModuleContentViewer = () => {
 
         const data = await response.json();
         setModulesList(data.data);
-        
+
         // If we have modules, find the first uncompleted module
         if (data.data && data.data.length > 0) {
           // First check if any modules exist
@@ -51,15 +51,15 @@ const ModuleContentViewer = () => {
     // Start with the first module
     let moduleToLoad = modules[0];
     let moduleIndex = 0;
-    
+
     // Check each module in sequence until we find an uncompleted one
     for (let i = 0; i < modules.length; i++) {
       const currentModule = modules[i];
-      
+
       // Check if this module is completed by fetching its content
       try {
         const moduleData = await fetchModuleDetails(currentModule.module_id);
-        
+
         // If this module is not completed, use it
         if (!moduleData.isCompleted) {
           moduleToLoad = currentModule;
@@ -67,23 +67,23 @@ const ModuleContentViewer = () => {
           setModuleContent(moduleData);
           setCurrentModuleIndex(i);
           setCurrentContentIndex(0);
-          
+
           // If module has quiz, fetch quiz data
           if (moduleData.hasQuiz) {
             await fetchQuizData(currentModule.module_id, moduleData);
           } else {
             setQuizResult(null);
           }
-          
+
           break;
         }
-        
+
         // If this was the last module and it's completed, just show it
         if (i === modules.length - 1) {
           setModuleContent(moduleData);
           setCurrentModuleIndex(i);
           setCurrentContentIndex(0);
-          
+
           if (moduleData.hasQuiz) {
             await fetchQuizData(currentModule.module_id, moduleData);
           } else {
@@ -97,7 +97,7 @@ const ModuleContentViewer = () => {
         break;
       }
     }
-    
+
     setIsLoading(false);
   };
 
@@ -116,13 +116,13 @@ const ModuleContentViewer = () => {
   // Fetch specific module content and update state
   const fetchModuleContent = async (moduleId) => {
     setIsLoading(true);
-    
+
     try {
       const moduleData = await fetchModuleDetails(moduleId);
-      
+
       // Store module content
       setModuleContent(moduleData);
-      
+
       // Update current module index
       const index = modulesList.findIndex(module => module.module_id === moduleId);
       if (index !== -1) {
@@ -135,7 +135,7 @@ const ModuleContentViewer = () => {
       } else {
         setQuizResult(null);
       }
-      
+
       setCurrentContentIndex(0); // Reset to first content when changing modules
     } catch (error) {
       console.error('Error fetching module content:', error);
@@ -155,14 +155,14 @@ const ModuleContentViewer = () => {
 
       const data = await response.json();
       setQuizResult(data.data.previousResult);
-      
+
       // Use either the passed module data or the current state
       const moduleData = currentModuleData || moduleContent;
-      
+
       // Check if there's a previous quiz result and it meets the pass score
-      if (data.data.previousResult && 
-          data.data.previousResult.score >= data.data.quiz.pass_score && 
-          moduleData && !moduleData.isCompleted) {
+      if (data.data.previousResult &&
+        data.data.previousResult.score >= data.data.quiz.pass_score &&
+        moduleData && !moduleData.isCompleted) {
         // If passed quiz but module not yet marked as completed
         await markModuleAsCompleted(moduleId);
       }
@@ -217,7 +217,7 @@ const ModuleContentViewer = () => {
         console.error(`Error checking module ${moduleId}:`, error);
       }
     }
-    
+
     // If we get here, we couldn't find an uncompleted module
     return false;
   };
@@ -244,23 +244,23 @@ const ModuleContentViewer = () => {
     } else {
       // If at last content item
       const currentModule = modulesList[currentModuleIndex];
-      
+
       // Check if we need to mark the module as completed
       if (moduleContent && !moduleContent.isCompleted) {
         // If module has no quiz or if quiz is passed, mark as completed
         const passScore = moduleContent.pass_score || 60; // Default to 60
         if (!moduleContent.hasQuiz || (quizResult && quizResult.score >= passScore)) {
           await markModuleAsCompleted(currentModule.module_id);
-          
+
           // After completing this module, find and load next uncompleted module
           const foundNext = await moveToNextUncompletedModule();
-          
+
           // If no more uncompleted modules found, just move to next module (if any)
           if (!foundNext && currentModuleIndex < modulesList.length - 1) {
             const nextModule = modulesList[currentModuleIndex + 1];
             fetchModuleContent(nextModule.module_id);
           }
-          
+
           return; // Exit early since we've already loaded the next module
         }
       }
@@ -314,15 +314,15 @@ const ModuleContentViewer = () => {
   }
 
   // Get current content item
-  const currentContent = moduleContent.content && moduleContent.content.length > 0 
-    ? moduleContent.content[currentContentIndex] 
+  const currentContent = moduleContent.content && moduleContent.content.length > 0
+    ? moduleContent.content[currentContentIndex]
     : null;
 
   // Calculate pagination info
   const totalContentItems = moduleContent.content ? moduleContent.content.length : 0;
   const isFirstContent = currentModuleIndex === 0 && currentContentIndex === 0;
-  const isLastContent = currentModuleIndex === modulesList.length - 1 && 
-                        currentContentIndex === totalContentItems - 1;
+  const isLastContent = currentModuleIndex === modulesList.length - 1 &&
+    currentContentIndex === totalContentItems - 1;
 
   // Module selector for mobile/dropdown view
   const ModuleSelector = () => (
@@ -351,12 +351,12 @@ const ModuleContentViewer = () => {
   // Quiz status display for module with quiz
   const QuizStatus = () => {
     if (!moduleContent?.hasQuiz) return null;
-    
+
     if (quizResult) {
       // Get the pass score from either moduleContent or from quizResult if available
       const passScore = moduleContent.pass_score || 60; // Default to 60 if not provided
       const isPassed = quizResult.score >= passScore;
-      
+
       return (
         <div className={`mt-4 p-4 rounded-lg ${isPassed ? 'bg-green-50' : 'bg-yellow-50'}`}>
           <h3 className="font-medium text-lg">Status Kuis</h3>
@@ -370,7 +370,7 @@ const ModuleContentViewer = () => {
             </div>
           </div>
           {!isPassed && (
-            <button 
+            <button
               onClick={handleQuizClick}
               className="mt-3 px-4 py-2 bg-[#026078] text-white rounded-md hover:bg-[#015266]"
             >
@@ -380,7 +380,7 @@ const ModuleContentViewer = () => {
         </div>
       );
     }
-    
+
     return null;
   };
 
@@ -404,7 +404,7 @@ const ModuleContentViewer = () => {
         {/* Progress indicator */}
         <div className="flex items-center justify-between mb-6 text-sm text-gray-600">
           <span>
-            Modul {currentModuleIndex + 1} dari {modulesList.length} 
+            Modul {currentModuleIndex + 1} dari {modulesList.length}
             {totalContentItems > 1 && ` • Halaman ${currentContentIndex + 1} dari ${totalContentItems}`}
           </span>
           {moduleContent.isCompleted ? (
@@ -427,8 +427,8 @@ const ModuleContentViewer = () => {
         {/* Module content - only show current content based on currentContentIndex */}
         <div className="mb-8">
           {currentContent ? (
-            <div 
-              key={currentContent.content_id} 
+            <div
+              key={currentContent.content_id}
               className="prose max-w-none"
               dangerouslySetInnerHTML={{ __html: currentContent.content }}
             />
@@ -444,14 +444,13 @@ const ModuleContentViewer = () => {
 
         {/* Navigation buttons */}
         <div className="flex justify-between mt-8 pt-4 border-t">
-          <button 
-            onClick={handlePrevContent} 
+          <button
+            onClick={handlePrevContent}
             disabled={isFirstContent}
-            className={`px-6 py-2 rounded-md flex items-center ${
-              isFirstContent 
-                ? 'bg-gray-200 text-gray-500 cursor-not-allowed' 
+            className={`px-6 py-2 rounded-md flex items-center ${isFirstContent
+                ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
                 : 'bg-[#E6F7FF] text-[#026078] hover:bg-[#BFECFF]'
-            }`}
+              }`}
           >
             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path>
@@ -459,27 +458,26 @@ const ModuleContentViewer = () => {
             Sebelumnya
           </button>
 
-          {moduleContent.hasQuiz && currentContentIndex === totalContentItems - 1 && 
-           (!quizResult || (quizResult && quizResult.score < moduleContent.pass_score)) && (
-            <button 
-              onClick={handleQuizClick}
-              className="px-6 py-2 rounded-md bg-[#FFA500] text-white hover:bg-[#FF8C00] flex items-center"
-            >
-              {quizResult ? 'Coba Kuis Lagi' : 'Mulai Kuis'}
-              <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
-              </svg>
-            </button>
-          )}
+          {moduleContent.hasQuiz && currentContentIndex === totalContentItems - 1 &&
+            (!quizResult || (quizResult && quizResult.score < moduleContent.pass_score)) && (
+              <button
+                onClick={handleQuizClick}
+                className="px-6 py-2 rounded-md bg-[#FFA500] text-white hover:bg-[#FF8C00] flex items-center"
+              >
+                {quizResult ? 'Coba Kuis Lagi' : 'Mulai Kuis'}
+                <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+              </button>
+            )}
 
-          <button 
-            onClick={handleNextContent} 
+          <button
+            onClick={handleNextContent}
             disabled={isLastContent}
-            className={`px-6 py-2 rounded-md flex items-center ${
-              isLastContent
-                ? 'bg-gray-200 text-gray-500 cursor-not-allowed' 
+            className={`px-6 py-2 rounded-md flex items-center ${isLastContent
+                ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
                 : 'bg-[#026078] text-white hover:bg-[#015266]'
-            }`}
+              }`}
           >
             Selanjutnya
             <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

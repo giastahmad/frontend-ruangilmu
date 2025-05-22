@@ -10,6 +10,7 @@ const ProfilePage = () => {
   const [user, setUser] = useState([]);
   const [courses, setCourses] = useState([]);
   const [error, setError] = useState([]);
+  const [courseProgress, setCourseProgress] = useState({});
 
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
@@ -52,9 +53,59 @@ const ProfilePage = () => {
       const data = await response.json();
       console.log('Fetched enrolled courses data:', data);
       setCourses(data.data);
+
+      if (data.data && data.data.length > 0) {
+        fetchAllCourseProgress(data.data);
+      }
     } catch (error) {
       console.error('Error mengambil data: ', error);
       setError('Gagal Menampilkan kelas user, coba sesaat lagi');
+    }
+  };
+
+  const fetchAllCourseProgress = async (courseList) => {
+    const progressPromises = courseList.map(course => 
+      fetchCourseProgress(course.course_id)
+    );
+    
+    try {
+      const progressResults = await Promise.all(progressPromises);
+      const progressMap = {};
+      
+      courseList.forEach((course, index) => {
+        progressMap[course.course_id] = progressResults[index];
+      });
+      
+      setCourseProgress(progressMap);
+    } catch (error) {
+      console.error('Error fetching course progress:', error);
+    }
+  };
+
+  const fetchCourseProgress = async (courseId) => {
+    try {
+      const response = await apiService.get(`http://localhost:8000/course/${courseId}/module`);
+      
+      if (!response.ok) {
+        throw new Error('Gagal mengambil data modul');
+      }
+      
+      const data = await response.json();
+      console.log(`Fetched modules for course ${courseId}:`, data);
+      
+      if (data.data && data.data.length > 0) {
+        const completedModules = data.data.filter(module => module.completed === true).length;
+        const totalModules = data.data.length;
+        const progressPercentage = Math.round((completedModules / totalModules) * 100);
+        
+        console.log(`Course ${courseId} progress: ${completedModules}/${totalModules} (${progressPercentage}%)`);
+        return progressPercentage;
+      }
+      
+      return 0;
+    } catch (error) {
+      console.error(`Error fetching progress for course ${courseId}:`, error);
+      return 0;
     }
   };
 
@@ -191,35 +242,38 @@ const ProfilePage = () => {
                     </div>
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      {activeCourses.map(course => (
-                        <div
-                          key={course.course_id}
-                          className="bg-white border border-gray-200 rounded-lg overflow-hidden transform transition duration-300 hover:translate-y-[-3px] hover:shadow-lg"
-                        >
-                          <img
-                            src={course.course_image_cover || '/default-course.jpg'}
-                            alt={course.course_name}
-                            className="w-full h-40 object-cover"
-                          />
-                          <div className="p-4">
-                            <h3 className="font-bold text-gray-800 mb-2">{course.course_name}</h3>
-                            <div className="flex items-center text-sm text-gray-500 mb-3">
-                              <span>{course.progress || 0}% selesai</span>
+                      {activeCourses.map(course => {
+                        const progress = courseProgress[course.course_id] || 0;
+                        return (
+                          <div
+                            key={course.course_id}
+                            className="bg-white border border-gray-200 rounded-lg overflow-hidden transform transition duration-300 hover:translate-y-[-3px] hover:shadow-lg"
+                          >
+                            <img
+                              src={course.course_image_cover || '/default-course.jpg'}
+                              alt={course.course_name}
+                              className="w-full h-40 object-cover"
+                            />
+                            <div className="p-4">
+                              <h3 className="font-bold text-gray-800 mb-2">{course.course_name}</h3>
+                              <div className="flex items-center text-sm text-gray-500 mb-3">
+                                <span>{progress}% selesai</span>
+                              </div>
+                              <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
+                                <div
+                                  className="bg-[#0B7077] h-2 rounded-full transition-all duration-300"
+                                  style={{ width: `${progress}%` }}
+                                ></div>
+                              </div>
+                              <Link to={`/modul/${course.course_id}`}>
+                                <button className="w-full bg-[#0B7077] text-white py-2 rounded-md hover:bg-[#014b60] transition">
+                                  Lanjut Belajar
+                                </button>
+                              </Link>
                             </div>
-                            <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
-                              <div
-                                className="bg-[#0B7077] h-2 rounded-full"
-                                style={{ width: `${course.progress || 0}%` }}
-                              ></div>
-                            </div>
-                            <Link to={`/modul/${course.course_id}`}>
-                              <button className="w-full bg-[#0B7077] text-white py-2 rounded-md hover:bg-[#014b60] transition">
-                                Lanjut Belajar
-                              </button>
-                            </Link>
                           </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   )}
                 </div>
