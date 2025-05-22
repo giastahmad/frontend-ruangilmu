@@ -27,6 +27,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/edit_profile" element={<EditProfile />} />
         <Route path="/quiz/:courseid/:moduleid" element={<QuizApp />} />
+        <Route path="/quiz/:courseid" element={<QuizApp />} />
         <Route path="/modul/:id" element={<Modul />} />
       </Routes>
     </Router>

@@ -4,9 +4,9 @@ import logo from '../components/img/logo ruangilmu.svg'
 import { apiService } from '../components/utils/authMiddleware';
 
 const QuizApp = () => {
-  const { moduleid: moduleId } = useParams();
-  const { courseid: courseId } = useParams();
+  const { moduleid: moduleId, courseid: courseId } = useParams();
   const navigate = useNavigate();
+  const isFinalExam = !moduleId;
   // Quiz data state
   const [quizData, setQuizData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -28,7 +28,11 @@ const QuizApp = () => {
       try {
         setLoading(true);
 
-        const response = await apiService.get(`http://localhost:8000/course/${courseId}/module/${moduleId}/quiz`);
+        const endpoint = isFinalExam 
+          ? `http://localhost:8000/course/${courseId}/final-exam`
+          : `http://localhost:8000/course/${courseId}/module/${moduleId}/quiz`;
+
+        const response = await apiService.get(endpoint);
 
         if (!response.ok) {
           throw new Error('Failed to fetch quiz data');
@@ -37,14 +41,15 @@ const QuizApp = () => {
         const result = await response.json();
 
         if (result.status === 'success') {
-          setQuizData(result.data.quiz);
+          const quizDataFromAPI = isFinalExam ? result.data.exam : result.data.quiz;
+          setQuizData(quizDataFromAPI);
 
           // Initialize timer with quiz time limit (converting minutes to seconds)
-          setTimeLeft(result.data.quiz.time_limit * 60);
+          setTimeLeft(quizDataFromAPI.time_limit * 60);
 
           // Initialize question status based on number of questions
           const initialStatus = {};
-          result.data.quiz.questions.forEach((question, index) => {
+          quizDataFromAPI.questions.forEach((question, index) => {
             initialStatus[index + 1] = {
               answered: false,
               flagged: false,
@@ -65,7 +70,7 @@ const QuizApp = () => {
     };
 
     fetchQuizData();
-  }, [moduleId]);
+  }, [moduleId, courseId, isFinalExam]);
 
   // Prepare answers for submission
   const prepareAnswersForSubmission = () => {
@@ -84,16 +89,26 @@ const QuizApp = () => {
     try {
       const answers = prepareAnswersForSubmission();
 
-      const response = await apiService.post(`http://localhost:8000/course/${courseId}/module/${moduleId}/quiz/submit`, { answers });
+      const endpoint = isFinalExam 
+        ? `http://localhost:8000/course/${courseId}/final-exam/submit`
+        : `http://localhost:8000/course/${courseId}/module/${moduleId}/quiz/submit`;
+
+      const response = await apiService.post(endpoint, { answers });
 
       if (!response.ok) {
-        throw new Error('Failed to submit quiz');
+        throw new Error('Failed to submit answers');
       }
 
       const result = await response.json();
       if (result.status === 'success') {
-        // Navigate to module page after successful submission
-        navigate(`/modul/${courseId}`);
+        // Navigate based on quiz type
+        if (isFinalExam) {
+          // Navigate to course page or completion page for final exam
+          navigate(`/course/${courseId}`);
+        } else {
+          // Navigate to module page for regular quiz
+          navigate(`/modul/${courseId}`);
+        }
       } else {
         throw new Error(result.message || 'Error submitting quiz');
       }
@@ -156,65 +171,6 @@ const QuizApp = () => {
     }));
   };
 
-
-  // const markModuleAsCompleted = async (moduleId) => {
-  //   try {
-  //     // First, fetch the latest quiz results to check if the user has passed
-  //     const quizResponse = await fetch(`http://localhost:8000/course/${courseId}/module/${moduleId}/quiz`, {
-  //       method: 'GET',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-  //       }
-  //     });
-
-  //     if (!quizResponse.ok) {
-  //       throw new Error('Failed to fetch quiz results');
-  //     }
-
-  //     const quizResult = await quizResponse.json();
-
-  //     // Check if the user has passed the quiz
-  //     if (quizResult.data.previousResult &&
-  //       quizResult.data.previousResult.score >= quizResult.data.quiz.pass_score) {
-
-  //       // User has passed, now mark the module as completed
-  //       const completeResponse = await fetch(`http://localhost:8000/course/${courseId}/module/${moduleId}/complete`, {
-  //         method: 'POST',
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //           'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-  //         }
-  //       });
-
-  //       if (!completeResponse.ok) {
-  //         throw new Error('Failed to mark module as completed');
-  //       }
-
-  //       // Update the local state to reflect completion
-  //       if (moduleContent) {
-  //         setModuleContent({
-  //           ...moduleContent,
-  //           isCompleted: true
-  //         });
-  //       }
-
-  //       return { success: true, message: 'Module marked as completed' };
-  //     } else {
-  //       // User has not passed the quiz
-  //       return {
-  //         success: false,
-  //         message: 'You need to pass the quiz before completing this module'
-  //       };
-  //     }
-  //   } catch (error) {
-  //     console.error('Error in module completion process:', error);
-  //     return { success: false, message: error.message };
-  //   } finally {
-      
-  //   }
-  // };
-
   // Handle question navigation
   const handleQuestionNavigation = (questionNum) => {
     setCurrentQuestion(questionNum);
@@ -230,19 +186,6 @@ const QuizApp = () => {
       }
     }));
   };
-
-  // // Handle next and previous navigation
-  // const handleNextQuestion = () => {
-  //   if (currentQuestion < 10) {
-  //     setCurrentQuestion(currentQuestion + 1);
-  //   }
-  // };
-
-  // const handlePreviousQuestion = () => {
-  //   if (currentQuestion > 1) {
-  //     setCurrentQuestion(currentQuestion - 1);
-  //   }
-  // };
 
   const handleNextQuestion = () => {
     if (quizData && currentQuestion < quizData.questions.length) {
@@ -264,16 +207,18 @@ const QuizApp = () => {
 
   // Submit quiz
   const handleSubmitQuiz = () => {
-    // Logic to submit quiz answers could be added here
     const answeredCount = Object.values(questionStatus).filter(q => q.answered).length;
+    const totalQuestions = Object.keys(questionStatus).length;
+    const examType = isFinalExam ? 'ujian akhir' : 'kuis';
 
-    if (answeredCount < Object.keys(questionStatus).length) {
-      const confirmSubmit = window.confirm(`Anda belum menjawab semua pertanyaan (${answeredCount}/${Object.keys(questionStatus).length}). Apakah Anda yakin ingin mengirim?`);
+    if (answeredCount < totalQuestions) {
+      const confirmSubmit = window.confirm(
+        `Anda belum menjawab semua pertanyaan ${examType} (${answeredCount}/${totalQuestions}). Apakah Anda yakin ingin mengirim?`
+      );
       if (!confirmSubmit) return;
     }
 
     submitQuiz();
-    // markModuleAsCompleted();
   };
 
   if (loading) {

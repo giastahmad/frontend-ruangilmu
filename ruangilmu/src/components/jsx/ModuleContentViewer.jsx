@@ -12,6 +12,7 @@ const ModuleContentViewer = () => {
   const [currentContentIndex, setCurrentContentIndex] = useState(0);
   const [isCompleting, setIsCompleting] = useState(false);
   const [quizResult, setQuizResult] = useState(null);
+  const [showFinalTest, setShowFinalTest] = useState(false);
   const navigate = useNavigate();
 
   // Fetch list of all modules for this course
@@ -222,6 +223,23 @@ const ModuleContentViewer = () => {
     return false;
   };
 
+  // Check if all modules are completed
+  const checkAllModulesCompleted = async () => {
+    for (let i = 0; i < modulesList.length; i++) {
+      const moduleId = modulesList[i].module_id;
+      try {
+        const moduleData = await fetchModuleDetails(moduleId);
+        if (!moduleData.isCompleted) {
+          return false;
+        }
+      } catch (error) {
+        console.error(`Error checking module ${moduleId}:`, error);
+        return false;
+      }
+    }
+    return true;
+  };
+
   // Navigate to the previous content or module
   const handlePrevContent = () => {
     if (currentContentIndex > 0) {
@@ -244,6 +262,7 @@ const ModuleContentViewer = () => {
     } else {
       // If at last content item
       const currentModule = modulesList[currentModuleIndex];
+      const isLastModule = currentModuleIndex === modulesList.length - 1;
 
       // Check if we need to mark the module as completed
       if (moduleContent && !moduleContent.isCompleted) {
@@ -252,16 +271,32 @@ const ModuleContentViewer = () => {
         if (!moduleContent.hasQuiz || (quizResult && quizResult.score >= passScore)) {
           await markModuleAsCompleted(currentModule.module_id);
 
-          // After completing this module, find and load next uncompleted module
-          const foundNext = await moveToNextUncompletedModule();
+          // If this is the last module, check if all modules are completed
+          if (isLastModule) {
+            const allCompleted = await checkAllModulesCompleted();
+            if (allCompleted) {
+              setShowFinalTest(true);
+              return;
+            }
+          } else {
+            // After completing this module, find and load next uncompleted module
+            const foundNext = await moveToNextUncompletedModule();
 
-          // If no more uncompleted modules found, just move to next module (if any)
-          if (!foundNext && currentModuleIndex < modulesList.length - 1) {
-            const nextModule = modulesList[currentModuleIndex + 1];
-            fetchModuleContent(nextModule.module_id);
+            // If no more uncompleted modules found, just move to next module (if any)
+            if (!foundNext && currentModuleIndex < modulesList.length - 1) {
+              const nextModule = modulesList[currentModuleIndex + 1];
+              fetchModuleContent(nextModule.module_id);
+            }
+
+            return; // Exit early since we've already loaded the next module
           }
-
-          return; // Exit early since we've already loaded the next module
+        }
+      } else if (isLastModule && moduleContent?.isCompleted) {
+        // If current module is already completed and it's the last module
+        const allCompleted = await checkAllModulesCompleted();
+        if (allCompleted) {
+          setShowFinalTest(true);
+          return;
         }
       }
 
@@ -281,6 +316,11 @@ const ModuleContentViewer = () => {
     } else {
       console.error("Module ID tidak ditemukan untuk navigasi kuis");
     }
+  };
+
+  const handleFinalTestClick = () => {
+    // Navigate to final test/exam page
+    navigate(`/quiz/${courseId}`);
   };
 
   // Loading state
@@ -309,6 +349,40 @@ const ModuleContentViewer = () => {
     return (
       <div className="p-6 bg-white rounded-lg">
         <p className="text-center text-gray-600">Materi tidak ditemukan</p>
+      </div>
+    );
+  }
+
+  // Show final test button when all modules are completed
+  if (showFinalTest) {
+    return (
+      <div className="p-6 bg-white rounded-lg shadow-sm">
+        <div className="text-center py-16">
+          <div className="mb-8">
+            <svg className="w-20 h-20 mx-auto text-green-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <h2 className="text-3xl font-bold text-[#026078] mb-2">Selamat!</h2>
+            <p className="text-gray-600 text-lg mb-2">Anda telah menyelesaikan semua modul pembelajaran</p>
+            <p className="text-gray-500">Sekarang saatnya untuk mengikuti ujian akhir</p>
+          </div>
+          
+          <button
+            onClick={handleFinalTestClick}
+            className="px-8 py-4 bg-[#026078] text-white text-lg font-semibold rounded-lg hover:bg-[#015266] transition-colors duration-200 shadow-lg"
+          >
+            Mulai Test Akhir
+          </button>
+          
+          <div className="mt-6">
+            <button
+              onClick={() => setShowFinalTest(false)}
+              className="text-[#026078] hover:text-[#015266] underline"
+            >
+              Kembali ke Materi
+            </button>
+          </div>
+        </div>
       </div>
     );
   }
@@ -448,8 +522,8 @@ const ModuleContentViewer = () => {
             onClick={handlePrevContent}
             disabled={isFirstContent}
             className={`px-6 py-2 rounded-md flex items-center ${isFirstContent
-                ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                : 'bg-[#E6F7FF] text-[#026078] hover:bg-[#BFECFF]'
+              ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+              : 'bg-[#E6F7FF] text-[#026078] hover:bg-[#BFECFF]'
               }`}
           >
             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -473,13 +547,9 @@ const ModuleContentViewer = () => {
 
           <button
             onClick={handleNextContent}
-            disabled={isLastContent}
-            className={`px-6 py-2 rounded-md flex items-center ${isLastContent
-                ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                : 'bg-[#026078] text-white hover:bg-[#015266]'
-              }`}
+            className="px-6 py-2 rounded-md flex items-center bg-[#026078] text-white hover:bg-[#015266]"
           >
-            Selanjutnya
+            {isLastContent ? 'Selesaikan Kursus' : 'Selanjutnya'}
             <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
             </svg>
