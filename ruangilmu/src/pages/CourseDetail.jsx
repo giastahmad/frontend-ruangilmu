@@ -93,15 +93,6 @@ const CourseDetailPage = () => {
       
       if (data.status === 'success' && data.data.enrolled) {
         setIsEnrolled(true);
-        
-        // Check if user has completed the course
-        if (showCertificate) {
-          setButtonText('Ulas Kelas');
-          setButtonAction('review');
-        } else {
-          setButtonText('Lanjut Belajar');
-          setButtonAction('continue');
-        }
       }
     } catch (error) {
       console.error('Error checking enrollment status:', error);

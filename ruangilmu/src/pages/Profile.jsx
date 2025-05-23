@@ -9,6 +9,7 @@ const ProfilePage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState([]);
   const [courses, setCourses] = useState([]);
+  const [certificates, setCertificates] = useState([]);
   const [error, setError] = useState([]);
   const [courseProgress, setCourseProgress] = useState({});
 
@@ -19,7 +20,8 @@ const ProfilePage = () => {
 
     if (token) {
       fetchUserProfile(token);
-      fetchEnrolledCourses(token);
+      fetchEnrolledCourses();
+      fetchCertificates();
     }
   }, []);
 
@@ -42,7 +44,7 @@ const ProfilePage = () => {
     }
   };
 
-  const fetchEnrolledCourses = async (token) => {
+  const fetchEnrolledCourses = async () => {
     try {
       const response = await apiService.get('http://localhost:8000/courses/user/enrolled');
 
@@ -63,19 +65,36 @@ const ProfilePage = () => {
     }
   };
 
+  const fetchCertificates = async () => {
+    try {
+      const response = await apiService.get('http://localhost:8000/course/certificates');
+
+      if (!response.ok) {
+        throw new Error('Gagal Mengambil Data Sertifikat');
+      }
+
+      const data = await response.json();
+      console.log('Fetched certificates data:', data);
+      setCertificates(data.data || []);
+    } catch (error) {
+      console.error('Error mengambil sertifikat: ', error);
+      setError('Gagal Menampilkan sertifikat, coba sesaat lagi');
+    }
+  };
+
   const fetchAllCourseProgress = async (courseList) => {
-    const progressPromises = courseList.map(course => 
+    const progressPromises = courseList.map(course =>
       fetchCourseProgress(course.course_id)
     );
-    
+
     try {
       const progressResults = await Promise.all(progressPromises);
       const progressMap = {};
-      
+
       courseList.forEach((course, index) => {
         progressMap[course.course_id] = progressResults[index];
       });
-      
+
       setCourseProgress(progressMap);
     } catch (error) {
       console.error('Error fetching course progress:', error);
@@ -85,23 +104,23 @@ const ProfilePage = () => {
   const fetchCourseProgress = async (courseId) => {
     try {
       const response = await apiService.get(`http://localhost:8000/course/${courseId}/module`);
-      
+
       if (!response.ok) {
         throw new Error('Gagal mengambil data modul');
       }
-      
+
       const data = await response.json();
       console.log(`Fetched modules for course ${courseId}:`, data);
-      
+
       if (data.data && data.data.length > 0) {
         const completedModules = data.data.filter(module => module.completed === true).length;
         const totalModules = data.data.length;
         const progressPercentage = Math.round((completedModules / totalModules) * 100);
-        
+
         console.log(`Course ${courseId} progress: ${completedModules}/${totalModules} (${progressPercentage}%)`);
         return progressPercentage;
       }
-      
+
       return 0;
     } catch (error) {
       console.error(`Error fetching progress for course ${courseId}:`, error);
@@ -109,9 +128,37 @@ const ProfilePage = () => {
     }
   };
 
-  // Split courses into active and completed courses
-  const activeCourses = courses.filter(course => !course.is_completed);
-  const completedCourses = courses.filter(course => course.is_completed);
+  const handleDownloadCertificate = async (id) => {
+    try {
+
+      const res = await apiService.get(`http://localhost:8000/course/${id}/certificate/download`);
+
+      if (!res.ok) {
+        throw new Error('Gagal mengunduh sertifikat');
+      }
+
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+
+      a.href = url;
+      a.download = `certificate.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+
+    } catch (error) {
+      console.error('Error downloading certificate:', error);
+    }
+  };
+
+  // get completed course ID from certif
+  const completedCourseIds = certificates.map(cert => cert.course_id);
+
+  // Split courses into active and completed based on certificates
+  const activeCourses = courses.filter(course => !completedCourseIds.includes(course.course_id));
+  const completedCourses = courses.filter(course => completedCourseIds.includes(course.course_id));
 
   // Calculate profile completion percentage (simplified example)
   const profileCompletion = user.nama && user.email && user.tanggal_lahir && user.photo_profile ? 100 :
@@ -126,6 +173,11 @@ const ProfilePage = () => {
       month: 'long',
       day: 'numeric'
     }).format(date);
+  };
+
+  // Get certificate for a specific course
+  const getCertificateForCourse = (courseId) => {
+    return certificates.find(cert => cert.course_id === courseId);
   };
 
   return (
@@ -288,37 +340,44 @@ const ProfilePage = () => {
                     </div>
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      {completedCourses.map(course => (
-                        <div
-                          key={course.course_id}
-                          className="bg-white border border-gray-200 rounded-lg overflow-hidden transform transition duration-300 hover:translate-y-[-3px] hover:shadow-lg"
-                        >
-                          <div className="relative">
-                            <img
-                              src={course.course_image_profile || '/default-course.jpg'}
-                              alt={course.course_name}
-                              className="w-full h-40 object-cover"
-                            />
-                            <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                              <span className="text-white font-bold text-lg">SELESAI</span>
+                      {completedCourses.map(course => {
+                        const certificate = getCertificateForCourse(course.course_id);
+                        return (
+                          <div
+                            key={course.course_id}
+                            className="bg-white border border-gray-200 rounded-lg overflow-hidden transform transition duration-300 hover:translate-y-[-3px] hover:shadow-lg"
+                          >
+                            <div className="relative">
+                              <img
+                                src={course.course_image_cover || '/default-course.jpg'}
+                                alt={course.course_name}
+                                className="w-full h-40 object-cover"
+                              />
+                              <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                                <span className="text-white font-bold text-lg">SELESAI</span>
+                              </div>
+                            </div>
+                            <div className="p-4">
+                              <h3 className="font-bold text-gray-800 mb-2">{course.course_name}</h3>
+                              <div className="flex items-center text-sm text-gray-500 mb-3">
+                                <span>Diselesaikan pada {certificate ? formatJoinDate(certificate.issue_date) : formatJoinDate(course.enrollment_date)}</span>
+                              </div>
+                              {certificate && (
+                                <div className="mb-3">
+                                  <div className="flex items-center text-sm text-gray-600">
+                                    <span className="font-medium">Nilai Akhir: </span>
+                                    <span className="ml-1 text-[#0B7077] font-bold">{certificate.final_score}</span>
+                                  </div>
+                                  <div className="flex items-center text-sm text-gray-600">
+                                    <span className="font-medium">No. Sertifikat: </span>
+                                    <span className="ml-1 text-xs">{certificate.certificate_number}</span>
+                                  </div>
+                                </div>
+                              )}
                             </div>
                           </div>
-                          <div className="p-4">
-                            <h3 className="font-bold text-gray-800 mb-2">{course.course_name}</h3>
-                            <div className="flex items-center text-sm text-gray-500 mb-3">
-                              <span>Diselesaikan pada {formatJoinDate(course.enrollment_date)}</span>
-                            </div>
-                            <div className="flex justify-between items-center">
-                              <button className="text-[#0B7077] hover:underline">
-                                Lihat Sertifikat
-                              </button>
-                              <button className="text-gray-600 hover:text-[#0B7077]">
-                                Nilai Kelas
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   )}
                 </div>
@@ -328,29 +387,36 @@ const ProfilePage = () => {
             {activeTab === "certificates" && (
               <div className="bg-white rounded-lg shadow-md p-6">
                 <h2 className="text-xl font-bold text-gray-800 mb-6">Sertifikat Saya</h2>
-                <p className="text-gray-600">Anda memiliki {completedCourses.length} sertifikat yang telah diperoleh.</p>
+                <p className="text-gray-600">Anda memiliki {certificates.length} sertifikat yang telah diperoleh.</p>
 
-                {completedCourses.length === 0 ? (
+                {certificates.length === 0 ? (
                   <div className="text-center py-8 mt-4">
                     <p className="text-gray-500">Selesaikan kelas untuk mendapatkan sertifikat.</p>
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                    {completedCourses.map(course => (
-                      <div key={course.course_id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
+                    {certificates.map(certificate => (
+                      <div key={certificate.certificate_id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
                         <div className="flex items-center space-x-4">
                           <div className="bg-[#0B7077] p-3 rounded-lg">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                           </div>
-                          <div>
-                            <h3 className="font-semibold">{course.course_name}</h3>
-                            <p className="text-sm text-gray-500">Diselesaikan: {formatJoinDate(course.enrollment_date)}</p>
+                          <div className="flex-1">
+                            <h3 className="font-semibold">{certificate.course_name}</h3>
+                            <p className="text-sm text-gray-500">Diselesaikan: {formatJoinDate(certificate.issue_date)}</p>
+                            <p className="text-sm text-gray-600">Nilai: <span className="font-bold text-[#0B7077]">{certificate.final_score}</span></p>
+                            <p className="text-xs text-gray-500">No: {certificate.certificate_number}</p>
                           </div>
                         </div>
                         <div className="mt-4 flex justify-end">
-                          <button className="text-[#0B7077] hover:underline font-medium">Unduh</button>
+                          <button
+                            className="text-[#0B7077] hover:underline font-medium"
+                            onClick={() => handleDownloadCertificate(certificate.course_id)}
+                            >
+                            Unduh
+                          </button>
                         </div>
                       </div>
                     ))}
