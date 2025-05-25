@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import ModuleContentViewer from '../components/jsx/ModuleContentViewer';
 import Navbar from '../components/jsx/Navbar';
 import Footer from '../components/jsx/Footer';
+import Chatbot from '../components/jsx/Chatbot';
 import { apiService } from '../components/utils/authMiddleware';
 
 const Modul = () => {
@@ -82,7 +83,7 @@ const Modul = () => {
         {/* Tab Content */}
         {getTabContent()}
       </div>
-              
+      <Chatbot />
       <Footer />
     </div>
   );
