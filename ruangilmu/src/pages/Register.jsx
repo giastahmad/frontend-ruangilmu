@@ -153,13 +153,14 @@ const RegisterPage = () => {
       } else {
         showToast('Register berhasil Silahkan periksa email kamu', 'success');
         sessionStorage.setItem('registerStatus', 'success');
+        sessionStorage.setItem('registerEmail', email);
 
         if (data.user) {
           localStorage.setItem('user', JSON.stringify(data.user));
         }
 
         setTimeout(() => {
-          navigate('/Login');
+          navigate('/verify');
         }, 1500);
       }
     } catch (error) {

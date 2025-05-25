@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { apiService } from '../utils/authMiddleware';
+import PopupModal from './Popup';
 
 const ModuleContentViewer = () => {
   const { id: courseId } = useParams();
@@ -15,6 +16,14 @@ const ModuleContentViewer = () => {
   const [showFinalTest, setShowFinalTest] = useState(false);
   const [certificateData, setCertificateData] = useState(null);
   const [isCheckingCertificate, setIsCheckingCertificate] = useState(false);
+  
+  const [showModal, setShowModal] = useState(false);
+  const [modalType, setModalType] = useState(''); // 'quiz' or 'finalExam'
+  const [modalConfig, setModalConfig] = useState({
+    message: '',
+    confirmText: 'Ya',
+    cancelText: 'Batal'
+  });
   const navigate = useNavigate();
 
   // Fetch list of all modules for this course
@@ -344,18 +353,54 @@ const ModuleContentViewer = () => {
     }
   };
 
-  const handleQuizClick = async () => {
+  // Enhanced quiz click handler with popup confirmation
+  const handleQuizClick = () => {
     const currentModule = modulesList[currentModuleIndex];
     if (currentModule && currentModule.module_id) {
-      navigate(`/quiz/${courseId}/${currentModule.module_id}`);
+      // Set modal configuration for quiz
+      setModalType('quiz');
+      setModalConfig({
+        message: quizResult 
+          ? "Apakah Kamu yakin ingin mengulang kuis?" 
+          : "Apakah Kamu yakin ingin memulai kuis sekarang? Pastikan Kamu sudah siap.",
+        confirmText: quizResult ? "Ya, Ulangi" : "Ya, Mulai",
+        cancelText: "Batal"
+      });
+      setShowModal(true);
     } else {
       console.error("Module ID tidak ditemukan untuk navigasi kuis");
     }
   };
 
+  // Enhanced final test click handler with popup confirmation
   const handleFinalTestClick = () => {
-    // Navigate to final test/exam page
-    navigate(`/quiz/${courseId}`);
+    setModalType('finalExam');
+    setModalConfig({
+      message: "Kamu akan memulai ujian akhir. Pastikan koneksi internet stabil dan Kamu sudah siap. Ujian ini akan menentukan kelulusanmu.",
+      confirmText: "Ya, Mulai Ujian",
+      cancelText: "Belum Siap"
+    });
+    setShowModal(true);
+  };
+
+  // Handle modal confirmation based on type
+  const handleModalConfirm = () => {
+    if (modalType === 'quiz') {
+      const currentModule = modulesList[currentModuleIndex];
+      navigate(`/quiz/${courseId}/${currentModule.module_id}`);
+    } else if (modalType === 'finalExam') {
+      navigate(`/quiz/${courseId}`);
+    }
+    
+    // Close modal and reset
+    setShowModal(false);
+    setModalType('');
+  };
+
+  // Handle modal close
+  const handleModalClose = () => {
+    setShowModal(false);
+    setModalType('');
   };
 
   // Loading state
@@ -459,7 +504,7 @@ const ModuleContentViewer = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
             <h2 className="text-3xl font-bold text-[#026078] mb-2">Selamat!</h2>
-            <p className="text-gray-600 text-lg mb-2">Anda telah menyelesaikan semua modul pembelajaran</p>
+            <p className="text-gray-600 text-lg mb-2">Kamu telah menyelesaikan semua modul pembelajaran</p>
             <p className="text-gray-500">Sekarang saatnya untuk mengikuti ujian akhir</p>
           </div>
 
@@ -652,6 +697,17 @@ const ModuleContentViewer = () => {
           </button>
         </div>
       </div>
+
+      {/* Confirmation Modal */}
+      <PopupModal
+        isOpen={showModal}
+        onClose={handleModalClose}
+        onConfirm={handleModalConfirm}
+        message={modalConfig.message}
+        confirmText={modalConfig.confirmText}
+        cancelText={modalConfig.cancelText}
+      />
+
     </div>
   );
 };

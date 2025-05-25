@@ -14,11 +14,13 @@ const EditProfile = () => {
     birthDate: '',
   });
   const [profilePic, setProfilePic] = useState('/images/profile.png');
+  const [selectedFile, setSelectedFile] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState([]);
   const [error, setError] = useState([]);
   const [successMessage, setSuccessMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
 
 
   useEffect(() => {
@@ -49,8 +51,8 @@ const EditProfile = () => {
       setUser(userData);
 
       // Set profile picture if available
-      if (userData.photo_profile) {
-        setProfilePic(userData.photo_profile);
+      if (userData.user_profile) {
+        setProfilePic(`http://localhost:8000/uploads/userprofile/${userData.user_profile}`);
       }
 
       // Split name into first name and last name
@@ -106,20 +108,96 @@ const EditProfile = () => {
     }));
   };
 
-
-  // Handle profile picture change
+  // Handle profile picture file selection
   const handleProfilePicChange = (e) => {
     if (e.target.files && e.target.files[0]) {
-      // Here we would normally upload to a server
-      // For now, we'll just create a local URL
-      const fileUrl = URL.createObjectURL(e.target.files[0]);
+      const file = e.target.files[0];
+
+      // Validasi file
+      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+      if (!allowedTypes.includes(file.type)) {
+        setError('Hanya file gambar (JPG, JPEG, PNG) yang diperbolehkan');
+        return;
+      }
+
+      if (file.size > 2 * 1024 * 1024) { // 2MB
+        setError('Ukuran file maksimal 2MB');
+        return;
+      }
+
+      setSelectedFile(file);
+      // Create preview URL
+      const fileUrl = URL.createObjectURL(file);
       setProfilePic(fileUrl);
+
+      // Auto upload setelah file dipilih
+      uploadProfilePicture(file);
+    }
+  };
+
+  // Upload profile picture to backend
+  const uploadProfilePicture = async (file) => {
+    setIsUploadingPhoto(true);
+    setError('');
+
+    try {
+      const token = localStorage.getItem('accessToken');
+      if (!token) {
+        throw new Error('Token tidak ditemukan. Silakan login kembali.');
+      }
+
+      // Create FormData for file upload
+      const formData = new FormData();
+      formData.append('profile_picture', file);
+
+      // Upload using fetch with proper headers
+      const response = await fetch('http://localhost:8000/user/update-profile-picture', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Gagal mengupload foto profil');
+      }
+
+      setSuccessMessage('Foto profil berhasil diperbarui!');
+
+      // Update profile picture URL dengan yang baru dari server
+      if (data.data && data.data.user && data.data.user.user_profile) {
+        setProfilePic(`http://localhost:8000/uploads/userprofile/${data.data.user.user_profile}`);
+      }
+
+      // Clear success message after 3 seconds
+      setTimeout(() => {
+        setSuccessMessage('');
+      }, 3000);
+
+    } catch (error) {
+      console.error('Error uploading profile picture:', error);
+      setError(error.message || 'Terjadi kesalahan saat mengupload foto profil');
+
+      // Reset to previous profile picture on error
+      if (user.user_profile) {
+        setProfilePic(`http://localhost:8000/uploads/userprofile/${user.user_profile}`);
+      } else {
+        setProfilePic('/images/profile.png');
+      }
+    } finally {
+      setIsUploadingPhoto(false);
     }
   };
 
   // Handle profile picture removal
   const handleRemovePic = () => {
-    setProfilePic('/img/default-avatar.jpg');
+    // Untuk menghapus foto profil, Anda mungkin perlu endpoint terpisah di backend
+    // Untuk sementara, kita reset ke default
+    setProfilePic('/images/profile.png');
+    setSelectedFile(null);
   };
 
   // Handle form submission
@@ -181,14 +259,21 @@ const EditProfile = () => {
             <div className="bg-white rounded-lg shadow-sm p-6 sticky top-6">
               <div className="flex flex-col items-center">
                 <div className="relative mb-4">
+                  {isUploadingPhoto && (
+                    <div className="absolute inset-0 bg-black bg-opacity-50 rounded-md flex items-center justify-center">
+                      <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white"></div>
+                    </div>
+                  )}
                   <img
                     src={profilePic}
                     alt="Profile"
                     className="w-32 h-32 rounded-md border-4 border-[#0B7077] object-cover"
+                    onError={(e) => {
+                      e.target.src = '/images/profile.png';
+                    }}
                   />
                 </div>
                 <h2 className="text-xl font-bold text-gray-800">
-                  {console.log('NAMA: ', formData.firstName)}
                   {formData.firstName} {formData.lastName}
                 </h2>
                 <p className="text-gray-600 mb-4">Murid di RuangIlmu</p>
@@ -228,10 +313,18 @@ const EditProfile = () => {
                     <label className="block text-gray-700 font-medium mb-3">Foto Profil</label>
                     <div className="flex items-center space-x-6">
                       <div className="relative">
+                        {isUploadingPhoto && (
+                          <div className="absolute inset-0 bg-black bg-opacity-50 rounded-md flex items-center justify-center">
+                            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white"></div>
+                          </div>
+                        )}
                         <img
                           src={profilePic}
                           alt="Current Profile"
-                          className="w-50 h-50 rounded-md border-2 border-[#0B7077] object-cover"
+                          className="w-32 h-32 rounded-md border-2 border-[#0B7077] object-cover"
+                          onError={(e) => {
+                            e.target.src = '/images/profile.png';
+                          }}
                         />
                       </div>
                       <div>
@@ -241,22 +334,28 @@ const EditProfile = () => {
                           className="hidden"
                           accept="image/*"
                           onChange={handleProfilePicChange}
+                          disabled={isUploadingPhoto}
                         />
                         <label
                           htmlFor="profile-pic"
-                          className="cursor-pointer border border-[#0B7077] text-[#0B7077] px-4 py-2 rounded-md inline-flex items-center hover:bg-gray-50"
+                          className={`cursor-pointer border border-[#0B7077] text-[#0B7077] px-4 py-2 rounded-md inline-flex items-center hover:bg-gray-50 ${isUploadingPhoto ? 'opacity-50 cursor-not-allowed' : ''
+                            }`}
                         >
                           <Upload className="h-5 w-5 mr-2" />
-                          Ganti Foto
+                          {isUploadingPhoto ? 'Mengupload...' : 'Ganti Foto'}
                         </label>
                         <button
                           type="button"
                           className="ml-3 text-gray-500 hover:text-red-500 flex items-center"
                           onClick={handleRemovePic}
+                          disabled={isUploadingPhoto}
                         >
                           <Trash2 className="h-4 w-4 mr-1" />
                           Hapus
                         </button>
+                        <p className="text-sm text-gray-500 mt-2">
+                          Format: JPG, JPEG, PNG. Maksimal 2MB.
+                        </p>
                       </div>
                     </div>
                   </div>

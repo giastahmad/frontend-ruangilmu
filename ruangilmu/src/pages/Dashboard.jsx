@@ -143,6 +143,20 @@ const Dashboard = () => {
         return circumference - (circumference * percent / 100);
     };
 
+    if (!isLoggedIn) {
+        return (
+            <div className='bg-[#f8fafc] min-h-screen'>
+                <Navbar isLoggedIn={isLoggedIn} />
+                <main className="container mx-auto px-4 py-8">
+                    <div className="flex justify-center items-center h-64">
+                        <div className="text-gray-600">Silahkan masuk atau daftarkan akun terlebih dahulu</div>
+                    </div>
+                </main>
+                <Footer />
+            </div>
+        );
+    }
+
     if (loading) {
         return (
             <div className='bg-[#f8fafc] min-h-screen'>

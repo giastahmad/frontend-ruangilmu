@@ -161,7 +161,7 @@ const ProfilePage = () => {
   const completedCourses = courses.filter(course => completedCourseIds.includes(course.course_id));
 
   // Calculate profile completion percentage (simplified example)
-  const profileCompletion = user.nama && user.email && user.tanggal_lahir && user.photo_profile ? 100 :
+  const profileCompletion = user.nama && user.email && user.tanggal_lahir && user.user_profile ? 100 :
     user.nama && user.email ? 50 : 25;
 
   // Format join date
@@ -192,7 +192,7 @@ const ProfilePage = () => {
               <div className="flex flex-col items-center">
                 <div className="relative mb-4">
                   <img
-                    src={user.photo_profile || '/images/profile.png'}
+                    src={user.user_profile ? `http://localhost:8000/uploads/userprofile/${user.user_profile}` : '/images/profile.png'}
                     alt="Profile"
                     className="w-32 h-32 rounded-md border-4 border-[#0B7077] object-cover"
                   />
@@ -255,19 +255,19 @@ const ProfilePage = () => {
               <div className="border-b border-gray-200">
                 <nav className="flex -mb-px">
                   <button
-                    className={`py-4 px-6 ${activeTab === "courses" ? "border-b-3 border-[#0B7077] text-[#0B7077] font-semibold" : "text-gray-500 hover:text-[#0B7077]"}`}
+                    className={`py-4 px-6 ${activeTab === "courses" ? "border-b-2 border-[#0B7077] text-[#0B7077] font-semibold" : "text-gray-500 hover:text-[#0B7077]"}`}
                     onClick={() => setActiveTab("courses")}
                   >
                     Kelas Saya
                   </button>
                   <button
-                    className={`py-4 px-6 ${activeTab === "certificates" ? "border-b-3 border-[#0B7077] text-[#0B7077] font-semibold" : "text-gray-500 hover:text-[#0B7077]"}`}
+                    className={`py-4 px-6 ${activeTab === "certificates" ? "border-b-2 border-[#0B7077] text-[#0B7077] font-semibold" : "text-gray-500 hover:text-[#0B7077]"}`}
                     onClick={() => setActiveTab("certificates")}
                   >
                     Sertifikat Saya
                   </button>
                   <button
-                    className={`py-4 px-6 ${activeTab === "awards" ? "border-b-3 border-[#0B7077] text-[#0B7077] font-semibold" : "text-gray-500 hover:text-[#0B7077]"}`}
+                    className={`py-4 px-6 ${activeTab === "awards" ? "border-b-2 border-[#0B7077] text-[#0B7077] font-semibold" : "text-gray-500 hover:text-[#0B7077]"}`}
                     onClick={() => setActiveTab("awards")}
                   >
                     Penghargaan Saya
