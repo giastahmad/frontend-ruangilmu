@@ -2,11 +2,12 @@
 import React, { useState } from "react"
 import { Sheet, SheetTrigger, SheetContent } from "../ui/Sheet"
 import { Button } from "../ui/Button"
-import { MessageCircle } from "lucide-react"
+import { MessageCircle, X } from "lucide-react"
 
 const Chatbot = () => {
   const [input, setInput] = useState("")
   const [chatLog, setChatLog] = useState([])
+  const [isOpen, setIsOpen] = useState(false)
 
   async function handleSendMessage(e) {
     e.preventDefault()
@@ -39,7 +40,7 @@ const Chatbot = () => {
 
   return (
     <div className="fixed bottom-6 right-6 z-50">
-      <Sheet>
+      <Sheet open={isOpen} onOpenChange={setIsOpen}>
         <SheetTrigger asChild>
           <Button
             variant="default"
@@ -50,9 +51,22 @@ const Chatbot = () => {
             <MessageCircle className="w-6 h-6" />
           </Button>
         </SheetTrigger>
-        <SheetContent side="right" className="w-full sm:w-[400px] bg-[#d2e6e4] text-black">
-          <div className="flex flex-col h-full">
-            <div className="text-xl font-semibold mb-4">Asisten Belajar</div>
+        <SheetContent
+          side="right"
+          className="w-full sm:w-[400px] bg-[#d2e6e4] text-black"
+        >
+          <div className="flex flex-col h-full relative">
+            {/* Tombol Close */}
+            <button
+              className="absolute right-4 text-gray-700 hover:text-black"
+              onClick={() => setIsOpen(false)}
+              aria-label="Tutup chatbot"
+            >
+              <X className="w-8 h-8" />
+            </button>
+
+            <div className="text-xl font-semibold mb-4 pr-8">Asisten Belajar</div>
+
             <div className="flex-1 overflow-y-auto bg-white rounded p-4 shadow-inner">
               {chatLog.length === 0 ? (
                 <p className="text-sm text-gray-700">Halo! Ada yang bisa aku bantu?</p>
@@ -61,7 +75,9 @@ const Chatbot = () => {
                   <div
                     key={i}
                     className={`mb-2 ${
-                      chat.sender === "user" ? "text-right text-[#026078]" : "text-left text-gray-700"
+                      chat.sender === "user"
+                        ? "text-right text-[#026078]"
+                        : "text-left text-gray-700"
                     }`}
                   >
                     {chat.text}
@@ -69,6 +85,7 @@ const Chatbot = () => {
                 ))
               )}
             </div>
+
             <form className="mt-4 flex" onSubmit={handleSendMessage}>
               <input
                 type="text"

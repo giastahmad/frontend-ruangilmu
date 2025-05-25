@@ -14,8 +14,8 @@ const SheetContent = React.forwardRef(({ className, side = "right", children, ..
         ref={ref}
         className={clsx(
           "fixed z-50 flex flex-col bg-white p-6 shadow-lg transition ease-in-out duration-300",
-          side === "right" && "right-0 top-0 h-full w-80",
-          side === "left" && "left-0 top-0 h-full w-80",
+          side === "right" && "right-0 md:top-0 top-[50%] h-[50%] md:h-full w-80",
+          side === "left" && "left-0 top-0 h-[50%] md:h-full w-80",
           className
         )}
         {...props}
