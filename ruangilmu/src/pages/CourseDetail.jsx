@@ -83,19 +83,23 @@ const CourseDetailPage = () => {
   const checkEnrollmentStatus = async () => {
     try {
       const response = await apiService.get(`http://localhost:8000/courses/${id}/enrollment-status`);
-      
+
       if (!response.ok) {
         console.log('User not enrolled in this course');
         return;
       }
-      
+
       const data = await response.json();
-      
+
       if (data.status === 'success' && data.data.enrolled) {
         setIsEnrolled(true);
+        setButtonText('Lanjut Belajar')
+      } else {
+        setIsEnrolled(false);
       }
     } catch (error) {
       console.error('Error checking enrollment status:', error);
+      setIsEnrolled(false);
     }
   };
 
@@ -351,7 +355,14 @@ const CourseDetailPage = () => {
   }
 
   useEffect(() => {
-    const checkUserReview = async () => {
+    const checkUserReviewAndEnrollment = async () => {
+      // First check if user is enrolled in the course
+      if (!isEnrolled) {
+        setShowReviewForm(false);
+        return;
+      }
+
+      // If user is enrolled, then check if they have already submitted a review
       try {
         const res = await apiService.get(`http://localhost:8000/review/user/course/${id}`);
 
@@ -362,13 +373,16 @@ const CourseDetailPage = () => {
         const response = await res.json();
 
         if (response.status === 'success' && response.data) {
+          // User has already submitted a review
           setShowReviewForm(false);
         } else {
+          // User hasn't submitted a review yet and is enrolled
           setShowReviewForm(true);
         }
 
       } catch (error) {
         console.error('Error: ', error);
+        // If there's an error checking user review, still show form if user is enrolled
         setShowReviewForm(true);
       }
     };
@@ -400,9 +414,14 @@ const CourseDetailPage = () => {
       }
     };
 
-    checkUserFinished()
-    checkUserReview();
-  }, [id]);
+    // Only run these checks if user is logged in
+    if (isLoggedIn) {
+      checkUserFinished();
+      checkUserReviewAndEnrollment();
+    } else {
+      setShowReviewForm(false);
+    }
+  }, [id, isEnrolled, isLoggedIn]);
 
   const deleteHandleClick = async (reviewId) => {
     try {
@@ -578,6 +597,14 @@ const CourseDetailPage = () => {
                             </button>
                           </div>
                         </div>
+                      </div>
+                    ) : !isEnrolled && isLoggedIn ? (
+                      <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                        <p className="text-blue-700">Anda perlu mendaftar kelas ini terlebih dahulu untuk dapat memberikan ulasan.</p>
+                      </div>
+                    ) : !isLoggedIn ? (
+                      <div className="mb-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                        <p className="text-gray-700">Silakan login dan daftar kelas ini untuk dapat memberikan ulasan.</p>
                       </div>
                     ) : null
                     }

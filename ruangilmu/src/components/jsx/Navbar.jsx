@@ -54,7 +54,7 @@ const Navbar = ({ isLoggedIn }) => {
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-8">
           <Link to="/" className="text-gray-800 font-medium hover:text-blue-600">Beranda</Link>
-          <Link to="/course" className="text-gray-600 hover:text-blue-600">Kelas</Link>
+          <Link to="/dashboard" className="text-gray-600 hover:text-blue-600">Dasbor</Link>
         </div>
 
         {/* Desktop Auth Buttons */}

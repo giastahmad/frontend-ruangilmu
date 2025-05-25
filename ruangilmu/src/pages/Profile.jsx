@@ -374,6 +374,11 @@ const ProfilePage = () => {
                                   </div>
                                 </div>
                               )}
+                              <Link to={`/modul/${course.course_id}`}>
+                                <button className="w-full bg-[#0B7077] text-white py-2 rounded-md hover:bg-[#014b60] transition">
+                                  Lihat Materi
+                                </button>
+                              </Link>
                             </div>
                           </div>
                         );
@@ -414,7 +419,7 @@ const ProfilePage = () => {
                           <button
                             className="text-[#0B7077] hover:underline font-medium"
                             onClick={() => handleDownloadCertificate(certificate.course_id)}
-                            >
+                          >
                             Unduh
                           </button>
                         </div>

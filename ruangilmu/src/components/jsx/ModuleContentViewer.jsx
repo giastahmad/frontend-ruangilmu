@@ -13,6 +13,8 @@ const ModuleContentViewer = () => {
   const [isCompleting, setIsCompleting] = useState(false);
   const [quizResult, setQuizResult] = useState(null);
   const [showFinalTest, setShowFinalTest] = useState(false);
+  const [certificateData, setCertificateData] = useState(null);
+  const [isCheckingCertificate, setIsCheckingCertificate] = useState(false);
   const navigate = useNavigate();
 
   // Fetch list of all modules for this course
@@ -46,6 +48,31 @@ const ModuleContentViewer = () => {
       fetchModulesList();
     }
   }, [courseId]);
+
+  // Check certificate status
+  const checkCertificateStatus = async () => {
+    setIsCheckingCertificate(true);
+    try {
+      const response = await apiService.get(`http://localhost:8000/course/${courseId}/certificate`);
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.status === 'success' && data.data) {
+          setCertificateData(data.data);
+          return true; // Certificate exists
+        }
+      }
+
+      setCertificateData(null);
+      return false; // No certificate
+    } catch (error) {
+      console.error('Error checking certificate status:', error);
+      setCertificateData(null);
+      return false;
+    } finally {
+      setIsCheckingCertificate(false);
+    }
+  };
 
   // Load the first uncompleted module
   const loadFirstUncompletedModule = async (modules) => {
@@ -275,7 +302,11 @@ const ModuleContentViewer = () => {
           if (isLastModule) {
             const allCompleted = await checkAllModulesCompleted();
             if (allCompleted) {
-              setShowFinalTest(true);
+
+              const hasCertificate = await checkCertificateStatus();
+              if (!hasCertificate) {
+                setShowFinalTest(true);
+              }
               return;
             }
           } else {
@@ -295,7 +326,11 @@ const ModuleContentViewer = () => {
         // If current module is already completed and it's the last module
         const allCompleted = await checkAllModulesCompleted();
         if (allCompleted) {
-          setShowFinalTest(true);
+          // Check if certificate already exists before showing final test
+          const hasCertificate = await checkCertificateStatus();
+          if (!hasCertificate) {
+            setShowFinalTest(true);
+          }
           return;
         }
       }
@@ -353,6 +388,67 @@ const ModuleContentViewer = () => {
     );
   }
 
+  // Show course completion statistics if certificate exists
+  if (certificateData) {
+    return (
+      <div className="p-6 bg-white rounded-lg shadow-sm">
+        <div className="text-center py-16">
+          <div className="mb-8">
+            <svg className="w-20 h-20 mx-auto text-green-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <h2 className="text-3xl font-bold text-[#026078] mb-2">Kursus Telah Diselesaikan!</h2>
+            <p className="text-gray-600 text-lg mb-6">Selamat! Anda telah berhasil menyelesaikan kursus ini</p>
+          </div>
+
+          {/* Course Statistics */}
+          <div className="bg-gradient-to-r from-[#026078] to-[#015266] text-white rounded-lg p-6 mb-6 max-w-2xl mx-auto">
+            <h3 className="text-xl font-semibold mb-4">Statistik Kursus</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="bg-white bg-opacity-20 rounded-lg p-4">
+                <div className="text-2xl font-bold">{certificateData.final_score}</div>
+                <div className="text-sm opacity-90">Nilai Akhir</div>
+              </div>
+              <div className="bg-white bg-opacity-20 rounded-lg p-4">
+                <div className="text-lg font-bold">{certificateData.issue_date}</div>
+                <div className="text-sm opacity-90">Tanggal Selesai</div>
+              </div>
+              <div className="bg-white bg-opacity-20 rounded-lg p-4 md:col-span-2">
+                <div className="text-lg font-bold">{certificateData.certificate_number}</div>
+                <div className="text-sm opacity-90">Nomor Sertifikat</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Course Info */}
+          <div className="bg-gray-50 rounded-lg p-6 max-w-2xl mx-auto">
+            <h4 className="font-semibold text-lg text-gray-800 mb-2">{certificateData.course_name}</h4>
+            <p className="text-gray-600 mb-4">Kursus telah diselesaikan oleh <strong>{certificateData.user_name}</strong></p>
+
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <button
+                onClick={() => {
+                  setCertificateData(null);
+                  setShowFinalTest(false);
+                }}
+                className="px-6 py-3 bg-[#026078] text-white rounded-lg hover:bg-[#015266] transition-colors duration-200"
+              >
+                Kembali ke Materi
+              </button>
+
+              <button
+                onClick={() => navigate('/dashboard')}
+                className="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors duration-200"
+              >
+                Kembali ke Dashboard
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // Show final test button when all modules are completed
   if (showFinalTest) {
     return (
@@ -366,14 +462,14 @@ const ModuleContentViewer = () => {
             <p className="text-gray-600 text-lg mb-2">Anda telah menyelesaikan semua modul pembelajaran</p>
             <p className="text-gray-500">Sekarang saatnya untuk mengikuti ujian akhir</p>
           </div>
-          
+
           <button
             onClick={handleFinalTestClick}
             className="px-8 py-4 bg-[#026078] text-white text-lg font-semibold rounded-lg hover:bg-[#015266] transition-colors duration-200 shadow-lg"
           >
             Mulai Test Akhir
           </button>
-          
+
           <div className="mt-6">
             <button
               onClick={() => setShowFinalTest(false)}
