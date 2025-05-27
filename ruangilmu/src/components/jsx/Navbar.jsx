@@ -72,6 +72,15 @@ const Navbar = ({ isLoggedIn }) => {
             Beranda
           </Link>
           <Link
+            to="/course"
+            className={`font-medium hover:text-blue-600 transition-colors ${isActiveLink('/')
+                ? 'text-[#026078] font-semibold border-b-2 border-[#026078] pb-1'
+                : 'text-gray-600'
+              }`}
+          >
+            Kelas
+          </Link>
+          <Link
             to="/dashboard"
             className={`font-medium hover:text-blue-600 transition-colors ${isActiveLink('/dashboard')
                 ? 'text-[#026078] font-semibold border-b-2 border-[#026078] pb-1'
