@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { apiService } from '../utils/authMiddleware';
 import PopupModal from './Popup';
 
-const ModuleContentViewer = () => {
+const ModuleContentViewer = ({onModuleChange}) => {
   const { id: courseId } = useParams();
 
   const [moduleContent, setModuleContent] = useState(null);
@@ -25,6 +25,13 @@ const ModuleContentViewer = () => {
     cancelText: 'Batal'
   });
   const navigate = useNavigate();
+
+  // Notify parent component when current module changes
+  const notifyModuleChange = (moduleId) => {
+    if (onModuleChange && moduleId) {
+      onModuleChange(moduleId);
+    }
+  };
 
   // Fetch list of all modules for this course
   useEffect(() => {
@@ -105,6 +112,9 @@ const ModuleContentViewer = () => {
           setCurrentModuleIndex(i);
           setCurrentContentIndex(0);
 
+          // Notify parent about the current module
+          notifyModuleChange(currentModule.module_id);
+
           // If module has quiz, fetch quiz data
           if (moduleData.hasQuiz) {
             await fetchQuizData(currentModule.module_id, moduleData);
@@ -120,6 +130,9 @@ const ModuleContentViewer = () => {
           setModuleContent(moduleData);
           setCurrentModuleIndex(i);
           setCurrentContentIndex(0);
+
+          // Notify parent about the current module
+          notifyModuleChange(currentModule.module_id);
 
           if (moduleData.hasQuiz) {
             await fetchQuizData(currentModule.module_id, moduleData);
@@ -165,6 +178,9 @@ const ModuleContentViewer = () => {
       if (index !== -1) {
         setCurrentModuleIndex(index);
       }
+
+      // Notify parent about the current module change
+      notifyModuleChange(moduleId);
 
       // After setting module content, fetch quiz data if needed
       if (moduleData.hasQuiz) {

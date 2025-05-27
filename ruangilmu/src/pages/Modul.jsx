@@ -17,6 +17,7 @@ const Modul = () => {
   const [moduleData, setModuleData] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [currentModuleId, setCurrentModuleId] = useState(null);
   const { id } = useParams();
 
   useEffect(() => {
@@ -49,10 +50,18 @@ const Modul = () => {
     }
   };
 
+  // Function to handle module selection from ModuleContentViewer
+  const handleModuleSelect = (moduleId) => {
+    setCurrentModuleId(moduleId);
+  };
+
   const getTabContent = () => {
     switch (activeTab) {
       case 'materi':
-        return <ModuleContentViewer />;
+        return (<ModuleContentViewer 
+            onModuleSelect={handleModuleSelect}
+            currentModuleId={currentModuleId}
+          />);
       default:
         return <div className="p-6 bg-white rounded-lg">Pilih tab untuk melihat konten</div>;
     }
@@ -83,7 +92,11 @@ const Modul = () => {
         {/* Tab Content */}
         {getTabContent()}
       </div>
-      <Chatbot />
+      {/* Pass courseId and currentModuleId to Chatbot */}
+      <Chatbot 
+        courseId={id} 
+        currentModuleId={currentModuleId}
+      />
       <Footer />
     </div>
   );
