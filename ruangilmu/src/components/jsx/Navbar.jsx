@@ -184,6 +184,16 @@ const Navbar = ({ isLoggedIn }) => {
               Beranda
             </Link>
             <Link
+              to="/course"
+              className={`block px-4 py-2 hover:bg-gray-100 ${isActiveLink('/')
+                  ? 'text-[#026078] font-semibold bg-gray-50'
+                  : 'text-gray-800'
+                }`}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Kelas
+            </Link>
+            <Link
               to="/dashboard"
               className={`block px-4 py-2 hover:bg-gray-100 ${isActiveLink('/dashboard')
                   ? 'text-[#026078] font-semibold bg-gray-50'
