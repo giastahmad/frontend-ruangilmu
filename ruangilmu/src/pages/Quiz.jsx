@@ -104,7 +104,7 @@ const QuizApp = () => {
         // Navigate based on quiz type
         if (isFinalExam) {
           // Navigate to course page or completion page for final exam
-          navigate(`/course/${courseId}`);
+          navigate(`/modul/${courseId}`);
         } else {
           // Navigate to module page for regular quiz
           navigate(`/modul/${courseId}`);

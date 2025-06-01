@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { apiService } from '../utils/authMiddleware';
 import PopupModal from './Popup';
 
-const ModuleContentViewer = ({onModuleChange}) => {
+const ModuleContentViewer = ({ onModuleChange }) => {
   const { id: courseId } = useParams();
 
   const [moduleContent, setModuleContent] = useState(null);
@@ -16,7 +16,9 @@ const ModuleContentViewer = ({onModuleChange}) => {
   const [showFinalTest, setShowFinalTest] = useState(false);
   const [certificateData, setCertificateData] = useState(null);
   const [isCheckingCertificate, setIsCheckingCertificate] = useState(false);
-  
+  const [finalExamResult, setFinalExamResult] = useState(null);
+  const [passingGrade, setPassingGrade] = useState(null);
+
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState(''); // 'quiz' or 'finalExam'
   const [modalConfig, setModalConfig] = useState({
@@ -63,6 +65,53 @@ const ModuleContentViewer = ({onModuleChange}) => {
     if (courseId) {
       fetchModulesList();
     }
+  }, [courseId]);
+
+  useEffect(() => {
+    // Check final exam status
+    const checkFinalExamStatus = async () => {
+      setIsCheckingCertificate(true);
+      try {
+        const response = await apiService.get(`http://localhost:8000/course/${courseId}/final-exam`);
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.status === 'success' && data.data) {
+            const previousResult = data.data.previousResult;
+            console.log("DUA: ", data.data.previousResult);
+            const minScore = data.data.exam.pass_score;
+
+            setFinalExamResult(previousResult);
+            setPassingGrade(minScore);
+
+            if (previousResult === null) {
+
+            } else if (previousResult.passed === true) {
+              const hasCertificate = await checkCertificateStatus();
+              if (!hasCertificate) {
+                setShowFinalTest(true);
+              }
+              return;
+
+            } else {
+              // Failed, show final test with previous result
+              setShowFinalTest(true);
+            }
+            return true;
+          }
+        }
+
+        // If response is not ok or no data, default to basic state
+        setFinalExamResult(null);
+      } catch (error) {
+        console.error('Error checking final exam status:', error);
+        setFinalExamResult(null);
+      } finally {
+        setIsCheckingCertificate(false);
+      }
+    };
+
+    checkFinalExamStatus();
   }, [courseId]);
 
   // Check certificate status
@@ -376,8 +425,8 @@ const ModuleContentViewer = ({onModuleChange}) => {
       // Set modal configuration for quiz
       setModalType('quiz');
       setModalConfig({
-        message: quizResult 
-          ? "Apakah Kamu yakin ingin mengulang kuis?" 
+        message: quizResult
+          ? "Apakah Kamu yakin ingin mengulang kuis?"
           : "Apakah Kamu yakin ingin memulai kuis sekarang? Pastikan Kamu sudah siap.",
         confirmText: quizResult ? "Ya, Ulangi" : "Ya, Mulai",
         cancelText: "Batal"
@@ -392,8 +441,10 @@ const ModuleContentViewer = ({onModuleChange}) => {
   const handleFinalTestClick = () => {
     setModalType('finalExam');
     setModalConfig({
-      message: "Kamu akan memulai ujian akhir. Pastikan koneksi internet stabil dan Kamu sudah siap. Ujian ini akan menentukan kelulusanmu.",
-      confirmText: "Ya, Mulai Ujian",
+      message: finalExamResult 
+        ? "Kamu akan mengulang ujian akhir. Pastikan koneksi internet stabil dan Kamu sudah siap. Ujian ini akan menentukan kelulusanmu."
+        : "Kamu akan memulai ujian akhir. Pastikan koneksi internet stabil dan Kamu sudah siap. Ujian ini akan menentukan kelulusanmu.",
+      confirmText: finalExamResult ? "Ya, Ulangi Ujian" : "Ya, Mulai Ujian",
       cancelText: "Belum Siap"
     });
     setShowModal(true);
@@ -407,7 +458,7 @@ const ModuleContentViewer = ({onModuleChange}) => {
     } else if (modalType === 'finalExam') {
       navigate(`/quiz/${courseId}`);
     }
-    
+
     // Close modal and reset
     setShowModal(false);
     setModalType('');
@@ -512,23 +563,60 @@ const ModuleContentViewer = ({onModuleChange}) => {
 
   // Show final test button when all modules are completed
   if (showFinalTest) {
+    console.log("GULA: ", finalExamResult);
+    const hasFailedBefore = finalExamResult && !finalExamResult.passed;
+
     return (
       <div className="p-6 bg-white rounded-lg shadow-sm">
         <div className="text-center py-16">
           <div className="mb-8">
-            <svg className="w-20 h-20 mx-auto text-green-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-            <h2 className="text-3xl font-bold text-[#026078] mb-2">Selamat!</h2>
-            <p className="text-gray-600 text-lg mb-2">Kamu telah menyelesaikan semua modul pembelajaran</p>
-            <p className="text-gray-500">Sekarang saatnya untuk mengikuti ujian akhir</p>
+            {hasFailedBefore ? (
+              <svg className="w-20 h-20 mx-auto text-yellow-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.464 0L4.35 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+              </svg>
+            ) : (
+              <svg className="w-20 h-20 mx-auto text-green-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+            )}
+
+            {hasFailedBefore ? (
+              <>
+                <h2 className="text-3xl font-bold text-[#026078] mb-2">Kamu Belum Lulus, hasil tes masih di bawah {passingGrade}</h2>
+                <p className="text-gray-600 text-lg mb-2">Silahkan coba lagi untuk ujian akhir</p>
+                <p className="text-gray-500">Pelajari kembali materi dan pastikan kamu siap</p>
+              </>
+            ) : (
+              <>
+                <h2 className="text-3xl font-bold text-[#026078] mb-2">Selamat!</h2>
+                <p className="text-gray-600 text-lg mb-2">Kamu telah menyelesaikan semua modul pembelajaran</p>
+                <p className="text-gray-500">Sekarang saatnya untuk mengikuti ujian akhir</p>
+              </>
+            )}
           </div>
+
+          {/* Show previous result statistics if failed before */}
+          {hasFailedBefore && (
+            <div className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-lg p-6 mb-6 max-w-2xl mx-auto">
+              <h3 className="text-xl font-semibold mb-4">Hasil Ujian Sebelumnya</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-white bg-opacity-20 rounded-lg p-4">
+                  <div className="text-2xl font-bold">{finalExamResult.score}</div>
+                  <div className="text-sm opacity-90">Nilai Terakhir</div>
+                </div>
+                <div className="bg-white bg-opacity-20 rounded-lg p-4">
+                  <div className="text-lg font-bold">{new Date(finalExamResult.completed_at).toLocaleDateString('id-ID')}</div>
+                  <div className="text-sm opacity-90">Tanggal Ujian</div>
+                </div>
+              </div>
+            </div>
+          )}
 
           <button
             onClick={handleFinalTestClick}
             className="px-8 py-4 bg-[#026078] text-white text-lg font-semibold rounded-lg hover:bg-[#015266] transition-colors duration-200 shadow-lg"
           >
-            Mulai Test Akhir
+            {hasFailedBefore ? 'Coba Lagi Test Akhir' : 'Mulai Test Akhir'}
           </button>
 
           <div className="mt-6">
@@ -540,6 +628,15 @@ const ModuleContentViewer = ({onModuleChange}) => {
             </button>
           </div>
         </div>
+        {/* Confirmation Modal */}
+        <PopupModal
+          isOpen={showModal}
+          onClose={handleModalClose}
+          onConfirm={handleModalConfirm}
+          message={modalConfig.message}
+          confirmText={modalConfig.confirmText}
+          cancelText={modalConfig.cancelText}
+        />
       </div>
     );
   }
