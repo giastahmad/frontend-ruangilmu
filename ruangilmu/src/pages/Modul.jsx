@@ -5,6 +5,9 @@ import Navbar from '../components/jsx/Navbar';
 import Footer from '../components/jsx/Footer';
 import Chatbot from '../components/jsx/Chatbot';
 import { apiService } from '../components/utils/authMiddleware';
+import Toast from '../components/jsx/Toast';
+import PopupModal from '../components/jsx/Popup';
+
 
 const Modul = () => {
   const [activeTab, setActiveTab] = useState('materi');
@@ -14,6 +17,10 @@ const Modul = () => {
     description: "Loading...",
     stats: []
   });
+  const [toastVisible, setToastVisible] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastType, setToastType] = useState('warning');
+  const [showPopup, setShowPopup] = useState(false);
   const [moduleData, setModuleData] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -52,8 +59,20 @@ const Modul = () => {
 
   // Function to handle module selection from ModuleContentViewer
   const handleModuleSelect = (moduleId) => {
+    const status = localStorage.getItem(`quiz-status-${moduleId}`);
+  
+    if (!status || status !== 'passed') {
+      setToastMessage("Silakan kerjakan dan lulus kuis terlebih dahulu sebelum melanjutkan modul.");
+      setToastType('warning');
+      setToastVisible(true);
+
+    // popup
+    setShowPopup(true);
+    return;
+  }
     setCurrentModuleId(moduleId);
   };
+
 
   const getTabContent = () => {
     switch (activeTab) {
@@ -98,6 +117,26 @@ const Modul = () => {
         currentModuleId={currentModuleId}
       />
       <Footer />
+
+      <Toast
+        message={toastMessage}
+        type={toastType}
+        isVisible={toastVisible}
+        onClose={() => setToastVisible(false)}
+      />
+
+      <PopupModal
+        isOpen={showPopup}
+        onClose={() => setShowPopup(false)}
+        onConfirm={() => setShowPopup(false)}
+        message="Anda harus lulus kuis dengan nilai minimal 70 untuk membuka modul ini."
+        confirmText="Saya Mengerti"
+        cancelText=""
+      />
+
+
+
+
     </div>
   );
 };
