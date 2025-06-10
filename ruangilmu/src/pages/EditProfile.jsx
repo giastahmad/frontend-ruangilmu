@@ -38,7 +38,7 @@ const EditProfile = () => {
     console.log('TOKENNN: ', token)
     try {
       setIsLoading(true)
-      const response = await apiService.get('http://ruangilmu.up.railway.app/user/me');
+      const response = await apiService.get('https://ruangilmu.up.railway.app/user/me');
 
       if (!response.ok) {
         console.log('Token user:', token);
@@ -52,7 +52,7 @@ const EditProfile = () => {
 
       // Set profile picture if available
       if (userData.user_profile) {
-        setProfilePic(`http://ruangilmu.up.railway.app/uploads/userprofile/${userData.user_profile}`);
+        setProfilePic(`https://ruangilmu.up.railway.app/uploads/userprofile/${userData.user_profile}`);
       }
 
       // Split name into first name and last name
@@ -151,7 +151,7 @@ const EditProfile = () => {
       formData.append('profile_picture', file);
 
       // Upload using fetch with proper headers
-      const response = await fetch('http://ruangilmu.up.railway.app/user/update-profile-picture', {
+      const response = await fetch('https://ruangilmu.up.railway.app/user/update-profile-picture', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -169,7 +169,7 @@ const EditProfile = () => {
 
       // Update profile picture URL dengan yang baru dari server
       if (data.data && data.data.user && data.data.user.user_profile) {
-        setProfilePic(`http://ruangilmu.up.railway.app/uploads/userprofile/${data.data.user.user_profile}`);
+        setProfilePic(`https://ruangilmu.up.railway.app/uploads/userprofile/${data.data.user.user_profile}`);
       }
 
       // Clear success message after 3 seconds
@@ -183,7 +183,7 @@ const EditProfile = () => {
 
       // Reset to previous profile picture on error
       if (user.user_profile) {
-        setProfilePic(`http://ruangilmu.up.railway.app/uploads/userprofile/${user.user_profile}`);
+        setProfilePic(`https://ruangilmu.up.railway.app/uploads/userprofile/${user.user_profile}`);
       } else {
         setProfilePic('/images/profile.png');
       }
@@ -215,7 +215,7 @@ const EditProfile = () => {
         throw new Error('Token tidak ditemukan. Silakan login kembali.');
       }
 
-      const response = await apiService.post('http://ruangilmu.up.railway.app/user/update-profile', {
+      const response = await apiService.post('https://ruangilmu.up.railway.app/user/update-profile', {
         nama: fullName,
         kelas: formData.classLevel,
         tanggal_lahir: formData.birthDate,

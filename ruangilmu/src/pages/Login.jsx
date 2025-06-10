@@ -71,7 +71,7 @@ const Login = () => {
       const email = result.user.email;
       const displayName = result.user.displayName;
 
-      const response = await fetch('http://ruangilmu.up.railway.app/auth/oauth-google', {
+      const response = await fetch('https://ruangilmu.up.railway.app/auth/oauth-google', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -113,7 +113,7 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://ruangilmu.up.railway.app/auth/login', {
+      const response = await fetch('https://ruangilmu.up.railway.app/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

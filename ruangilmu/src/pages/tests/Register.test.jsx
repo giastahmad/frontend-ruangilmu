@@ -238,7 +238,7 @@ describe('Register Page', () => {
                 fireEvent.click(submitButton);
             });
 
-            expect(fetch).toHaveBeenCalledWith('http://ruangilmu.up.railway.app/auth/register', {
+            expect(fetch).toHaveBeenCalledWith('https://ruangilmu.up.railway.app/auth/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -380,7 +380,7 @@ describe('Register Page', () => {
             expect(mockSignInWithPopup).toHaveBeenCalled();
 
             await waitFor(() => {
-                expect(fetch).toHaveBeenCalledWith('http://ruangilmu.up.railway.app/auth/oauth-google', {
+                expect(fetch).toHaveBeenCalledWith('https://ruangilmu.up.railway.app/auth/oauth-google', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

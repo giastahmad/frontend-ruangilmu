@@ -37,7 +37,7 @@ const Modul = () => {
 
   const fetchCourseInfo = async () => {
     try {
-      const response = await apiService.get(`http://ruangilmu.up.railway.app/courses/${id}`);
+      const response = await apiService.get(`https://ruangilmu.up.railway.app/courses/${id}`);
 
       if (!response.ok) {
         throw new Error('Failed to fetch course information');

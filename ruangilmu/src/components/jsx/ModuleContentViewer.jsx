@@ -41,7 +41,7 @@ const ModuleContentViewer = ({ onModuleChange }) => {
     const fetchModulesList = async () => {
       setIsLoading(true);
       try {
-        const response = await apiService.get(`http://ruangilmu.up.railway.app/course/${courseId}/module`);
+        const response = await apiService.get(`https://ruangilmu.up.railway.app/course/${courseId}/module`);
 
         if (!response.ok) {
           throw new Error('Failed to fetch modules list');
@@ -73,7 +73,7 @@ const ModuleContentViewer = ({ onModuleChange }) => {
     const checkFinalExamStatus = async () => {
       setIsCheckingCertificate(true);
       try {
-        const response = await apiService.get(`http://ruangilmu.up.railway.app/course/${courseId}/final-exam`);
+        const response = await apiService.get(`https://ruangilmu.up.railway.app/course/${courseId}/final-exam`);
 
         if (response.ok) {
           const data = await response.json();
@@ -119,7 +119,7 @@ const ModuleContentViewer = ({ onModuleChange }) => {
   const checkCertificateStatus = async () => {
     setIsCheckingCertificate(true);
     try {
-      const response = await apiService.get(`http://ruangilmu.up.railway.app/course/${courseId}/certificate`);
+      const response = await apiService.get(`https://ruangilmu.up.railway.app/course/${courseId}/certificate`);
 
       if (response.ok) {
         const data = await response.json();
@@ -203,7 +203,7 @@ const ModuleContentViewer = ({ onModuleChange }) => {
 
   // Helper function to fetch module details without changing state
   const fetchModuleDetails = async (moduleId) => {
-    const response = await apiService.get(`http://ruangilmu.up.railway.app/course/${courseId}/module/${moduleId}`);
+    const response = await apiService.get(`https://ruangilmu.up.railway.app/course/${courseId}/module/${moduleId}`);
 
     if (!response.ok) {
       throw new Error('Failed to fetch module content');
@@ -250,7 +250,7 @@ const ModuleContentViewer = ({ onModuleChange }) => {
   // Fetch quiz data for the current module
   const fetchQuizData = async (moduleId, currentModuleData = null) => {
     try {
-      const response = await apiService.get(`http://ruangilmu.up.railway.app/course/${courseId}/module/${moduleId}/quiz`);
+      const response = await apiService.get(`https://ruangilmu.up.railway.app/course/${courseId}/module/${moduleId}/quiz`);
 
       if (!response.ok) {
         throw new Error('Failed to fetch quiz data');
@@ -279,7 +279,7 @@ const ModuleContentViewer = ({ onModuleChange }) => {
   const markModuleAsCompleted = async (moduleId) => {
     setIsCompleting(true);
     try {
-      const response = await apiService.post(`http://ruangilmu.up.railway.app/course/${courseId}/module/${moduleId}/complete`, {});
+      const response = await apiService.post(`https://ruangilmu.up.railway.app/course/${courseId}/module/${moduleId}/complete`, {});
 
       if (!response.ok) {
         throw new Error('Failed to mark module as completed');

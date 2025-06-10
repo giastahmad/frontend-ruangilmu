@@ -66,7 +66,7 @@ const Verify = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://ruangilmu.up.railway.app/auth/resend-verification', {
+      const response = await fetch('https://ruangilmu.up.railway.app/auth/resend-verification', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

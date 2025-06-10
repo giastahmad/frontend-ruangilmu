@@ -1,7 +1,7 @@
 // Function to refresh the authentication token
 const refreshAccessToken = async () => {
   try {
-    const response = await fetch('http://ruangilmu.up.railway.app/auth/refresh-token', {
+    const response = await fetch('https://ruangilmu.up.railway.app/auth/refresh-token', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

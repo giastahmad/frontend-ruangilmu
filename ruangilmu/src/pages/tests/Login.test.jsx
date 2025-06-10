@@ -360,7 +360,7 @@ describe('Login Page', () => {
             expect(mockSignInWithPopup).toHaveBeenCalled();
 
             await waitFor(() => {
-                expect(fetch).toHaveBeenCalledWith('http://ruangilmu.up.railway.app/auth/oauth-google', {
+                expect(fetch).toHaveBeenCalledWith('https://ruangilmu.up.railway.app/auth/oauth-google', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

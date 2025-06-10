@@ -26,7 +26,7 @@ const Chatbot = ({ courseId, currentModuleId }) => {
 
     try {
       const response = await apiService.post(
-        `http://ruangilmu.up.railway.app/chatbot/course/${courseId}/message`,
+        `https://ruangilmu.up.railway.app/chatbot/course/${courseId}/message`,
         { message: userMessage }
       )
 
@@ -65,7 +65,7 @@ const Chatbot = ({ courseId, currentModuleId }) => {
 
     try {
       const response = await apiService.post(
-        `http://ruangilmu.up.railway.app/chatbot/course/${courseId}/summarize`,
+        `https://ruangilmu.up.railway.app/chatbot/course/${courseId}/summarize`,
         { moduleId: currentModuleId }
       )
 
@@ -126,8 +126,8 @@ const Chatbot = ({ courseId, currentModuleId }) => {
                 onClick={handleSummarizeModule}
                 disabled={!currentModuleId || isLoading}
                 className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${currentModuleId && !isLoading
-                    ? 'bg-[#026078] text-white hover:bg-[#014b5b]'
-                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  ? 'bg-[#026078] text-white hover:bg-[#014b5b]'
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                   }`}
               >
                 <BookOpen className="w-4 h-4" />
@@ -163,14 +163,14 @@ const Chatbot = ({ courseId, currentModuleId }) => {
                     <div
                       key={i}
                       className={`${chat.sender === "user"
-                          ? "text-right"
-                          : "text-left"
+                        ? "text-right"
+                        : "text-left"
                         }`}
                     >
                       <div
                         className={`inline-block max-w-[80%] p-3 rounded-lg text-sm ${chat.sender === "user"
-                            ? "bg-[#026078] text-white rounded-br-none"
-                            : "bg-gray-100 text-gray-800 rounded-bl-none"
+                          ? "bg-[#026078] text-white rounded-br-none"
+                          : "bg-gray-100 text-gray-800 rounded-bl-none"
                           }`}
                       >
                         {chat.text}
@@ -206,8 +206,8 @@ const Chatbot = ({ courseId, currentModuleId }) => {
                 type="submit"
                 disabled={!input.trim() || isLoading}
                 className={`px-4 py-2 rounded text-sm font-medium transition-colors ${input.trim() && !isLoading
-                    ? 'bg-[#026078] text-white hover:bg-[#014b5b]'
-                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  ? 'bg-[#026078] text-white hover:bg-[#014b5b]'
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                   }`}
               >
                 {isLoading ? '...' : 'Kirim'}
