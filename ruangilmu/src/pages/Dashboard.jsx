@@ -19,17 +19,17 @@ const Dashboard = () => {
         const token = localStorage.getItem('accessToken');
         console.log('Token USER:', token);
         setIsLoggedIn(!!token);
-        
+
         // Fetch only essential user data
         const fetchUserData = async () => {
             try {
                 // Fetch user profile data
-                const userResponse = await apiService.get('http://localhost:8000/user/me');
+                const userResponse = await apiService.get('http://ruangilmu.up.railway.app/user/me');
                 if (!userResponse.ok) {
                     throw new Error(`HTTP error! status: ${userResponse.status}`);
                 }
                 const userResult = await userResponse.json();
-                
+
                 // Process user data
                 if (userResult.status === 'success' && userResult.data?.user) {
                     setUserData(prevData => ({
@@ -55,11 +55,11 @@ const Dashboard = () => {
         // Separate function to fetch enrolled courses
         const fetchEnrolledCourses = async () => {
             try {
-                const coursesResponse = await apiService.get('http://localhost:8000/courses/user/enrolled');
-                
+                const coursesResponse = await apiService.get('http://ruangilmu.up.railway.app/courses/user/enrolled');
+
                 if (coursesResponse.ok) {
                     const coursesResult = await coursesResponse.json();
-                    
+
                     if (coursesResult.status === 'success' && coursesResult.data) {
                         const coursesData = coursesResult.data.map(course => ({
                             id: course.course_id,
@@ -67,7 +67,7 @@ const Dashboard = () => {
                             status: "Sedang dipelajari", // Default status, will be updated by certificate check
                             isCompleted: false // Default, will be updated by certificate check
                         }));
-                        
+
                         setUserData(prevData => ({
                             ...prevData,
                             courses: coursesData
@@ -85,14 +85,14 @@ const Dashboard = () => {
         // Separate function to fetch certificates (this can fail without breaking the main dashboard)
         const fetchCertificates = async () => {
             try {
-                const certificatesResponse = await apiService.get('http://localhost:8000/course/certificates');
-                
+                const certificatesResponse = await apiService.get('http://ruangilmu.up.railway.app/course/certificates');
+
                 if (certificatesResponse.ok) {
                     const certificatesResult = await certificatesResponse.json();
-                    
+
                     if (certificatesResult.status === 'success') {
                         const completedCourseIds = certificatesResult.data.map(cert => cert.course_id);
-                        
+
                         // Update courses with completion status
                         setUserData(prevData => {
                             const updatedCourses = prevData.courses.map(course => ({
@@ -100,12 +100,12 @@ const Dashboard = () => {
                                 status: completedCourseIds.includes(course.id) ? "Selesai" : "Sedang dipelajari",
                                 isCompleted: completedCourseIds.includes(course.id)
                             }));
-                            
+
                             // Calculate progress based on completed courses
                             const totalCourses = updatedCourses.length;
                             const completedCourses = updatedCourses.filter(course => course.isCompleted).length;
                             const progressPercentage = totalCourses > 0 ? Math.round((completedCourses / totalCourses) * 100) : 0;
-                            
+
                             return {
                                 ...prevData,
                                 courses: updatedCourses,
@@ -227,8 +227,8 @@ const Dashboard = () => {
                                                     </svg>
                                                 </div>
                                             ) : (
-                                                <Link 
-                                                    to={`/modul/${course.id}`} 
+                                                <Link
+                                                    to={`/modul/${course.id}`}
                                                     className="mt-2 sm:mt-0 bg-[#0B7077] hover:bg-[#014b60] text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
                                                 >
                                                     LANJUTKAN

@@ -34,7 +34,7 @@ const CoursesPage = () => {
   const fetchCourses = async () => {
     try {
       setLoading(true);
-      const response = await apiService.get('http://localhost:8000/courses');
+      const response = await apiService.get('http://ruangilmu.up.railway.app/courses');
 
       if (!response.ok) {
         throw new Error('Gagal Mengambil Data');
@@ -67,7 +67,7 @@ const CoursesPage = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#d2e6e4]">
-      <Navbar isLoggedIn={isLoggedIn}/>
+      <Navbar isLoggedIn={isLoggedIn} />
 
       <div className="container mx-auto px-6 py-12 flex-grow">
         <div className="flex flex-col md:flex-row gap-8">
@@ -81,8 +81,8 @@ const CoursesPage = () => {
                     <button
                       onClick={() => handleCategoryChange(category)}
                       className={`block w-full text-left px-4 py-2 rounded-md ${activeCategory === category
-                          ? 'bg-[#0B7077] text-white'
-                          : 'hover:bg-gray-100'
+                        ? 'bg-[#0B7077] text-white'
+                        : 'hover:bg-gray-100'
                         }`}
                     >
                       {category}
@@ -98,21 +98,21 @@ const CoursesPage = () => {
             <h1 className="text-3xl font-bold text-gray-800 mb-8">Daftar Kelas</h1>
 
             {loading ? (
-            <div className="flex justify-center py-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#0B7077]"></div>
-            </div>
-          ) : error ? (
-            <div className="text-center py-8 text-red-500">
-              {error}
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {courses.map(course => (
-                <CourseCard key={course.course_id} course={course} />
-              ))}
-            </div>
-          )}
-            
+              <div className="flex justify-center py-12">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#0B7077]"></div>
+              </div>
+            ) : error ? (
+              <div className="text-center py-8 text-red-500">
+                {error}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {courses.map(course => (
+                  <CourseCard key={course.course_id} course={course} />
+                ))}
+              </div>
+            )}
+
             {/* Pagination */}
             <div className="mt-12 flex justify-center">
               <nav className="flex items-center space-x-2">
@@ -127,8 +127,8 @@ const CoursesPage = () => {
                     key={page}
                     onClick={() => handlePageChange(page)}
                     className={`px-4 py-2 border rounded-md ${currentPage === page
-                        ? 'bg-[#0B7077] text-white'
-                        : 'text-gray-600 hover:bg-gray-100'
+                      ? 'bg-[#0B7077] text-white'
+                      : 'text-gray-600 hover:bg-gray-100'
                       }`}
                   >
                     {page}

@@ -41,7 +41,7 @@ const ModuleContentViewer = ({ onModuleChange }) => {
     const fetchModulesList = async () => {
       setIsLoading(true);
       try {
-        const response = await apiService.get(`http://localhost:8000/course/${courseId}/module`);
+        const response = await apiService.get(`http://ruangilmu.up.railway.app/course/${courseId}/module`);
 
         if (!response.ok) {
           throw new Error('Failed to fetch modules list');
@@ -73,7 +73,7 @@ const ModuleContentViewer = ({ onModuleChange }) => {
     const checkFinalExamStatus = async () => {
       setIsCheckingCertificate(true);
       try {
-        const response = await apiService.get(`http://localhost:8000/course/${courseId}/final-exam`);
+        const response = await apiService.get(`http://ruangilmu.up.railway.app/course/${courseId}/final-exam`);
 
         if (response.ok) {
           const data = await response.json();
@@ -119,7 +119,7 @@ const ModuleContentViewer = ({ onModuleChange }) => {
   const checkCertificateStatus = async () => {
     setIsCheckingCertificate(true);
     try {
-      const response = await apiService.get(`http://localhost:8000/course/${courseId}/certificate`);
+      const response = await apiService.get(`http://ruangilmu.up.railway.app/course/${courseId}/certificate`);
 
       if (response.ok) {
         const data = await response.json();
@@ -203,7 +203,7 @@ const ModuleContentViewer = ({ onModuleChange }) => {
 
   // Helper function to fetch module details without changing state
   const fetchModuleDetails = async (moduleId) => {
-    const response = await apiService.get(`http://localhost:8000/course/${courseId}/module/${moduleId}`);
+    const response = await apiService.get(`http://ruangilmu.up.railway.app/course/${courseId}/module/${moduleId}`);
 
     if (!response.ok) {
       throw new Error('Failed to fetch module content');
@@ -250,7 +250,7 @@ const ModuleContentViewer = ({ onModuleChange }) => {
   // Fetch quiz data for the current module
   const fetchQuizData = async (moduleId, currentModuleData = null) => {
     try {
-      const response = await apiService.get(`http://localhost:8000/course/${courseId}/module/${moduleId}/quiz`);
+      const response = await apiService.get(`http://ruangilmu.up.railway.app/course/${courseId}/module/${moduleId}/quiz`);
 
       if (!response.ok) {
         throw new Error('Failed to fetch quiz data');
@@ -279,7 +279,7 @@ const ModuleContentViewer = ({ onModuleChange }) => {
   const markModuleAsCompleted = async (moduleId) => {
     setIsCompleting(true);
     try {
-      const response = await apiService.post(`http://localhost:8000/course/${courseId}/module/${moduleId}/complete`, {});
+      const response = await apiService.post(`http://ruangilmu.up.railway.app/course/${courseId}/module/${moduleId}/complete`, {});
 
       if (!response.ok) {
         throw new Error('Failed to mark module as completed');
@@ -420,15 +420,40 @@ const ModuleContentViewer = ({ onModuleChange }) => {
   };
 
   const handleNextContentWithQuizCheck = async () => {
-   if (moduleContent.hasQuiz) {
-     const passScore = moduleContent.pass_score || 60;
-     if (!quizResult || quizResult.score < passScore) {
-      setShowQuizRequiredPopup(true);
-      return; // Stop di sini, jangan lanjut
+    // PENTING: Cek quiz dari modul yang SEDANG AKTIF sekarang, bukan setelah navigasi
+    const currentModuleData = moduleContent;
+    const currentQuizResult = quizResult;
+    const isAtLastContentOfModule = currentContentIndex === (currentModuleData?.content?.length - 1);
+
+    console.log('=== QUIZ CHECK DEBUG ===');
+    console.log('Current module index:', currentModuleIndex);
+    console.log('Current content index:', currentContentIndex);
+    console.log('Is at last content of module:', isAtLastContentOfModule);
+    console.log('Current module hasQuiz:', currentModuleData?.hasQuiz);
+    console.log('Current quiz result:', currentQuizResult);
+
+    // Hanya cek quiz jika:
+    // 1. Kita berada di konten terakhir dari modul yang sedang aktif
+    // 2. Modul tersebut memiliki quiz
+    // 3. Quiz belum dikerjakan atau belum lulus
+    if (isAtLastContentOfModule && currentModuleData && currentModuleData.hasQuiz === true) {
+      const passScore = currentModuleData.pass_score || 60;
+
+      if (!currentQuizResult || currentQuizResult.score < passScore) {
+        console.log('BLOCKING: Quiz required for current module');
+        setShowQuizRequiredPopup(true);
+        return; // STOP - jangan lanjut ke modul berikutnya
+      } else {
+        console.log('ALLOWING: Quiz passed for current module');
       }
+    } else {
+      console.log('ALLOWING: No quiz check needed (not last content or no quiz)');
     }
-    handleNextContent(); // Kalau lulus quiz / tidak ada quiz, lanjut
+
+    // Kalau lolos semua pengecekan, lanjut ke konten/modul berikutnya
+    handleNextContent();
   };
+
 
 
   // Enhanced quiz click handler with popup confirmation
@@ -454,7 +479,7 @@ const ModuleContentViewer = ({ onModuleChange }) => {
   const handleFinalTestClick = () => {
     setModalType('finalExam');
     setModalConfig({
-      message: finalExamResult 
+      message: finalExamResult
         ? "Kamu akan mengulang ujian akhir. Pastikan koneksi internet stabil dan Kamu sudah siap. Ujian ini akan menentukan kelulusanmu."
         : "Kamu akan memulai ujian akhir. Pastikan koneksi internet stabil dan Kamu sudah siap. Ujian ini akan menentukan kelulusanmu.",
       confirmText: finalExamResult ? "Ya, Ulangi Ujian" : "Ya, Mulai Ujian",
@@ -841,7 +866,7 @@ const ModuleContentViewer = ({ onModuleChange }) => {
         message="Anda harus menyelesaikan kuis terlebih dahulu sebelum melanjutkan ke materi berikutnya."
         confirmText="Saya Mengerti"
         cancelText=""
-    />
+      />
 
 
     </div>

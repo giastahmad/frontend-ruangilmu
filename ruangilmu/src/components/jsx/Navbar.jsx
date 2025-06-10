@@ -73,7 +73,7 @@ const Navbar = ({ isLoggedIn }) => {
           </Link>
           <Link
             to="/course"
-            className={`font-medium hover:text-blue-600 transition-colors ${isActiveLink('/')
+            className={`font-medium hover:text-blue-600 transition-colors ${isActiveLink('/course')
                 ? 'text-[#026078] font-semibold border-b-2 border-[#026078] pb-1'
                 : 'text-gray-600'
               }`}
@@ -185,7 +185,7 @@ const Navbar = ({ isLoggedIn }) => {
             </Link>
             <Link
               to="/course"
-              className={`block px-4 py-2 hover:bg-gray-100 ${isActiveLink('/')
+              className={`block px-4 py-2 hover:bg-gray-100 ${isActiveLink('/course')
                   ? 'text-[#026078] font-semibold bg-gray-50'
                   : 'text-gray-800'
                 }`}

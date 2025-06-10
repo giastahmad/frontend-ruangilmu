@@ -1,7 +1,7 @@
 // Function to refresh the authentication token
 const refreshAccessToken = async () => {
   try {
-    const response = await fetch('http://localhost:8000/auth/refresh-token', {
+    const response = await fetch('http://ruangilmu.up.railway.app/auth/refresh-token', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -14,18 +14,18 @@ const refreshAccessToken = async () => {
     }
 
     const data = await response.json();
-    
+
     localStorage.setItem('accessToken', data.accessToken);
-    
+
     return data.accessToken;
   } catch (error) {
     console.error('Token refresh failed:', error);
-    
+
     localStorage.removeItem('accessToken');
-    
+
     // // Optional: redirect to login
     // window.location.href = '/login';
-    
+
     throw error;
   }
 };
@@ -49,18 +49,18 @@ export const authenticatedFetch = async (url, options = {}) => {
     'Content-Type': options.headers?.['Content-Type'] || 'application/json',
     'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
   };
-  
+
   let response = await fetch(url, { ...options, headers });
-  
+
   if (response.status === 401 && !url.includes('/auth/refresh-token')) {
     if (!isRefreshing) {
       isRefreshing = true;
-      
+
       try {
         const newToken = await refreshAccessToken();
-        
+
         headers.Authorization = `Bearer ${newToken}`;
-        
+
         onTokenRefreshed(newToken);
       } catch (error) {
         return Promise.reject(error);
@@ -73,13 +73,13 @@ export const authenticatedFetch = async (url, options = {}) => {
           resolve(token);
         });
       });
-      
+
       headers.Authorization = `Bearer ${newToken}`;
     }
-    
+
     response = await fetch(url, { ...options, headers });
   }
-  
+
   return response;
 };
 
@@ -91,15 +91,15 @@ export const apiService = {
   get: async (url) => {
     return authenticatedFetch(url, { method: 'GET' });
   },
-  
+
   post: async (url, data) => {
     return authenticatedFetch(url, {
-      method: 'POST', 
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
     });
   },
-  
+
   put: async (url, data) => {
     return authenticatedFetch(url, {
       method: 'PUT',
@@ -107,7 +107,7 @@ export const apiService = {
       body: JSON.stringify(data)
     });
   },
-  
+
   delete: async (url) => {
     return authenticatedFetch(url, { method: 'DELETE' });
   }

@@ -66,7 +66,7 @@ const Verify = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://localhost:8000/auth/resend-verification', {
+      const response = await fetch('http://ruangilmu.up.railway.app/auth/resend-verification', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -115,8 +115,8 @@ const Verify = () => {
             </p>
             <button
               className={`bg-[#026078] font-[Nunito] rounded-md lg:text-lg text-sm text-white font-bold py-3 px-4 ${isLoading || !userEmail
-                  ? 'opacity-50 cursor-not-allowed'
-                  : 'cursor-pointer hover:bg-[#004b5f] active:bg-[#004455]'
+                ? 'opacity-50 cursor-not-allowed'
+                : 'cursor-pointer hover:bg-[#004b5f] active:bg-[#004455]'
                 }`}
               onClick={handleResendEmail}
               disabled={isLoading || !userEmail}

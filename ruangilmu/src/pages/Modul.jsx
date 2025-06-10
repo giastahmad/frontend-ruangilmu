@@ -37,7 +37,7 @@ const Modul = () => {
 
   const fetchCourseInfo = async () => {
     try {
-      const response = await apiService.get(`http://localhost:8000/courses/${id}`);
+      const response = await apiService.get(`http://ruangilmu.up.railway.app/courses/${id}`);
 
       if (!response.ok) {
         throw new Error('Failed to fetch course information');
@@ -60,16 +60,16 @@ const Modul = () => {
   // Function to handle module selection from ModuleContentViewer
   const handleModuleSelect = (moduleId) => {
     const status = localStorage.getItem(`quiz-status-${moduleId}`);
-  
+
     if (!status || status !== 'passed') {
       setToastMessage("Silakan kerjakan dan lulus kuis terlebih dahulu sebelum melanjutkan modul.");
       setToastType('warning');
       setToastVisible(true);
 
-    // popup
-    setShowPopup(true);
-    return;
-  }
+      // popup
+      setShowPopup(true);
+      return;
+    }
     setCurrentModuleId(moduleId);
   };
 
@@ -77,10 +77,10 @@ const Modul = () => {
   const getTabContent = () => {
     switch (activeTab) {
       case 'materi':
-        return (<ModuleContentViewer 
-            onModuleSelect={handleModuleSelect}
-            currentModuleId={currentModuleId}
-          />);
+        return (<ModuleContentViewer
+          onModuleSelect={handleModuleSelect}
+          currentModuleId={currentModuleId}
+        />);
       default:
         return <div className="p-6 bg-white rounded-lg">Pilih tab untuk melihat konten</div>;
     }
@@ -89,11 +89,11 @@ const Modul = () => {
   return (
     <div className="bg-gray-50 min-h-screen">
       <Navbar isLoggedIn={isLoggedIn} />
-      
+
       {/* Course Content */}
       <div className="container mx-auto px-4 py-8 max-w-6xl">
         <Link to="/course" className="text-[#026078] hover:underline pl-2">↰ Kembali ke Daftar Kelas</Link>
-        
+
         {/* Course Header */}
         <div className="flex flex-col md:flex-row items-start md:items-center gap-6 mb-8">
           <div>
@@ -112,8 +112,8 @@ const Modul = () => {
         {getTabContent()}
       </div>
       {/* Pass courseId and currentModuleId to Chatbot */}
-      <Chatbot 
-        courseId={id} 
+      <Chatbot
+        courseId={id}
         currentModuleId={currentModuleId}
       />
       <Footer />

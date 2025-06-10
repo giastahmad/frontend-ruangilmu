@@ -28,9 +28,9 @@ const QuizApp = () => {
       try {
         setLoading(true);
 
-        const endpoint = isFinalExam 
-          ? `http://localhost:8000/course/${courseId}/final-exam`
-          : `http://localhost:8000/course/${courseId}/module/${moduleId}/quiz`;
+        const endpoint = isFinalExam
+          ? `http://ruangilmu.up.railway.app/course/${courseId}/final-exam`
+          : `http://ruangilmu.up.railway.app/course/${courseId}/module/${moduleId}/quiz`;
 
         const response = await apiService.get(endpoint);
 
@@ -86,43 +86,43 @@ const QuizApp = () => {
 
   // Submit quiz to API
   const submitQuiz = async () => {
-  try {
-    const answers = prepareAnswersForSubmission();
+    try {
+      const answers = prepareAnswersForSubmission();
 
-    const endpoint = isFinalExam 
-      ? `http://localhost:8000/course/${courseId}/final-exam/submit`
-      : `http://localhost:8000/course/${courseId}/module/${moduleId}/quiz/submit`;
+      const endpoint = isFinalExam
+        ? `http://ruangilmu.up.railway.app/course/${courseId}/final-exam/submit`
+        : `http://ruangilmu.up.railway.app/course/${courseId}/module/${moduleId}/quiz/submit`;
 
-    const response = await apiService.post(endpoint, { answers });
+      const response = await apiService.post(endpoint, { answers });
 
-    if (!response.ok) {
-      throw new Error('Failed to submit answers');
-    }
-
-    const result = await response.json();
-
-    if (result.status === 'success') {
-      // ✅ Tambahan: Simpan status kuis ke localStorage
-      if (!isFinalExam) {
-        const score = result.data.score ?? 0; // ambil dari response API
-        const passingScore = 70;
-
-        if (score >= passingScore) {
-          localStorage.setItem(`quiz-status-${moduleId}`, 'passed');
-        } else {
-          localStorage.setItem(`quiz-status-${moduleId}`, 'failed');
-        }
+      if (!response.ok) {
+        throw new Error('Failed to submit answers');
       }
 
-      // Navigasi setelah submit
-      navigate(`/modul/${courseId}`);
-    } else {
-      throw new Error(result.message || 'Error submitting quiz');
+      const result = await response.json();
+
+      if (result.status === 'success') {
+        // ✅ Tambahan: Simpan status kuis ke localStorage
+        if (!isFinalExam) {
+          const score = result.data.score ?? 0; // ambil dari response API
+          const passingScore = 70;
+
+          if (score >= passingScore) {
+            localStorage.setItem(`quiz-status-${moduleId}`, 'passed');
+          } else {
+            localStorage.setItem(`quiz-status-${moduleId}`, 'failed');
+          }
+        }
+
+        // Navigasi setelah submit
+        navigate(`/modul/${courseId}`);
+      } else {
+        throw new Error(result.message || 'Error submitting quiz');
+      }
+    } catch (err) {
+      alert(`Error submitting quiz: ${err.message}`);
     }
-  } catch (err) {
-    alert(`Error submitting quiz: ${err.message}`);
-  }
-};
+  };
 
   // Timer countdown effect
   useEffect(() => {

@@ -50,7 +50,7 @@ const CourseDetailPage = () => {
       try {
         setLoading(true);
         console.log('course ID : ', id)
-        const response = await apiService.get(`http://localhost:8000/courses/${id}`);
+        const response = await apiService.get(`http://ruangilmu.up.railway.app/courses/${id}`);
 
         if (!response.ok) {
           throw new Error(`Gagal menampilkan detail kelas: ${response.status}`);
@@ -82,7 +82,7 @@ const CourseDetailPage = () => {
 
   const checkEnrollmentStatus = async () => {
     try {
-      const response = await apiService.get(`http://localhost:8000/courses/${id}/enrollment-status`);
+      const response = await apiService.get(`http://ruangilmu.up.railway.app/courses/${id}/enrollment-status`);
 
       if (!response.ok) {
         console.log('User not enrolled in this course');
@@ -106,7 +106,7 @@ const CourseDetailPage = () => {
   const fetchModuleData = async () => {
     setLoading(true);
     try {
-      const response = await apiService.get(`http://localhost:8000/course/${id}/module`);
+      const response = await apiService.get(`http://ruangilmu.up.railway.app/course/${id}/module`);
 
       console.log("SATU", response)
 
@@ -270,7 +270,7 @@ const CourseDetailPage = () => {
       setEnrollLoading(true);
       setEnrollStatus(null);
 
-      const response = await apiService.post(`http://localhost:8000/courses/${id}/enroll`, {});
+      const response = await apiService.post(`http://ruangilmu.up.railway.app/courses/${id}/enroll`, {});
 
       const data = await response.json();
 
@@ -315,7 +315,7 @@ const CourseDetailPage = () => {
   // Fetch semua reviews dari course yang ada
   const fetchReviews = async () => {
     try {
-      const res = await apiService.get(`http://localhost:8000/review/course/${id}`);
+      const res = await apiService.get(`http://ruangilmu.up.railway.app/review/course/${id}`);
 
       if (!res.ok) {
         throw new Error('Gagal mengambil data ulasan');
@@ -334,7 +334,7 @@ const CourseDetailPage = () => {
   // Atur post review ke server
   const postReview = async () => {
     try {
-      const res = await apiService.post(`http://localhost:8000/review`, {
+      const res = await apiService.post(`http://ruangilmu.up.railway.app/review`, {
         course_id: id,
         content: reviewText
       });
@@ -364,7 +364,7 @@ const CourseDetailPage = () => {
 
       // If user is enrolled, then check if they have already submitted a review
       try {
-        const res = await apiService.get(`http://localhost:8000/review/user/course/${id}`);
+        const res = await apiService.get(`http://ruangilmu.up.railway.app/review/user/course/${id}`);
 
         if (!res.ok) {
           throw new Error('Gagal mengambil data ulasan pengguna');
@@ -390,7 +390,7 @@ const CourseDetailPage = () => {
     // Cek apakah user sudah selesai proses pembelajarannya pada course ini
     const checkUserFinished = async () => {
       try {
-        const res = await apiService.get(`http://localhost:8000/course/${id}/certificate`);
+        const res = await apiService.get(`http://ruangilmu.up.railway.app/course/${id}/certificate`);
 
         if (!res.ok) {
           throw new Error('Gagal mengambil data sertifikat');
@@ -425,7 +425,7 @@ const CourseDetailPage = () => {
 
   const deleteHandleClick = async (reviewId) => {
     try {
-      const res = await apiService.delete(`http://localhost:8000/review/delete/${reviewId}`);
+      const res = await apiService.delete(`http://ruangilmu.up.railway.app/review/delete/${reviewId}`);
 
       if (!res.ok) {
         throw new Error('Gagal menghapus ulasan');
@@ -442,9 +442,9 @@ const CourseDetailPage = () => {
   const handleDownloadCertificate = async () => {
     try {
 
-      const res = await apiService.get(`http://localhost:8000/course/${id}/certificate/download`);
+      const res = await apiService.get(`http://ruangilmu.up.railway.app/course/${id}/certificate/download`);
 
-      // const res = await fetch(`http://localhost:8000/course/${id}/certificate/download`, {
+      // const res = await fetch(`http://ruangilmu.up.railway.app/course/${id}/certificate/download`, {
       //   method: 'GET',
       //   headers: {
       //     'Authorization': `Bearer ${localStorage.getItem('accessToken')}`

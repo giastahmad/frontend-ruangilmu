@@ -35,14 +35,14 @@ const RegisterPage = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
   const [isLoading, setIsLoading] = useState(false)
-  
+
   // State untuk Toast
   const [toastConfig, setToastConfig] = useState({
     message: '',
     type: 'success',
     isVisible: false
   });
-  
+
   const navigate = useNavigate();
 
   // Validasi form
@@ -50,7 +50,7 @@ const RegisterPage = () => {
     const isPasswordValid = password.length >= 6;
     const isConfirmValid = confirmPassword === password && confirmPassword !== '';
     const areFieldsFilled = fullName.trim() !== '' && email.trim() !== '' && password !== '' && confirmPassword !== '';
-    
+
     setIsFormValid(isPasswordValid && isConfirmValid && areFieldsFilled);
   }, [fullName, email, password, confirmPassword]);
 
@@ -92,7 +92,7 @@ const RegisterPage = () => {
       const email = result.user.email;
       const displayName = result.user.displayName;
 
-      const response = await fetch('http://localhost:8000/auth/oauth-google', {
+      const response = await fetch('http://ruangilmu.up.railway.app/auth/oauth-google', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -105,7 +105,7 @@ const RegisterPage = () => {
       });
 
       const data = await response.json();
-      
+
 
       if (response.ok) {
         localStorage.setItem('accessToken', data.data.auth.accessToken);
@@ -132,8 +132,8 @@ const RegisterPage = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://localhost:8000/auth/register', {
-        method: 'POST', 
+      const response = await fetch('http://ruangilmu.up.railway.app/auth/register', {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -175,7 +175,7 @@ const RegisterPage = () => {
   // Cek register status dari sessionStorage saat komponen dimount
   useEffect(() => {
     const registerStatus = sessionStorage.getItem('registerStatus');
-    
+
     if (registerStatus === 'success') {
       showToast('Register berhasil! Silahkan periksa email anda.', 'success');
       sessionStorage.removeItem('registerStatus');
@@ -196,7 +196,7 @@ const RegisterPage = () => {
             Sudah punya akun? <Link to="/login" className="text-[#026078] font-bold hover:underline">Masuk</Link>
           </h2>
         </div>
-        
+
         <div className="flex flex-col space-y-2 lg:space-y-4 w-5/6">
           <div className="form">
             <form onSubmit={handleSubmit} className="">
@@ -210,7 +210,7 @@ const RegisterPage = () => {
                   className="border-2 border-[#026078] rounded-md font-[Nunito] text-[#444b59] lg:text-lg text-md placeholder:text-[#026078] placeholder:opacity-50 w-full lg:py-[5px] py-1 lg:px-4 px-2"
                 />
               </div>
-              
+
               <div className="mb-5">
                 <h3 className="font-[Nunito] text-[#444b59] lg:text-xl text-lg">Email</h3>
                 <input
@@ -221,7 +221,7 @@ const RegisterPage = () => {
                   className="border-2 border-[#026078] rounded-md font-[Nunito] text-[#444b59] lg:text-lg text-md placeholder:text-[#026078] placeholder:opacity-50 w-full lg:py-[5px] py-1 lg:px-4 px-2"
                 />
               </div>
-              
+
               <div className="relative">
                 <h3 className="font-[Nunito] text-[#444b59] lg:text-xl text-lg">Kata Sandi</h3>
                 <input
@@ -241,7 +241,7 @@ const RegisterPage = () => {
                   Kata sandi minimal 6 karakter.
                 </p>
               </div>
-              
+
               <div className="relative">
                 <h3 className="font-[Nunito] text-[#444b59] lg:text-xl text-lg">Ketik Ulang Kata Sandi</h3>
                 <input
@@ -261,7 +261,7 @@ const RegisterPage = () => {
                   Kata sandi tidak sesuai.
                 </p>
               </div>
-              
+
               <div className="flex lg:flex-row my-2">
                 <input
                   type="checkbox"
@@ -270,21 +270,20 @@ const RegisterPage = () => {
                 />
                 <label htmlFor="remember" className="font-[Nunito] lg:text-lg text-sm text-[#444b59]">Ingat aku</label>
               </div>
-              
+
               <div className="mt-4">
                 <button
                   type="submit"
                   disabled={!isFormValid || isLoading}
-                  className={`bg-[#026078] font-[Nunito] rounded-md lg:text-xl text-md text-white font-extrabold inset-shadow-sm inset-shadow-white py-3 px-4 w-full ${
-                    isFormValid ? 'hover:bg-[#004b5f] active:bg-[#004455] cursor-pointer' : 'opacity-50 cursor-not-allowed'
-                  }`}
+                  className={`bg-[#026078] font-[Nunito] rounded-md lg:text-xl text-md text-white font-extrabold inset-shadow-sm inset-shadow-white py-3 px-4 w-full ${isFormValid ? 'hover:bg-[#004b5f] active:bg-[#004455] cursor-pointer' : 'opacity-50 cursor-not-allowed'
+                    }`}
                 >
                   {isLoading ? 'Memproses...' : 'Daftar'}
                 </button>
               </div>
             </form>
           </div>
-          
+
           <div className="grid grid-cols-3 items-center content-center gap-x-20 w-full my-4">
             <div className="lg:pl-5 pl-2">
               <hr className="border-1 border-[#026078]" />
@@ -296,7 +295,7 @@ const RegisterPage = () => {
               <hr className="border-1 border-[#026078]" />
             </div>
           </div>
-          
+
           <div className="flex flex-row items-start justify-center space-x-6 w-full h-full">
             <button
               type="button"
@@ -304,27 +303,27 @@ const RegisterPage = () => {
               disabled={isLoading}
               className="border border-[#026078] rounded-md cursor-pointer hover:bg-gray-500/20 lg:py-2 py-1 lg:px-6 px-3 h-max"
             >
-              <img src={googleLogo} alt="Google" className="h-[48px]"/>
+              <img src={googleLogo} alt="Google" className="h-[48px]" />
             </button>
             <button
               type="button"
               className="border border-[#026078] rounded-md cursor-pointer hover:bg-gray-500/20 lg:py-2 py-1 lg:px-6 px-3 h-max"
               disabled={isLoading}
             >
-              <img src={facebookLogo} alt="Facebook" className="h-[48px]"/>
+              <img src={facebookLogo} alt="Facebook" className="h-[48px]" />
             </button>
           </div>
         </div>
       </div>
-      
+
       <div className="invisible lg:visible flex justify-end items-end bottom-0 right-0 fixed w-1/2">
         <div>
           <img src={kidImage} alt="Kid" className="w-full" />
         </div>
       </div>
-      
+
       {/* Komponen Toast */}
-      <Toast 
+      <Toast
         message={toastConfig.message}
         type={toastConfig.type}
         isVisible={toastConfig.isVisible}

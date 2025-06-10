@@ -28,7 +28,7 @@ const ProfilePage = () => {
 
   const fetchUserProfile = async (token) => {
     try {
-      const response = await apiService.get('http://localhost:8000/user/me');
+      const response = await apiService.get('http://ruangilmu.up.railway.app/user/me');
 
       if (!response.ok) {
         console.log('Token user:', token);
@@ -46,7 +46,7 @@ const ProfilePage = () => {
 
   const fetchEnrolledCourses = async () => {
     try {
-      const response = await apiService.get('http://localhost:8000/courses/user/enrolled');
+      const response = await apiService.get('http://ruangilmu.up.railway.app/courses/user/enrolled');
 
       if (!response.ok) {
         throw new Error('Gagal Mengambil Data');
@@ -67,7 +67,7 @@ const ProfilePage = () => {
 
   const fetchCertificates = async () => {
     try {
-      const response = await apiService.get('http://localhost:8000/course/certificates');
+      const response = await apiService.get('http://ruangilmu.up.railway.app/course/certificates');
 
       if (!response.ok) {
         throw new Error('Gagal Mengambil Data Sertifikat');
@@ -103,7 +103,7 @@ const ProfilePage = () => {
 
   const fetchCourseProgress = async (courseId) => {
     try {
-      const response = await apiService.get(`http://localhost:8000/course/${courseId}/module`);
+      const response = await apiService.get(`http://ruangilmu.up.railway.app/course/${courseId}/module`);
 
       if (!response.ok) {
         throw new Error('Gagal mengambil data modul');
@@ -131,7 +131,7 @@ const ProfilePage = () => {
   const handleDownloadCertificate = async (id) => {
     try {
 
-      const res = await apiService.get(`http://localhost:8000/course/${id}/certificate/download`);
+      const res = await apiService.get(`http://ruangilmu.up.railway.app/course/${id}/certificate/download`);
 
       if (!res.ok) {
         throw new Error('Gagal mengunduh sertifikat');
@@ -192,7 +192,7 @@ const ProfilePage = () => {
               <div className="flex flex-col items-center">
                 <div className="relative mb-4">
                   <img
-                    src={user.user_profile ? `http://localhost:8000/uploads/userprofile/${user.user_profile}` : '/images/profile.png'}
+                    src={user.user_profile ? `http://ruangilmu.up.railway.app/uploads/userprofile/${user.user_profile}` : '/images/profile.png'}
                     alt="Profile"
                     className="w-32 h-32 rounded-md border-4 border-[#0B7077] object-cover"
                   />

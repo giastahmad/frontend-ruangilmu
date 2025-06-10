@@ -21,10 +21,10 @@ const Home = () => {
       const token = localStorage.getItem('accessToken');
       setIsLoggedIn(!!token);
     };
-    
+
     checkLoginStatus();
   }, []);
-  
+
   // Separate useEffect for fetching courses
   useEffect(() => {
     fetchCourses();
@@ -33,7 +33,7 @@ const Home = () => {
   const fetchCourses = async () => {
     try {
       setLoading(true);
-      const response = await apiService.get('http://localhost:8000/courses');
+      const response = await apiService.get('http://ruangilmu.up.railway.app/courses');
 
       if (!response.ok) {
         throw new Error('Gagal Mengambil Data');
@@ -89,7 +89,9 @@ const Home = () => {
       <section className="bg-gray-50 py-8 px-4 md:px-24">
         <div className="container mx-auto space-y-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900">Materi untuk</h2>
+            <label htmlFor="kelas" className="text-2xl md:text-3xl font-bold text-gray-900">
+              Materi untuk
+            </label>
             <div className="flex flex-wrap gap-3">
               <select
                 name="Kelas"

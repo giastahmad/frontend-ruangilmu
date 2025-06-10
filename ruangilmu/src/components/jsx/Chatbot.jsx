@@ -26,10 +26,10 @@ const Chatbot = ({ courseId, currentModuleId }) => {
 
     try {
       const response = await apiService.post(
-        `http://localhost:8000/chatbot/course/${courseId}/message`, 
+        `http://ruangilmu.up.railway.app/chatbot/course/${courseId}/message`,
         { message: userMessage }
       )
-      
+
       const data = await response.json()
 
       if (data.status === "success") {
@@ -50,25 +50,25 @@ const Chatbot = ({ courseId, currentModuleId }) => {
 
   async function handleSummarizeModule() {
     if (!currentModuleId || isLoading) {
-      setChatLog(prev => [...prev, { 
-        sender: "bot", 
-        text: "Maaf, tidak ada modul yang sedang aktif untuk dirangkum." 
+      setChatLog(prev => [...prev, {
+        sender: "bot",
+        text: "Maaf, tidak ada modul yang sedang aktif untuk dirangkum."
       }])
       return
     }
 
-    setChatLog(prev => [...prev, { 
-      sender: "user", 
-      text: "📋 Rangkum modul ini" 
+    setChatLog(prev => [...prev, {
+      sender: "user",
+      text: "📋 Rangkum modul ini"
     }])
     setIsLoading(true)
 
     try {
       const response = await apiService.post(
-        `http://localhost:8000/chatbot/course/${courseId}/summarize`,
+        `http://ruangilmu.up.railway.app/chatbot/course/${courseId}/summarize`,
         { moduleId: currentModuleId }
       )
-      
+
       const data = await response.json()
 
       if (data.status === "success") {
@@ -125,11 +125,10 @@ const Chatbot = ({ courseId, currentModuleId }) => {
               <button
                 onClick={handleSummarizeModule}
                 disabled={!currentModuleId || isLoading}
-                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  currentModuleId && !isLoading
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${currentModuleId && !isLoading
                     ? 'bg-[#026078] text-white hover:bg-[#014b5b]'
                     : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                }`}
+                  }`}
               >
                 <BookOpen className="w-4 h-4" />
                 Rangkum Modul Ini
@@ -143,7 +142,7 @@ const Chatbot = ({ courseId, currentModuleId }) => {
                   <p className="text-sm text-gray-700 mb-4">
                     Halo! Saya asisten belajar Anda. Ada yang bisa saya bantu?
                   </p>
-                  
+
                   {/* Suggested Questions */}
                   <div className="space-y-2">
                     <p className="text-xs text-gray-500 font-medium">Pertanyaan yang mungkin ingin Anda tanyakan:</p>
@@ -163,18 +162,16 @@ const Chatbot = ({ courseId, currentModuleId }) => {
                   {chatLog.map((chat, i) => (
                     <div
                       key={i}
-                      className={`${
-                        chat.sender === "user"
+                      className={`${chat.sender === "user"
                           ? "text-right"
                           : "text-left"
-                      }`}
+                        }`}
                     >
                       <div
-                        className={`inline-block max-w-[80%] p-3 rounded-lg text-sm ${
-                          chat.sender === "user"
+                        className={`inline-block max-w-[80%] p-3 rounded-lg text-sm ${chat.sender === "user"
                             ? "bg-[#026078] text-white rounded-br-none"
                             : "bg-gray-100 text-gray-800 rounded-bl-none"
-                        }`}
+                          }`}
                       >
                         {chat.text}
                       </div>
@@ -185,8 +182,8 @@ const Chatbot = ({ courseId, currentModuleId }) => {
                       <div className="inline-block bg-gray-100 text-gray-800 p-3 rounded-lg rounded-bl-none text-sm">
                         <div className="flex items-center gap-1">
                           <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                         </div>
                       </div>
                     </div>
@@ -208,11 +205,10 @@ const Chatbot = ({ courseId, currentModuleId }) => {
               <button
                 type="submit"
                 disabled={!input.trim() || isLoading}
-                className={`px-4 py-2 rounded text-sm font-medium transition-colors ${
-                  input.trim() && !isLoading
+                className={`px-4 py-2 rounded text-sm font-medium transition-colors ${input.trim() && !isLoading
                     ? 'bg-[#026078] text-white hover:bg-[#014b5b]'
                     : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                }`}
+                  }`}
               >
                 {isLoading ? '...' : 'Kirim'}
               </button>

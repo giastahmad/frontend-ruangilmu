@@ -54,7 +54,7 @@ const Login = () => {
     setToastMessage(message);
     setToastType(type);
     setShowToast(true);
-  
+
     setTimeout(() => {
       setShowToast(false);
     }, 3000); // auto hide after 3s
@@ -62,50 +62,50 @@ const Login = () => {
 
   // Handle Google Sign in
   const handleGoogleSignIn = async () => {
-      try {
-        setIsLoading(true);
-        const provider = new firebase.auth.GoogleAuthProvider();
-        const result = await firebase.auth().signInWithPopup(provider);
-  
-        const idToken = await result.user.getIdToken();
-        const email = result.user.email;
-        const displayName = result.user.displayName;
-  
-        const response = await fetch('http://localhost:8000/auth/oauth-google', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            idToken,
-            email,
-            displayName
-          }),
-        });
-  
-        const data = await response.json();
-        
+    try {
+      setIsLoading(true);
+      const provider = new firebase.auth.GoogleAuthProvider();
+      const result = await firebase.auth().signInWithPopup(provider);
 
-  
-        if (response.ok) {
-          console.log("Masuk ok", response)
-          localStorage.setItem('accessToken', data.data.auth.accessToken);
-          localStorage.setItem('user', JSON.stringify(data.data.user));
-          showToastMessage(data.message || 'Google login berhasil!', 'success');
-  
-          setTimeout(() => {
-            navigate('/');
-          }, 1500);
-        } else {
-          showToastMessage(data.message || 'Google login gagal pada server', 'error');
-        }
-      } catch (error) {
-        console.error('Google Sign-In error : ', error);
-        showToastMessage('Google Login gagal : ', + error.message, 'error');
-      } finally {
-        setIsLoading(false);
+      const idToken = await result.user.getIdToken();
+      const email = result.user.email;
+      const displayName = result.user.displayName;
+
+      const response = await fetch('http://ruangilmu.up.railway.app/auth/oauth-google', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          idToken,
+          email,
+          displayName
+        }),
+      });
+
+      const data = await response.json();
+
+
+
+      if (response.ok) {
+        console.log("Masuk ok", response)
+        localStorage.setItem('accessToken', data.data.auth.accessToken);
+        localStorage.setItem('user', JSON.stringify(data.data.user));
+        showToastMessage(data.message || 'Google login berhasil!', 'success');
+
+        setTimeout(() => {
+          navigate('/');
+        }, 1500);
+      } else {
+        showToastMessage(data.message || 'Google login gagal pada server', 'error');
       }
-    };
+    } catch (error) {
+      console.error('Google Sign-In error : ', error);
+      showToastMessage('Google Login gagal : ', + error.message, 'error');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // Handle form submission
   const handleSubmit = async (e) => {
@@ -113,7 +113,7 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://localhost:8000/auth/login', {
+      const response = await fetch('http://ruangilmu.up.railway.app/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -130,7 +130,7 @@ const Login = () => {
       if (!response.ok) {
         console.log("Masuk Kok", response)
         showToastMessage(data.message || 'Gagal Masuk', 'error');
-        sessionStorage.getItem('loginStatus', 'error');
+        sessionStorage.setItem('loginStatus', 'error');
       } else {
         showToastMessage('Berhasil Masuk', 'success');
         sessionStorage.setItem('loginStatus', 'success');
