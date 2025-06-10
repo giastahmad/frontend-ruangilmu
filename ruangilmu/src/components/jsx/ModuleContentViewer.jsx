@@ -18,6 +18,7 @@ const ModuleContentViewer = ({ onModuleChange }) => {
   const [isCheckingCertificate, setIsCheckingCertificate] = useState(false);
   const [finalExamResult, setFinalExamResult] = useState(null);
   const [passingGrade, setPassingGrade] = useState(null);
+  const [showQuizRequiredPopup, setShowQuizRequiredPopup] = useState(false);
 
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState(''); // 'quiz' or 'finalExam'
@@ -418,6 +419,18 @@ const ModuleContentViewer = ({ onModuleChange }) => {
     }
   };
 
+  const handleNextContentWithQuizCheck = async () => {
+   if (moduleContent.hasQuiz) {
+     const passScore = moduleContent.pass_score || 60;
+     if (!quizResult || quizResult.score < passScore) {
+      setShowQuizRequiredPopup(true);
+      return; // Stop di sini, jangan lanjut
+      }
+    }
+    handleNextContent(); // Kalau lulus quiz / tidak ada quiz, lanjut
+  };
+
+
   // Enhanced quiz click handler with popup confirmation
   const handleQuizClick = () => {
     const currentModule = modulesList[currentModuleIndex];
@@ -800,7 +813,7 @@ const ModuleContentViewer = ({ onModuleChange }) => {
             )}
 
           <button
-            onClick={handleNextContent}
+            onClick={handleNextContentWithQuizCheck}
             className="px-6 py-2 rounded-md flex items-center bg-[#026078] text-white hover:bg-[#015266]"
           >
             {isLastContent ? 'Selesaikan Kursus' : 'Selanjutnya'}
@@ -820,6 +833,16 @@ const ModuleContentViewer = ({ onModuleChange }) => {
         confirmText={modalConfig.confirmText}
         cancelText={modalConfig.cancelText}
       />
+
+      <PopupModal
+        isOpen={showQuizRequiredPopup}
+        onClose={() => setShowQuizRequiredPopup(false)}
+        onConfirm={() => setShowQuizRequiredPopup(false)}
+        message="Anda harus menyelesaikan kuis terlebih dahulu sebelum melanjutkan ke materi berikutnya."
+        confirmText="Saya Mengerti"
+        cancelText=""
+    />
+
 
     </div>
   );
