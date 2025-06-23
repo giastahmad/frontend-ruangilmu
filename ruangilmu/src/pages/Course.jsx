@@ -34,7 +34,7 @@ const CoursesPage = () => {
   const fetchCourses = async () => {
     try {
       setLoading(true);
-      const response = await apiService.get('https://ruangilmu.up.railway.app/courses');
+      const response = await apiService.get('https://backend-ruangilmu-production.up.railway.app/courses');
 
       if (!response.ok) {
         throw new Error('Gagal Mengambil Data');

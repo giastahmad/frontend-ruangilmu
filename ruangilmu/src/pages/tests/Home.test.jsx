@@ -188,7 +188,7 @@ describe('Home Page', () => {
             renderWithRouter(<Home />);
 
             await waitFor(() => {
-                expect(apiService.get).toHaveBeenCalledWith('https://ruangilmu.up.railway.app/courses');
+                expect(apiService.get).toHaveBeenCalledWith('https://backend-ruangilmu-production.up.railway.app/courses');
                 expect(apiService.get).toHaveBeenCalledTimes(1);
             });
         });

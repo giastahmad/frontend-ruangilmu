@@ -29,8 +29,8 @@ const QuizApp = () => {
         setLoading(true);
 
         const endpoint = isFinalExam
-          ? `https://ruangilmu.up.railway.app/course/${courseId}/final-exam`
-          : `https://ruangilmu.up.railway.app/course/${courseId}/module/${moduleId}/quiz`;
+          ? `https://backend-ruangilmu-production.up.railway.app/course/${courseId}/final-exam`
+          : `https://backend-ruangilmu-production.up.railway.app/course/${courseId}/module/${moduleId}/quiz`;
 
         const response = await apiService.get(endpoint);
 
@@ -90,8 +90,8 @@ const QuizApp = () => {
       const answers = prepareAnswersForSubmission();
 
       const endpoint = isFinalExam
-        ? `https://ruangilmu.up.railway.app/course/${courseId}/final-exam/submit`
-        : `https://ruangilmu.up.railway.app/course/${courseId}/module/${moduleId}/quiz/submit`;
+        ? `https://backend-ruangilmu-production.up.railway.app/course/${courseId}/final-exam/submit`
+        : `https://backend-ruangilmu-production.up.railway.app/course/${courseId}/module/${moduleId}/quiz/submit`;
 
       const response = await apiService.post(endpoint, { answers });
 

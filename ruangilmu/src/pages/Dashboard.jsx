@@ -24,7 +24,7 @@ const Dashboard = () => {
         const fetchUserData = async () => {
             try {
                 // Fetch user profile data
-                const userResponse = await apiService.get('https://ruangilmu.up.railway.app/user/me');
+                const userResponse = await apiService.get('https://backend-ruangilmu-production.up.railway.app/user/me');
                 if (!userResponse.ok) {
                     throw new Error(`HTTP error! status: ${userResponse.status}`);
                 }
@@ -55,7 +55,7 @@ const Dashboard = () => {
         // Separate function to fetch enrolled courses
         const fetchEnrolledCourses = async () => {
             try {
-                const coursesResponse = await apiService.get('https://ruangilmu.up.railway.app/courses/user/enrolled');
+                const coursesResponse = await apiService.get('https://backend-ruangilmu-production.up.railway.app/courses/user/enrolled');
 
                 if (coursesResponse.ok) {
                     const coursesResult = await coursesResponse.json();
@@ -85,7 +85,7 @@ const Dashboard = () => {
         // Separate function to fetch certificates (this can fail without breaking the main dashboard)
         const fetchCertificates = async () => {
             try {
-                const certificatesResponse = await apiService.get('https://ruangilmu.up.railway.app/course/certificates');
+                const certificatesResponse = await apiService.get('https://backend-ruangilmu-production.up.railway.app/course/certificates');
 
                 if (certificatesResponse.ok) {
                     const certificatesResult = await certificatesResponse.json();

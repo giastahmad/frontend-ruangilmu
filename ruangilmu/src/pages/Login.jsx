@@ -71,7 +71,7 @@ const Login = () => {
       const email = result.user.email;
       const displayName = result.user.displayName;
 
-      const response = await fetch('https://ruangilmu.up.railway.app/auth/oauth-google', {
+      const response = await fetch('https://backend-ruangilmu-production.up.railway.app/auth/oauth-google', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -113,7 +113,7 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('https://ruangilmu.up.railway.app/auth/login', {
+      const response = await fetch('https://backend-ruangilmu-production.up.railway.app/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -128,8 +128,13 @@ const Login = () => {
       console.log("Masuk ok", response)
 
       if (!response.ok) {
-        console.log("Masuk Kok", response)
-        showToastMessage(data.message || 'Gagal Masuk', 'error');
+        // Cek jika pesan error mengandung kata "verifikasi"
+        if (data.message && data.message.toLowerCase().includes('verifikasi')) {
+          showToastMessage('Login gagal. Silakan verifikasi email Anda terlebih dahulu.', 'error');
+        } else {
+          // Pesan error umum jika login gagal karena alasan lain (misal: password salah)
+          showToastMessage(data.message || 'Email atau kata sandi yang Anda masukkan salah.', 'error');
+        }
         sessionStorage.setItem('loginStatus', 'error');
       } else {
         showToastMessage('Berhasil Masuk', 'success');
@@ -149,7 +154,13 @@ const Login = () => {
       }
     } catch (error) {
       console.error('Gagal Masuk: ', error);
-      showToastMessage('Terjadi Kesalahan pada server!', 'error');
+      // Cek jika error disebabkan oleh kegagalan fetch (server tidak merespon)
+      if (error instanceof TypeError && error.message === 'Failed to fetch') {
+        showToastMessage('Tidak dapat terhubung ke server. Periksa koneksi internet Anda atau coba lagi nanti.', 'error');
+      } else {
+        // Pesan untuk error tak terduga lainnya
+        showToastMessage('Terjadi kesalahan yang tidak terduga. Silakan coba lagi.', 'error');
+      }
       sessionStorage.setItem('loginStatus', 'error');
     } finally {
       setIsLoading(false)

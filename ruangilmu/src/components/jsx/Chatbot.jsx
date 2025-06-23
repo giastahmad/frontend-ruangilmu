@@ -26,7 +26,7 @@ const Chatbot = ({ courseId, currentModuleId }) => {
 
     try {
       const response = await apiService.post(
-        `https://ruangilmu.up.railway.app/chatbot/course/${courseId}/message`,
+        `https://backend-ruangilmu-production.up.railway.app/chatbot/course/${courseId}/message`,
         { message: userMessage }
       )
 
@@ -65,7 +65,7 @@ const Chatbot = ({ courseId, currentModuleId }) => {
 
     try {
       const response = await apiService.post(
-        `https://ruangilmu.up.railway.app/chatbot/course/${courseId}/summarize`,
+        `https://backend-ruangilmu-production.up.railway.app/chatbot/course/${courseId}/summarize`,
         { moduleId: currentModuleId }
       )
 
