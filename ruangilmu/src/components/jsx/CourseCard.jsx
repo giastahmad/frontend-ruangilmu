@@ -51,7 +51,7 @@ const CourseCard = ({ course }) => {
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden transition duration-300 hover:-translate-y-[5px] hover:shadow-[0_10px_25px_rgba(0,0,0,0.1)]">
       <img 
-      src={course_image_cover || temporaryImage}
+      src={course.course_image_cover? `http://backend-ruangilmu-production.up.railway.app/uploads/courses/${course.course_image_cover}` : temporaryImage}
       alt={course_name}
       className="w-full h-48 object-cover" 
       onError={(e) => {

@@ -233,7 +233,7 @@ const CourseDetailPage = () => {
     if (reviewFilter === 'Semua') {
       return reviews;
     }
-    return reviews.filter(review => review.type === reviewFilter);
+    return reviews.filter(review => review.sentiment === reviewFilter);
   };
 
   // Button action handler based on user status
@@ -516,7 +516,7 @@ const CourseDetailPage = () => {
             <div className="bg-white rounded-lg shadow-sm p-8">
               <div className="mb-6">
                 <img
-                  src={course.course_image_cover}
+                  src={course.course_image_cover? `http://backend-ruangilmu-production.up.railway.app/uploads/courses/${course.course_image_cover}` : temporaryImage}
                   alt={course.course_name}
                   className="w-full h-32 object-cover rounded-lg mb-4"
                   onError={(e) => {
