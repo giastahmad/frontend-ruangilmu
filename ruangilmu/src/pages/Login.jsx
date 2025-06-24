@@ -213,7 +213,7 @@ const Login = () => {
               <h3 className="font-[Nunito] text-[#444b59] lg:text-xl text-lg">Kata Sandi</h3>
               <input
                 type={showPassword ? "text" : "password"}
-                placeholder="6 karakter atau lebih"
+                placeholder="Min. 8 karakter (huruf besar, kecil, angka)."
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="border-2 border-[#026078] rounded-md font-[Nunito] text-[#444b59] lg:text-lg text-md placeholder:text-[#026078] placeholder:opacity-50 w-full lg:py-2 py-1 lg:px-4 px-2 pr-10"
@@ -225,7 +225,7 @@ const Login = () => {
                 className={`absolute right-3 top-[47%] translate-y-[-50%] w-6 h-6 cursor-pointer ${showPassword ? 'opacity-40' : 'opacity-100'}`}
               />
               <p className={`text-sm text-red-600 font-[Nunito] ${password.length < 6 && password.length > 0 ? 'visible' : 'invisible'}`}>
-                Kata sandi minimal 6 karakter.
+                Kata sandi harus terdiri dari minimal 8 karakter, mengandung huruf besar, huruf kecil, dan angka.
               </p>
             </div>
 
