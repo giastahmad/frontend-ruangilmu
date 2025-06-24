@@ -302,7 +302,7 @@ const ProfilePage = () => {
                             className="bg-white border border-gray-200 rounded-lg overflow-hidden transform transition duration-300 hover:translate-y-[-3px] hover:shadow-lg"
                           >
                             <img
-                              src={course.course_image_cover || '/default-course.jpg'}
+                              src={course.course_image_cover? `http://backend-ruangilmu-production.up.railway.app/uploads/courses/${course.course_image_cover}` : '/default-course.jpg'}
                               alt={course.course_name}
                               className="w-full h-40 object-cover"
                             />
@@ -349,7 +349,7 @@ const ProfilePage = () => {
                           >
                             <div className="relative">
                               <img
-                                src={course.course_image_cover || '/default-course.jpg'}
+                                src={course.course_image_cover? `http://backend-ruangilmu-production.up.railway.app/uploads/courses/${course.course_image_cover}` : '/default-course.jpg'}
                                 alt={course.course_name}
                                 className="w-full h-40 object-cover"
                               />
