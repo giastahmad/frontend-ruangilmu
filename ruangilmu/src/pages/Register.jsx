@@ -47,7 +47,7 @@ const RegisterPage = () => {
 
   // Validasi form
   useEffect(() => {
-    const isPasswordValid = password.length >= 6;
+    const isPasswordValid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password);
     const isConfirmValid = confirmPassword === password && confirmPassword !== '';
     const areFieldsFilled = fullName.trim() !== '' && email.trim() !== '' && password !== '' && confirmPassword !== '';
 
@@ -238,7 +238,7 @@ const RegisterPage = () => {
                   className={`absolute right-3 top-[55%] translate-y-[-50%] w-6 h-6 cursor-pointer ${showPassword ? 'opacity-40' : 'opacity-100'}`}
                 />
                 <p className={`text-sm text-red-600 font-[Nunito] ${password.length > 0 && password.length < 6 ? 'visible' : 'invisible'}`}>
-                  Kata sandi minimal 6 karakter.
+                  Kata sandi harus terdiri dari minimal 8 karakter, mengandung huruf besar, huruf kecil, dan angka.
                 </p>
               </div>
 
