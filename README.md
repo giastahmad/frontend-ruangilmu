@@ -41,8 +41,27 @@ Untuk terus meningkatkan kualitas platform, kami membangun sistem analisis senti
 Berikut adalah beberapa tangkapan layar dari aplikasi RuangIlmu.
 
 | Halaman Register | Halaman Utama | Chatbot Asisten Belajar | Dashboard Siswa | Halaman Profile | Halaman Quiz dan Test | Halaman Detail Kelas
-| :-------------: | :-------------: | :-------------: | :-------------: | :-------------: | :-------------: |
-| <img src="https://raw.githubusercontent.com/giastahmad/frontend-ruangilmu/ruangilmu/src/components/img/register-page.png" alt="Halaman Register" width="250"> | <img src="https://raw.githubusercontent.com/giastahmad/frontend-ruangilmu/ruangilmu/src/components/img/home-page.png" alt="Halaman Utama" width="250"> | <img src="https://raw.githubusercontent.com/giastahmad/frontend-ruangilmu/ruangilmu/src/components/img/modul-with-chatbot-page.png" alt="Chatbot Asisten Belajar" width="250"> | <img src="https://raw.githubusercontent.com/giastahmad/frontend-ruangilmu/ruangilmu/src/components/img/dashboard-page.png" alt="Dashboard Siswa" width="250"> | <img src="https://raw.githubusercontent.com/giastahmad/frontend-ruangilmu/ruangilmu/src/components/img/profile-page.png" alt="Halaman Profil" width="250"> | <img src="https://raw.githubusercontent.com/giastahmad/frontend-ruangilmu/ruangilmu/src/components/img/quiz-and-final-test-page.png" alt="Halaman quiz dan Tes akhir" width="250"> | <img src="https://raw.githubusercontent.com/giastahmad/frontend-ruangilmu/ruangilmu/src/components/img/course-detail-page.png" alt="Halaman detail kelas" width="250"> |
+### Halaman Register
+![Halaman Register](ruangilmu/src/components/img/register-page.png)
+
+### Halaman Utama
+![Halaman Utama](ruangilmu/src/components/img/home-page.png)
+
+### Chatbot Asisten Belajar
+![Chatbot Asisten Belajar](ruangilmu/src/components/img/modul-with-chatbot-page.png)
+
+### Dashboard Siswa
+![Dashboard Siswa](ruangilmu/src/components/img/dashboard-page.png)
+
+### Halaman Profile
+![Halaman Profile](ruangilmu/src/components/img/profile-page.png)
+
+### Halaman Quiz dan Test
+![Halaman Quiz dan Test](ruangilmu/src/components/img/quiz-and-final-test-page.png)
+
+### Halaman Detail Kelas
+![Halaman Detail Kelas](ruangilmu/src/components/img/course-detail-page.png)
+
 
 ## 🛠️ Teknologi yang Digunakan
 
@@ -71,7 +90,6 @@ Proyek ini adalah hasil kolaborasi mahasiswa Program Studi Teknik Informatika, U
 | **Anggota** | Theodora Paulina Walukow | `140810220058` |
 | **Anggota** | Imam Farrel Rahyandita Soetardjo Prabowo | `140810220070` |
 | **Anggota** | Angga Prasetyo | `140810220086` |
-| ... | ... | ... |
 
 ---
 <div align="center">
