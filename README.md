@@ -1,5 +1,5 @@
 <div align="center">
-  <h1><b>RuangIlmu: One Space, Infinite Knowledge</b></h1>
+  <h1><b>RuangIlmu: Satu Ruang, Sejuta Ilmu</b></h1>
   <p>
     An interactive digital learning platform specially designed for elementary school students in grades 4, 5, and 6.
   </p>
